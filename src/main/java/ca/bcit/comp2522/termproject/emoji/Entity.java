@@ -17,16 +17,20 @@ public abstract class Entity extends Group {
     }
 
     public Entity(final String image) {
-        this(0, 0, IMAGE_SIZE, image);
+        this(0, 0, image);
+    }
+    public Entity(final int xPosition, final int yPosition, final String image) {
+        this(xPosition, yPosition, IMAGE_SIZE, image);
     }
 
-    public Entity(int xPosition, int yPosition, int size, final String image) {
+    public Entity(final int xPosition, final int yPosition, final int size, final String image) {
 
         imageView = new ImageView(new Image(image + ".png"));
         imageView.setFitWidth(size);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.setCache(true);
+        getChildren().add(imageView);
 
         this.setTranslateX(xPosition);
         this.setTranslateY(yPosition);
