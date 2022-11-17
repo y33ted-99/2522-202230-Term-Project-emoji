@@ -51,6 +51,7 @@ public class EmojiApplication extends Application {
         Group root = new Group(imageView, playArea);
 
         Scene scene = new Scene(root, appWidth, appHeight);
+        primaryStage.setResizable(false);
         primaryStage.setTitle("Untitled Emoji Game");
         primaryStage.setScene(scene);
         primaryStage.show();
