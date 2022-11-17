@@ -3,13 +3,12 @@ package ca.bcit.comp2522.termproject.emoji;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 
-public class EnemyTextBubbleFactory extends TextBubbleFactory {
+public class EnemyTextBubble extends TextBubble {
 
-    public EnemyTextBubbleFactory(final String side, final int position, final String type) {
+    public EnemyTextBubble(final String side, final int position, final String type) {
         super(side, position, type);
     }
 

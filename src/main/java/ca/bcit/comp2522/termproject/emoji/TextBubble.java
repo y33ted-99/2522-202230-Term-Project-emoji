@@ -5,15 +5,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
-public abstract class TextBubbleFactory extends Group {
+public abstract class TextBubble extends Group {
     private final ImageView textBubbleImage;
     private final ImageView emoji;
     private final Text phrase;
 
 //    protected enum SIDE {LEFT, RIGHT, TOP, BOTTOM}
+//
 
-
-    public TextBubbleFactory(final String side, final int position, final String type) {
+    public TextBubble(final String side, final int position, final String type) {
 
         textBubbleImage = loadTextBubbleImage(side);
         emoji = createEmoji(type);
@@ -34,19 +34,23 @@ public abstract class TextBubbleFactory extends Group {
     }
 
     private void positionTextBubble(final Group textBubble, final String side, final int position) {
-
-        if (side.equals("left")) {
-            textBubble.setTranslateX(5);
-            textBubble.setTranslateY(position);
-        }else if (side.equals("right")) {
-            textBubble.setTranslateX(700);
-            textBubble.setTranslateY(position);
-        }else if (side.equals("top")) {
-            textBubble.setTranslateX(100 + position);
-            textBubble.setTranslateY(100);
-        }else {
-            textBubble.setTranslateX(100 + position);
-            textBubble.setTranslateY(600);
+        switch (side) {
+            case "left" -> {
+                textBubble.setTranslateX(5);
+                textBubble.setTranslateY(position);
+            }
+            case "right" -> {
+                textBubble.setTranslateX(700);
+                textBubble.setTranslateY(position);
+            }
+            case "top" -> {
+                textBubble.setTranslateX(100 + position);
+                textBubble.setTranslateY(100);
+            }
+            default -> {
+                textBubble.setTranslateX(100 + position);
+                textBubble.setTranslateY(600);
+            }
         }
 
     }
