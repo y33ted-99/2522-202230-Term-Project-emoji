@@ -1,11 +1,11 @@
 package ca.bcit.comp2522.termproject.emoji;
 
-public enum EnemyEmoji {
+public enum EnemyType implements EmojiType {
     ANGRY("angry.png");
 
     private String filename;
 
-     EnemyEmoji(String filename) {
+     EnemyType(String filename) {
          this.filename = filename;
      }
 
