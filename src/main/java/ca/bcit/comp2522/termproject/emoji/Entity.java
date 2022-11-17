@@ -2,29 +2,33 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  * An abstract game entity.
  */
 public abstract class Entity extends Group {
 
-    private int xPosition;
-    private int yPosition;
-    private int width;
-    private int height;
-    protected Image image;
+    private static final int IMAGE_SIZE = EmojiApplication.EMOJI_SIZE;
+    protected ImageView imageView;
 
     public Entity() {
-        this.xPosition = EmojiApplication.APP_WIDTH / 2;
-        this.yPosition = EmojiApplication.APP_HEIGHT / 2;
-        this.width = EmojiApplication.EMOJI_SIZE;
-        this.height = EmojiApplication.EMOJI_SIZE;
+        this("no_mouth");
     }
 
-    public Entity(int xPosition, int yPosition, int width, int height) {
-        this.xPosition = xPosition;
-        this.yPosition = yPosition;
-        this.width = width;
-        this.height = height;
+    public Entity(final String image) {
+        this(0, 0, IMAGE_SIZE, image);
+    }
+
+    public Entity(int xPosition, int yPosition, int size, final String image) {
+
+        imageView = new ImageView(new Image(image + ".png"));
+        imageView.setFitWidth(size);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        imageView.setCache(true);
+
+        this.setTranslateX(xPosition);
+        this.setTranslateY(yPosition);
     }
 }
