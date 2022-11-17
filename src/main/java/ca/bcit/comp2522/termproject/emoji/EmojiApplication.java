@@ -84,7 +84,7 @@ public class EmojiApplication extends Application {
     }
 
     public void createPlayer() {
-        Group player = new Player(APP_WIDTH / 2, APP_HEIGHT / 2);
+        Group player = new Player(APP_WIDTH / 2, (int)(APP_HEIGHT * 0.75));
         root.getChildren().add(player);
 
     }
