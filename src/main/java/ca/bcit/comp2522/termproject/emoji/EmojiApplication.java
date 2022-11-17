@@ -21,11 +21,11 @@ import java.util.Random;
  */
 public class EmojiApplication extends Application {
 
-    public final int APP_WIDTH = 1000;
-    public final int APP_HEIGHT = 800;
-    public final int PLAY_AREA_SIZE = 600;
-    public final int EMOJI_SIZE = 20;
-    public final Random RNG = new Random();
+    public final static int APP_WIDTH = 1000;
+    public final static int APP_HEIGHT = 800;
+    public final static int PLAY_AREA_SIZE = 600;
+    public final static int EMOJI_SIZE = 20;
+    public final static Random RNG = new Random();
 
     /**
      * Displays an image centered in a window.
@@ -51,8 +51,13 @@ public class EmojiApplication extends Application {
         playArea.setArcHeight(10);
         playArea.setArcWidth(10);
 
+        Group enemy = new EnemyTextBubbleFactory("angry");
+        enemy.setTranslateX(300);
+        enemy.setTranslateY(400);
 
-        Group root = new Group(imageView, playArea);
+
+        Group root = new Group(imageView, playArea, enemy);
+//        root.getChildren().add(new Enemy("angry"));
 
         Scene scene = new Scene(root, APP_WIDTH, APP_HEIGHT);
         primaryStage.setResizable(false);
