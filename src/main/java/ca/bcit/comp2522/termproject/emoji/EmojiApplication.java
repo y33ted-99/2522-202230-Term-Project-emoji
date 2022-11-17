@@ -24,7 +24,7 @@ public class EmojiApplication extends Application {
     public final static int APP_WIDTH = 1000;
     public final static int APP_HEIGHT = 800;
     public final static int PLAY_AREA_SIZE = 600;
-    public final static int EMOJI_SIZE = 20;
+    public final static int EMOJI_SIZE = 40;
     public final static Random RNG = new Random();
 
     /**
@@ -36,9 +36,13 @@ public class EmojiApplication extends Application {
     public void start(final Stage primaryStage) {
 
         // create the background image
-        Image backgroundImage = new Image("geometric.jpg");
+        Image backgroundImage = new Image("blue-pink-geometric.jpg");
         ImageView imageView = new ImageView(backgroundImage);
-        imageView.setViewport(new Rectangle2D(0, 0, APP_WIDTH, APP_HEIGHT));
+//        imageView.setViewport(new Rectangle2D(0, 0, APP_WIDTH, APP_HEIGHT));
+        imageView.setFitHeight(APP_HEIGHT);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+        imageView.setCache(true);
 
         // create the play area
         Rectangle playArea = new Rectangle(
@@ -51,9 +55,8 @@ public class EmojiApplication extends Application {
         playArea.setArcHeight(10);
         playArea.setArcWidth(10);
 
-        Group enemy = new EnemyTextBubbleFactory("angry");
-        enemy.setTranslateX(300);
-        enemy.setTranslateY(400);
+        Group enemy = new EnemyTextBubbleFactory("left",200, "angry");
+
 
 
         Group root = new Group(imageView, playArea, enemy);

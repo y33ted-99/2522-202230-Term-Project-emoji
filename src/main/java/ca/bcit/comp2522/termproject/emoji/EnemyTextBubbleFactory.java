@@ -2,11 +2,14 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 
 public class EnemyTextBubbleFactory extends TextBubbleFactory {
 
-    public EnemyTextBubbleFactory(SIDE side, int position, String type) {
+    public EnemyTextBubbleFactory(final String side, final int position, final String type) {
         super(side, position, type);
     }
 
@@ -17,10 +20,15 @@ public class EnemyTextBubbleFactory extends TextBubbleFactory {
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.setCache(true);
+        imageView.setTranslateX(130);
+        imageView.setTranslateY(10);
         return imageView;
     }
-    protected String createPhrase(final String type) {
-        return "HELLO";
+    protected Text createPhrase(final String type) {
+        Text phrase = new Text(50,40, "WTF");
+        Font font = new Font("Arial Black",  28);
+        phrase.setFont(font);
+        return phrase;
     }
 
     protected void pop() {
