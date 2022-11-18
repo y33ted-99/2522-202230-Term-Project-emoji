@@ -2,7 +2,6 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,6 +9,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 /**
@@ -28,6 +31,12 @@ public class EmojiApplication extends Application {
     public final static Random RNG = new Random();
 
     private final static Group root = new Group();
+
+    private static TextBubble[] textBubbles;
+    private static int enemyCount;
+
+    public final static int MARGIN_X = (APP_WIDTH - PLAY_AREA_SIZE) / 2;
+    public final static int MARGIN_Y = (APP_HEIGHT - PLAY_AREA_SIZE) / 2;
     /**
      * Displays an image centered in a window.
      *
@@ -40,7 +49,13 @@ public class EmojiApplication extends Application {
         createBackground();
         createPlayArea();
         createPlayer();
-        spawnEnemyTextBubble();
+
+        setUpTextBubbleArrays();
+
+        for (int tb = 0; tb < 50; tb++)
+            spawnTextBubble();
+
+
 
         Scene scene = new Scene(root, APP_WIDTH, APP_HEIGHT);
         primaryStage.setResizable(false);
@@ -59,37 +74,60 @@ public class EmojiApplication extends Application {
     }
 
     private void createBackground() {
-        Image backgroundImage = new Image("blue-pink-geometric.jpg");
-        ImageView backgroundImageView = new ImageView(backgroundImage);
-        backgroundImageView.setFitHeight(APP_HEIGHT);
-        backgroundImageView.setPreserveRatio(true);
-        backgroundImageView.setSmooth(true);
-        backgroundImageView.setCache(true);
-        root.getChildren().add(backgroundImageView);
+        try (InputStream is = Files.newInputStream(Paths.get("resources/bg/blue-pink-background.jpg"))) {
+            ImageView backgroundImageView = new ImageView(new Image(is));
+            backgroundImageView.setFitHeight(APP_HEIGHT);
+            backgroundImageView.setPreserveRatio(true);
+            backgroundImageView.setCache(true);
+            root.getChildren().add(backgroundImageView);
+        } catch (IOException e) {
+            System.out.println("Cannot load image");
+        }
     }
 
     private void createPlayArea() {
-        int playAreaLeft = (APP_WIDTH - PLAY_AREA_SIZE) / 2;
-        int playAreaTop = (APP_HEIGHT - PLAY_AREA_SIZE) / 2;
         Rectangle playArea = new Rectangle(
-                playAreaLeft,
-                playAreaTop,
+                MARGIN_X,
+                MARGIN_Y,
                 PLAY_AREA_SIZE,
                 PLAY_AREA_SIZE);
         playArea.setStroke(Color.BLACK);
-        playArea.setFill(new Color(1,1,1,0.8));
+        playArea.setFill(new Color(1, 1, 1, 0.8));
         playArea.setArcHeight(10);
         playArea.setArcWidth(10);
         root.getChildren().add(playArea);
     }
 
-    public void createPlayer() {
-        Group player = new Player(APP_WIDTH / 2, (int)(APP_HEIGHT * 0.75));
+    private void createPlayer() {
+        Group player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
         root.getChildren().add(player);
 
     }
-    public void spawnEnemyTextBubble() {
-        EnemyTextBubble enemy = new EnemyTextBubble("left",200, "angry");
+
+    // TODO: expand setUpTextBubbleArrays() to accommodate all sides of game area
+    /*
+     * Set up an array of text bubbles.
+     */
+    private void setUpTextBubbleArrays() {
+        int textBubblesPerSide = PLAY_AREA_SIZE / TextBubble.TEXT_BUBBLE_HEIGHT;
+        textBubbles = new TextBubble[textBubblesPerSide];
+        enemyCount = 0;
+    }
+
+    private void spawnTextBubble() {
+        if (enemyCount >= textBubbles.length) {
+            return;
+        }
+        int index;
+        do {
+            index = RNG.nextInt(textBubbles.length);
+        }
+        while (textBubbles[index] != null);
+        EnemyType type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
+        int position = (TextBubble.TEXT_BUBBLE_HEIGHT * index) + MARGIN_Y;
+        TextBubble enemy = new TextBubble(GameSide.LEFT, position, type);
+//        textBubbles.add()
+        enemyCount++;
         root.getChildren().add(enemy);
     }
 }
