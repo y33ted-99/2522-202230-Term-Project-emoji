@@ -3,48 +3,47 @@ package ca.bcit.comp2522.termproject.emoji;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-public abstract class TextBubble extends Group {
+public class TextBubble extends Group {
 
-    public static final int TEXT_BUBBLE_HEIGHT = 60;
-    private ImageView textBubbleImage;
+    public static final int TEXT_BUBBLE_HEIGHT = 110;
+    private int textBubbleWidth;
+    private ImageView textBubbleImageView;
     private Entity emoji;
     private Text phrase;
 
-
-//    protected enum SIDE {LEFT, RIGHT, TOP, BOTTOM}
-//
-
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
 
-        loadTextBubbleImage(side);
+        textBubbleImageView = createTextBubbleImage(side);
         emoji = createEmoji(type);
         phrase = createPhrase(type);
 
-        getChildren().addAll(emoji, phrase);
+        getChildren().addAll(textBubbleImageView, emoji, phrase);
         positionTextBubble(this, side, position);
     }
 
-    private void loadTextBubbleImage(final GameSide side) {
+    private ImageView createTextBubbleImage(final GameSide side) {
         Path textBubbleFilename = Path.of("resources/text-bubble/" + side.getFilename());
-        System.out.println(textBubbleFilename);
+        Image textBubbleImage;
         try (InputStream is = Files.newInputStream(textBubbleFilename)) {
-            textBubbleImage = new ImageView(new Image(is));
+            textBubbleImage = new Image(is);
+            textBubbleWidth = (int)(textBubbleImage.getWidth() * (TEXT_BUBBLE_HEIGHT / textBubbleImage.getHeight() ));
+            textBubbleImageView = new ImageView(textBubbleImage);
         } catch (IOException e) {
             System.out.println("Cannot load image");
         }
-        textBubbleImage.setFitHeight(TEXT_BUBBLE_HEIGHT);
-        textBubbleImage.setPreserveRatio(true);
-        textBubbleImage.setSmooth(true);
-        textBubbleImage.setCache(true);
-        this.getChildren().add(textBubbleImage);
+        textBubbleImageView.setFitHeight(TEXT_BUBBLE_HEIGHT);
+        textBubbleImageView.setPreserveRatio(true);
+        textBubbleImageView.setSmooth(true);
+        textBubbleImageView.setCache(true);
+        return textBubbleImageView;
     }
 
     private void positionTextBubble(final Group textBubble, final GameSide side, final int position) {
@@ -69,9 +68,25 @@ public abstract class TextBubble extends Group {
 
     }
 
-    protected abstract Entity createEmoji(final EmojiType type);
+    private Entity createEmoji(final EmojiType type) {
+        Entity enemy = new Enemy(type);
+        int margin = (TEXT_BUBBLE_HEIGHT - Entity.IMAGE_SIZE) / 2;
+        System.out.println(textBubbleWidth);
+        enemy.setTranslateX(textBubbleWidth - (margin * 2));
+        enemy.setTranslateY(margin);
+        return enemy;
+    }
 
-    protected abstract Text createPhrase(final EmojiType type);
+    private Text createPhrase(final EmojiType type) {
+        int fontSize = 28;
+        int margin = (TEXT_BUBBLE_HEIGHT / 2);
+        Text phrase = new Text(margin - (fontSize / 2), margin + (fontSize / 2), type.getPhrase());
+        Font font = new Font("Arial Black", fontSize);
+        phrase.setFont(font);
+        return phrase;
+    }
 
-    protected abstract void pop();
+    public void pop() {
+        // when bubble pops emoji flies out in a fun animation
+    }
 }

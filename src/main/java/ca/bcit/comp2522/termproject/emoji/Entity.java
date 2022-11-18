@@ -15,11 +15,11 @@ import java.nio.file.Paths;
  */
 public abstract class Entity extends Group {
 
-    private static final int IMAGE_SIZE = EmojiApplication.EMOJI_SIZE;
+    public static final int IMAGE_SIZE = EmojiApplication.EMOJI_SIZE;
     protected ImageView imageView;
 
     public Entity() {
-        this("no_mouth.png");
+        this("enemy/no_mouth.png");
     }
 
     public Entity(final String image) {
@@ -33,7 +33,7 @@ public abstract class Entity extends Group {
         try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(image)))) {
             imageView = new ImageView(new Image(is));
         } catch (IOException e) {
-            System.out.println("Cannot load image");
+            System.out.println("Cannot load image: " + image);
         }
         imageView.setFitWidth(size);
         imageView.setPreserveRatio(true);

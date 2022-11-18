@@ -32,9 +32,11 @@ public class EmojiApplication extends Application {
 
     private final static Group root = new Group();
 
-    private static EnemyTextBubble[] enemyTextBubbles;
+    private static TextBubble[] textBubbles;
     private static int enemyCount;
 
+    public final static int MARGIN_X = (APP_WIDTH - PLAY_AREA_SIZE) / 2;
+    public final static int MARGIN_Y = (APP_HEIGHT - PLAY_AREA_SIZE) / 2;
     /**
      * Displays an image centered in a window.
      *
@@ -50,7 +52,10 @@ public class EmojiApplication extends Application {
 
         setUpTextBubbleArrays();
 
-        spawnEnemyTextBubble();
+        for (int tb = 0; tb < 50; tb++)
+            spawnTextBubble();
+
+
 
         Scene scene = new Scene(root, APP_WIDTH, APP_HEIGHT);
         primaryStage.setResizable(false);
@@ -81,39 +86,48 @@ public class EmojiApplication extends Application {
     }
 
     private void createPlayArea() {
-        int playAreaLeft = (APP_WIDTH - PLAY_AREA_SIZE) / 2;
-        int playAreaTop = (APP_HEIGHT - PLAY_AREA_SIZE) / 2;
         Rectangle playArea = new Rectangle(
-                playAreaLeft,
-                playAreaTop,
+                MARGIN_X,
+                MARGIN_Y,
                 PLAY_AREA_SIZE,
                 PLAY_AREA_SIZE);
         playArea.setStroke(Color.BLACK);
-        playArea.setFill(new Color(1,1,1,0.8));
+        playArea.setFill(new Color(1, 1, 1, 0.8));
         playArea.setArcHeight(10);
         playArea.setArcWidth(10);
         root.getChildren().add(playArea);
     }
 
     private void createPlayer() {
-        Group player = new Player(APP_WIDTH / 2, (int)(APP_HEIGHT * 0.75));
+        Group player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
         root.getChildren().add(player);
 
     }
 
+    // TODO: expand setUpTextBubbleArrays() to accommodate all sides of game area
+    /*
+     * Set up an array of text bubbles.
+     */
     private void setUpTextBubbleArrays() {
-        int textBubblesPerSide = PLAY_AREA_SIZE / (TextBubble.TEXT_BUBBLE_HEIGHT + 10);
-        enemyTextBubbles = new EnemyTextBubble[textBubblesPerSide * 2];
+        int textBubblesPerSide = PLAY_AREA_SIZE / TextBubble.TEXT_BUBBLE_HEIGHT;
+        textBubbles = new TextBubble[textBubblesPerSide];
         enemyCount = 0;
     }
 
-    private void spawnEnemyTextBubble() {
-        if (enemyCount >= enemyTextBubbles.length) {
+    private void spawnTextBubble() {
+        if (enemyCount >= textBubbles.length) {
             return;
         }
-        int position = RNG.nextInt(enemyTextBubbles.length);
-        EnemyTextBubble enemy = new EnemyTextBubble(GameSide.LEFT, 200, EnemyType.ANGRY);
-//        enemyTextBubbles
+        int index;
+        do {
+            index = RNG.nextInt(textBubbles.length);
+        }
+        while (textBubbles[index] != null);
+        EnemyType type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
+        int position = (TextBubble.TEXT_BUBBLE_HEIGHT * index) + MARGIN_Y;
+        TextBubble enemy = new TextBubble(GameSide.LEFT, position, type);
+//        textBubbles.add()
+        enemyCount++;
         root.getChildren().add(enemy);
     }
 }
