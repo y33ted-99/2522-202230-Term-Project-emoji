@@ -25,7 +25,7 @@ public abstract class Entity extends Group {
 
     public Entity(final int xPosition, final int yPosition, final int size, final String image) {
 
-        imageView = new ImageView(new Image(image + ".png"));
+        imageView = new ImageView(new Image(image));
         imageView.setFitWidth(size);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);

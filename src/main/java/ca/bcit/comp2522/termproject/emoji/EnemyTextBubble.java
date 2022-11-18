@@ -8,23 +8,19 @@ import javafx.scene.text.Text;
 
 public class EnemyTextBubble extends TextBubble {
 
-    public EnemyTextBubble(final String side, final int position, final String type) {
+    public EnemyTextBubble(final String side, final int position, final EmojiType type) {
         super(side, position, type);
     }
 
-    protected ImageView createEmoji(final String type) {
-        Image image = new Image(type + ".png");
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(EmojiApplication.EMOJI_SIZE);
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(true);
-        imageView.setCache(true);
-        imageView.setTranslateX(130);
-        imageView.setTranslateY(10);
-        return imageView;
+    protected Entity createEmoji(final EmojiType type) {
+        Entity enemy = new Enemy(type);
+        enemy.setTranslateX(140);
+        enemy.setTranslateY(10);
+        return enemy;
+
     }
-    protected Text createPhrase(final String type) {
-        Text phrase = new Text(50,40, "WTF");
+    protected Text createPhrase(final EmojiType type) {
+        Text phrase = new Text(40,40, type.getPhrase());
         Font font = new Font("Arial Black",  28);
         phrase.setFont(font);
         return phrase;

@@ -6,14 +6,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
 public abstract class TextBubble extends Group {
+
+    public static final int TEXT_BUBBLE_HEIGHT = 60;
     private final ImageView textBubbleImage;
-    private final ImageView emoji;
+    private final Entity emoji;
     private final Text phrase;
+
 
 //    protected enum SIDE {LEFT, RIGHT, TOP, BOTTOM}
 //
 
-    public TextBubble(final String side, final int position, final String type) {
+    public TextBubble(final String side, final int position, final EmojiType type) {
 
         textBubbleImage = loadTextBubbleImage(side);
         emoji = createEmoji(type);
@@ -26,7 +29,7 @@ public abstract class TextBubble extends Group {
     private ImageView loadTextBubbleImage(final String side) {
         String image =  "text-bubble-" + side + ".png";
         ImageView imageView = new ImageView(new Image(image));
-        imageView.setFitHeight(58);
+        imageView.setFitHeight(TEXT_BUBBLE_HEIGHT);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.setCache(true);
@@ -55,9 +58,9 @@ public abstract class TextBubble extends Group {
 
     }
 
-    protected abstract ImageView createEmoji(final String type);
+    protected abstract Entity createEmoji(final EmojiType type);
 
-    protected abstract Text createPhrase(final String type);
+    protected abstract Text createPhrase(final EmojiType type);
 
     protected abstract void pop();
 }
