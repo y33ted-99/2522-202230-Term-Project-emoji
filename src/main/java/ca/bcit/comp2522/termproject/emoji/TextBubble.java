@@ -5,12 +5,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public abstract class TextBubble extends Group {
 
     public static final int TEXT_BUBBLE_HEIGHT = 60;
-    private final ImageView textBubbleImage;
-    private final Entity emoji;
-    private final Text phrase;
+    private ImageView textBubbleImage;
+    private Entity emoji;
+    private Text phrase;
 
 
 //    protected enum SIDE {LEFT, RIGHT, TOP, BOTTOM}
@@ -18,27 +24,33 @@ public abstract class TextBubble extends Group {
 
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
 
-        textBubbleImage = loadTextBubbleImage(side);
+        loadTextBubbleImage(side);
         emoji = createEmoji(type);
         phrase = createPhrase(type);
 
-        getChildren().addAll(textBubbleImage, emoji, phrase);
+        getChildren().addAll(emoji, phrase);
         positionTextBubble(this, side, position);
     }
 
-    private ImageView loadTextBubbleImage(final GameSide side) {
-        ImageView imageView = new ImageView(new Image(side.getFilename()));
-        imageView.setFitHeight(TEXT_BUBBLE_HEIGHT);
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(true);
-        imageView.setCache(true);
-        return imageView;
+    private void loadTextBubbleImage(final GameSide side) {
+        Path textBubbleFilename = Path.of("resources/text-bubble/" + side.getFilename());
+        System.out.println(textBubbleFilename);
+        try (InputStream is = Files.newInputStream(textBubbleFilename)) {
+            textBubbleImage = new ImageView(new Image(is));
+        } catch (IOException e) {
+            System.out.println("Cannot load image");
+        }
+        textBubbleImage.setFitHeight(TEXT_BUBBLE_HEIGHT);
+        textBubbleImage.setPreserveRatio(true);
+        textBubbleImage.setSmooth(true);
+        textBubbleImage.setCache(true);
+        this.getChildren().add(textBubbleImage);
     }
 
     private void positionTextBubble(final Group textBubble, final GameSide side, final int position) {
         switch (side) {
             case LEFT -> {
-                textBubble.setTranslateX(5);
+                textBubble.setTranslateX(0);
                 textBubble.setTranslateY(position);
             }
             case RIGHT -> {

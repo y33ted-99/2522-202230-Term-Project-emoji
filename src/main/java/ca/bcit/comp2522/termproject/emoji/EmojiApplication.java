@@ -2,7 +2,6 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,6 +9,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 /**
@@ -28,6 +31,10 @@ public class EmojiApplication extends Application {
     public final static Random RNG = new Random();
 
     private final static Group root = new Group();
+
+    private static EnemyTextBubble[] enemyTextBubbles;
+    private static int enemyCount;
+
     /**
      * Displays an image centered in a window.
      *
@@ -40,6 +47,9 @@ public class EmojiApplication extends Application {
         createBackground();
         createPlayArea();
         createPlayer();
+
+        setUpTextBubbleArrays();
+
         spawnEnemyTextBubble();
 
         Scene scene = new Scene(root, APP_WIDTH, APP_HEIGHT);
@@ -59,13 +69,15 @@ public class EmojiApplication extends Application {
     }
 
     private void createBackground() {
-        Image backgroundImage = new Image("blue-pink-geometric.jpg");
-        ImageView backgroundImageView = new ImageView(backgroundImage);
-        backgroundImageView.setFitHeight(APP_HEIGHT);
-        backgroundImageView.setPreserveRatio(true);
-        backgroundImageView.setSmooth(true);
-        backgroundImageView.setCache(true);
-        root.getChildren().add(backgroundImageView);
+        try (InputStream is = Files.newInputStream(Paths.get("resources/bg/blue-pink-background.jpg"))) {
+            ImageView backgroundImageView = new ImageView(new Image(is));
+            backgroundImageView.setFitHeight(APP_HEIGHT);
+            backgroundImageView.setPreserveRatio(true);
+            backgroundImageView.setCache(true);
+            root.getChildren().add(backgroundImageView);
+        } catch (IOException e) {
+            System.out.println("Cannot load image");
+        }
     }
 
     private void createPlayArea() {
@@ -83,13 +95,25 @@ public class EmojiApplication extends Application {
         root.getChildren().add(playArea);
     }
 
-    public void createPlayer() {
+    private void createPlayer() {
         Group player = new Player(APP_WIDTH / 2, (int)(APP_HEIGHT * 0.75));
         root.getChildren().add(player);
 
     }
-    public void spawnEnemyTextBubble() {
-        EnemyTextBubble enemy = new EnemyTextBubble("left",200, "angry");
+
+    private void setUpTextBubbleArrays() {
+        int textBubblesPerSide = PLAY_AREA_SIZE / (TextBubble.TEXT_BUBBLE_HEIGHT + 10);
+        enemyTextBubbles = new EnemyTextBubble[textBubblesPerSide * 2];
+        enemyCount = 0;
+    }
+
+    private void spawnEnemyTextBubble() {
+        if (enemyCount >= enemyTextBubbles.length) {
+            return;
+        }
+        int position = RNG.nextInt(enemyTextBubbles.length);
+        EnemyTextBubble enemy = new EnemyTextBubble(GameSide.LEFT, 200, EnemyType.ANGRY);
+//        enemyTextBubbles
         root.getChildren().add(enemy);
     }
 }

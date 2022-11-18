@@ -8,7 +8,7 @@ import javafx.scene.text.Text;
 
 public class EnemyTextBubble extends TextBubble {
 
-    public EnemyTextBubble(final String side, final int position, final EmojiType type) {
+    public EnemyTextBubble(final GameSide side, final int position, final EmojiType type) {
         super(side, position, type);
     }
 

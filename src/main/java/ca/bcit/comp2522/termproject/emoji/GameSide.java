@@ -5,9 +5,9 @@ package ca.bcit.comp2522.termproject.emoji;
  */
 public enum GameSide {
     LEFT("text-bubble-left.png"),
-    RIGHT("text-bubble-left.png"),
-    TOP("text-bubble-left.png"),
-    BOTTOM("text-bubble-left.png");
+    RIGHT("text-bubble-right.png"),
+    TOP("text-bubble-top.png"),
+    BOTTOM("text-bubble-bottom.png");
 
     private String filename;
 

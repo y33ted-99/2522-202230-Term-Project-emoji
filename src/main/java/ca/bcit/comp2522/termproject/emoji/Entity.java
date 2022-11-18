@@ -4,6 +4,12 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * An abstract game entity.
  */
@@ -24,8 +30,11 @@ public abstract class Entity extends Group {
     }
 
     public Entity(final int xPosition, final int yPosition, final int size, final String image) {
-
-        imageView = new ImageView(new Image(image));
+        try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(image)))) {
+            imageView = new ImageView(new Image(is));
+        } catch (IOException e) {
+            System.out.println("Cannot load image");
+        }
         imageView.setFitWidth(size);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
