@@ -29,17 +29,17 @@ public abstract class Entity extends Group {
         this(xPosition, yPosition, IMAGE_SIZE, image);
     }
 
-    public Entity(final int xPosition, final int yPosition, final int size, final String image) {
-        try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(image)))) {
+    public Entity(final int xPosition, final int yPosition, final int size, final String imageFilename) {
+        try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(imageFilename)))) {
             imageView = new ImageView(new Image(is));
         } catch (IOException e) {
-            System.out.println("Cannot load image: " + image);
+            System.out.println("Cannot load image: " + imageFilename);
         }
         imageView.setFitWidth(size);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.setCache(true);
-        getChildren().add(imageView);
+        this.getChildren().add(imageView);
 
         this.setTranslateX(xPosition);
         this.setTranslateY(yPosition);
