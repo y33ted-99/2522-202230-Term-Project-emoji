@@ -1,5 +1,8 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+/**
+ * An enemy emoji type.
+ */
 public enum EnemyType implements EmojiType {
     ANGRY("angry.png", "OMFG");
 

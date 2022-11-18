@@ -13,7 +13,7 @@ public abstract class Entity extends Group {
     protected ImageView imageView;
 
     public Entity() {
-        this("no_mouth");
+        this("no_mouth.png");
     }
 
     public Entity(final String image) {

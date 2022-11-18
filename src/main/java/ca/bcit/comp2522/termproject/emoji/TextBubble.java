@@ -16,7 +16,7 @@ public abstract class TextBubble extends Group {
 //    protected enum SIDE {LEFT, RIGHT, TOP, BOTTOM}
 //
 
-    public TextBubble(final String side, final int position, final EmojiType type) {
+    public TextBubble(final GameSide side, final int position, final EmojiType type) {
 
         textBubbleImage = loadTextBubbleImage(side);
         emoji = createEmoji(type);
@@ -26,9 +26,8 @@ public abstract class TextBubble extends Group {
         positionTextBubble(this, side, position);
     }
 
-    private ImageView loadTextBubbleImage(final String side) {
-        String image =  "text-bubble-" + side + ".png";
-        ImageView imageView = new ImageView(new Image(image));
+    private ImageView loadTextBubbleImage(final GameSide side) {
+        ImageView imageView = new ImageView(new Image(side.getFilename()));
         imageView.setFitHeight(TEXT_BUBBLE_HEIGHT);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
@@ -36,17 +35,17 @@ public abstract class TextBubble extends Group {
         return imageView;
     }
 
-    private void positionTextBubble(final Group textBubble, final String side, final int position) {
+    private void positionTextBubble(final Group textBubble, final GameSide side, final int position) {
         switch (side) {
-            case "left" -> {
+            case LEFT -> {
                 textBubble.setTranslateX(5);
                 textBubble.setTranslateY(position);
             }
-            case "right" -> {
+            case RIGHT -> {
                 textBubble.setTranslateX(700);
                 textBubble.setTranslateY(position);
             }
-            case "top" -> {
+            case TOP -> {
                 textBubble.setTranslateX(100 + position);
                 textBubble.setTranslateY(100);
             }

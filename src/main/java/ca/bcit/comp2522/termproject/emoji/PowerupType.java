@@ -1,5 +1,8 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+/**
+ * A Power-up emoji type.
+ */
 public enum PowerupType implements EmojiType{
     PIZZA("pizza.png", "ZAAA");
 
