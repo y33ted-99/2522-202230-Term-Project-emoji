@@ -21,6 +21,7 @@ public class Letter extends Group implements Runnable {
     private int xVelocity;
     private int yVelocity;
     private int bounceCount;
+    private int maxBounces = 7;
 
     private final int[] LRTB = {
             EmojiApp.MARGIN_X,
@@ -28,7 +29,8 @@ public class Letter extends Group implements Runnable {
             EmojiApp.MARGIN_Y + FONT_SIZE,
             EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_SIZE,};
 
-    public Letter(final String character, final int xStart, final int yStart) {
+    public Letter(final String character, final int xStart, final int yStart, final int speed) {
+        this.speed = speed;
         letter.setText(character);
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(Color.BLUE);
@@ -56,7 +58,7 @@ public class Letter extends Group implements Runnable {
             }
             Platform.runLater(() -> {
                 // check if collides with player
-                if (detectCollision()) {
+                if (detectCollision() || bounceCount > maxBounces) {
                     captureLetter();
                     return;
                 }
