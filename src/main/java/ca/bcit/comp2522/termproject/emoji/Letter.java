@@ -11,6 +11,9 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+/**
+ * Represents a letter that is shot out by an enemy at the player.
+ */
 public class Letter extends Group implements Runnable {
     private static final int FONT_SIZE = 30;
     private static final int COLLISION_DISTANCE = 10;
@@ -21,14 +24,23 @@ public class Letter extends Group implements Runnable {
     private int xVelocity;
     private int yVelocity;
     private int bounceCount;
-    private int maxBounces = 7;
+    private int maxBounces = 10;
 
+    // Play area borders (left, right, top, bottom)
     private final int[] LRTB = {
             EmojiApp.MARGIN_X,
-            EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_SIZE - FONT_SIZE,
+            EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - FONT_SIZE,
             EmojiApp.MARGIN_Y + FONT_SIZE,
-            EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_SIZE,};
+            EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_HEIGHT,};
 
+    /**
+     * Creates an instance of a type Letter.
+     *
+     * @param character a String
+     * @param xStart initial
+     * @param yStart
+     * @param speed
+     */
     public Letter(final String character, final int xStart, final int yStart, final int speed) {
         this.speed = speed;
         letter.setText(character);
@@ -37,10 +49,14 @@ public class Letter extends Group implements Runnable {
         letter.setX(xStart);
         letter.setY(yStart);
         setDirection(xStart, yStart);
-//        getChildren().add(letter);
         EmojiApp.root.getChildren().add(letter);
     }
 
+    //TODO: modify to not reference Player as a global!
+
+    /*
+     * Sets the letter's initial movement direction toward the player.
+     */
     private void setDirection(final int xStart, final int yStart) {
         double yDiff = EmojiApp.player.getTranslateY() - yStart;
         double xDiff = EmojiApp.player.getTranslateX() - xStart;
@@ -49,6 +65,9 @@ public class Letter extends Group implements Runnable {
         yVelocity = (int)(speed * (yDiff / hyp));
     }
 
+    /*
+     * Runs the letter's animation (bouncing around the play area).
+     */
     public void run() {
         while (true) {
             try {
@@ -77,13 +96,16 @@ public class Letter extends Group implements Runnable {
         }
     }
 
+    /*
+     * Returns true if the letter has collided with the player.
+     */
     private boolean detectCollision() {
         return (Math.abs(letter.getX() - EmojiApp.player.getCenterX()) < COLLISION_DISTANCE
                 && Math.abs(letter.getY() - EmojiApp.player.getCenterY()) < COLLISION_DISTANCE);
     }
 
     /*
-     * Do an animation for letter when it collides with player.
+     * Does an animation for the letter when it collides with player.
      */
     private void captureLetter() {
         Timeline timeline = new Timeline();
