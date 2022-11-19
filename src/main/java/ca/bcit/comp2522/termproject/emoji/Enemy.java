@@ -1,23 +1,43 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+/**
+ * Represents an Enemy emoji.
+ */
 public class Enemy extends Entity {
     private  EmojiType emoji;
     private int shootFromX;
     private int shootFromY;
 
+    /**
+     * Creates an instance of type Enemy.
+     *
+     * @param emoji the type of emoji as enum EmojiType
+     */
     public Enemy(EmojiType emoji) {
         super("enemy/" + emoji.getFilename());
         this.emoji = emoji;
     }
 
-    public void setShootFromX(final int xPos) {
-        shootFromX = xPos;
-    }
-    public void setShootFromY(final int yPos) {
-        shootFromY = yPos;
-    }
     /**
-     * Shoots Letters at the player.
+     * Sets the x position from which a letter is shot from.
+     *
+     * @param xPosition as int
+     */
+    public void setShootFromX(final int xPosition) {
+        shootFromX = xPosition;
+    }
+
+    /**
+     * Sets the y position from which a letter is shot from.
+     *
+     * @param yPosition as int
+     */
+    public void setShootFromY(final int yPosition) {
+        shootFromY = yPosition;
+    }
+
+    /**
+     * Shoots Letters at the Player.
      */
     public void shoot() {
         int speed = EmojiApp.RNG.nextInt(3, 15);

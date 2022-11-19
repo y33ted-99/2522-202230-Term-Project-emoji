@@ -15,6 +15,9 @@ import java.nio.file.Paths;
  */
 public abstract class Entity extends Group {
 
+    /**
+     * The default image size for an Entity's ImageView
+     */
     public static final int IMAGE_SIZE = EmojiApp.EMOJI_SIZE;
     protected ImageView imageView;
     protected int size;
@@ -30,6 +33,14 @@ public abstract class Entity extends Group {
         this(xPosition, yPosition, IMAGE_SIZE, image);
     }
 
+    /**
+     * Create an instance of type Entity.
+     *
+     * @param xPosition as int
+     * @param yPosition as int
+     * @param size as int
+     * @param imageFilename a String representing the filename of the image loaded into the ImageView
+     */
     public Entity(final int xPosition, final int yPosition, final int size, final String imageFilename) {
         this.size = size;
         try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(imageFilename)))) {
@@ -47,9 +58,19 @@ public abstract class Entity extends Group {
         this.setTranslateY(yPosition);
     }
 
+    /**
+     * Returns the x coordinate of the center
+     *
+     * @return the x coordinate of the center as int
+     */
     public int getCenterX() {
         return (int)(this.getTranslateX() + (size / 2));
     }
+    /**
+     * Returns the y coordinate of the center
+     *
+     * @return the y coordinate of the center as int
+     */
     public int getCenterY() {
         return (int)(this.getTranslateY() + (size / 2));
     }
