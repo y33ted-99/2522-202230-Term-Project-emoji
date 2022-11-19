@@ -20,7 +20,8 @@ public class Enemy extends Entity {
      * Shoots Letters at the player.
      */
     public void shoot() {
-        Letter letter = new Letter(emoji.getPhrase().substring(0, 1), shootFromX, shootFromY);
+        int speed = EmojiApp.RNG.nextInt(3, 15);
+        Letter letter = new Letter(emoji.getPhrase().substring(0, 1), shootFromX, shootFromY, speed);
         Thread bouncer = new Thread(letter);
         bouncer.setDaemon(true);
         bouncer.start();
