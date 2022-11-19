@@ -15,7 +15,7 @@ import java.nio.file.Paths;
  */
 public abstract class Entity extends Group {
 
-    public static final int IMAGE_SIZE = EmojiApplication.EMOJI_SIZE;
+    public static final int IMAGE_SIZE = EmojiApp.EMOJI_SIZE;
     protected ImageView imageView;
 
     public Entity() {

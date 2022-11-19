@@ -129,7 +129,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                ca.bcit.comp2522.termproject.emoji/ca.bcit.comp2522.termproject.emoji.EmojiApplication
+                                ca.bcit.comp2522.termproject.emoji/ca.bcit.comp2522.termproject.emoji.EmojiApp
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

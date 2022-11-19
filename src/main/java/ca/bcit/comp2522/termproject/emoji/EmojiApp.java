@@ -22,7 +22,7 @@ import java.util.Random;
  * @author Terence Grigoruk
  * @version Fall 2022
  */
-public class EmojiApplication extends Application {
+public class EmojiApp extends Application {
 
     public final static int APP_WIDTH = 1000;
     public final static int APP_HEIGHT = 800;
@@ -32,6 +32,7 @@ public class EmojiApplication extends Application {
 
     public final static Group root = new Group();
 
+    public static Player player;
     private static TextBubble[] textBubbles;
     private static int enemyCount;
 
@@ -99,7 +100,7 @@ public class EmojiApplication extends Application {
     }
 
     private void createPlayer() {
-        Group player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
+        player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
         root.getChildren().add(player);
 
     }
@@ -129,6 +130,7 @@ public class EmojiApplication extends Application {
 //        textBubbles.add()
         enemyCount++;
         root.getChildren().add(enemy);
+        textBubbles[index] = enemy;
     }
 }
 
