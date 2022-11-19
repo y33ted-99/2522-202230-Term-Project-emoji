@@ -12,27 +12,29 @@ import java.nio.file.Paths;
 
 /**
  * An abstract game entity.
+ *
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
  */
 public abstract class Entity extends Group {
 
     /**
      * The default image size for an Entity's ImageView
      */
-    public static final int IMAGE_SIZE = EmojiApp.EMOJI_SIZE;
+    public static final int IMAGE_SIZE = 40;
     protected ImageView imageView;
     protected int size;
 
     public Entity() {
         this("enemy/no_mouth.png");
     }
-
     public Entity(final String image) {
         this(0, 0, image);
     }
     public Entity(final int xPosition, final int yPosition, final String image) {
         this(xPosition, yPosition, IMAGE_SIZE, image);
     }
-
     /**
      * Create an instance of type Entity.
      *
