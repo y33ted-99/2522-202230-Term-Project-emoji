@@ -17,8 +17,9 @@ public class Letter extends Group implements Runnable {
 
     private final Text letter = new Text();
 
-    private int xVelocity = 4;
-    private int yVelocity = 3;
+    private int speed = 4;
+    private int xVelocity;
+    private int yVelocity;
     private int bounceCount;
 
     private final int[] LRTB = {
@@ -33,8 +34,17 @@ public class Letter extends Group implements Runnable {
         letter.setFill(Color.BLUE);
         letter.setX(xStart);
         letter.setY(yStart);
+        setDirection(xStart, yStart);
 //        getChildren().add(letter);
         EmojiApp.root.getChildren().add(letter);
+    }
+
+    private void setDirection(final int xStart, final int yStart) {
+        double yDiff = EmojiApp.player.getTranslateY() - yStart;
+        double xDiff = EmojiApp.player.getTranslateX() - xStart;
+        double hyp = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+        xVelocity = (int)(speed * (xDiff / hyp));
+        yVelocity = (int)(speed * (yDiff / hyp));
     }
 
     public void run() {
@@ -66,8 +76,8 @@ public class Letter extends Group implements Runnable {
     }
 
     private boolean detectCollision() {
-        return (Math.abs(letter.getX() - EmojiApp.player.getTranslateX()) < COLLISION_DISTANCE
-                && Math.abs(letter.getY() - EmojiApp.player.getTranslateY()) < COLLISION_DISTANCE);
+        return (Math.abs(letter.getX() - EmojiApp.player.getCenterX()) < COLLISION_DISTANCE
+                && Math.abs(letter.getY() - EmojiApp.player.getCenterY()) < COLLISION_DISTANCE);
     }
 
     /*

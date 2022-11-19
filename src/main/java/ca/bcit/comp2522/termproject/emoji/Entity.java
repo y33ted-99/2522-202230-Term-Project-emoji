@@ -17,6 +17,7 @@ public abstract class Entity extends Group {
 
     public static final int IMAGE_SIZE = EmojiApp.EMOJI_SIZE;
     protected ImageView imageView;
+    protected int size;
 
     public Entity() {
         this("enemy/no_mouth.png");
@@ -30,12 +31,13 @@ public abstract class Entity extends Group {
     }
 
     public Entity(final int xPosition, final int yPosition, final int size, final String imageFilename) {
+        this.size = size;
         try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(imageFilename)))) {
             imageView = new ImageView(new Image(is));
         } catch (IOException e) {
             System.out.println("Cannot load image: " + imageFilename);
         }
-        imageView.setFitWidth(size);
+        imageView.setFitWidth(this.size);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.setCache(true);
@@ -43,5 +45,12 @@ public abstract class Entity extends Group {
 
         this.setTranslateX(xPosition);
         this.setTranslateY(yPosition);
+    }
+
+    public int getCenterX() {
+        return (int)(this.getTranslateX() + (size / 2));
+    }
+    public int getCenterY() {
+        return (int)(this.getTranslateY() + (size / 2));
     }
 }
