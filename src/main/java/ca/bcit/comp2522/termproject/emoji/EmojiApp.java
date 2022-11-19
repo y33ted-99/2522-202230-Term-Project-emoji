@@ -6,10 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -19,28 +17,62 @@ import java.util.Random;
 /**
  * The main driver class of the game.
  *
- * @author Brian Mak
  * @author Terence Grigoruk
+ * @author Brian Mak
  * @version Fall 2022
  */
 public class EmojiApp extends Application {
 
+    /**
+     * Width of the main app screen.
+     */
     public final static int APP_WIDTH = 1000;
+    /**
+     * Height of the main app screen.
+     */
     public final static int APP_HEIGHT = 800;
-    public final static int PLAY_AREA_SIZE = 600;
-    public final static int EMOJI_SIZE = 40;
+    /**
+     * Width of the play area.
+     */
+    public final static int PLAY_AREA_WIDTH = 600;
+    /**
+     * Height of the play area.
+     */
+    public final static int PLAY_AREA_HEIGHT = 600;
+
+    /**
+     * The margins on the left and right side of the play area.
+     */
+    public final static int MARGIN_X = (APP_WIDTH - PLAY_AREA_WIDTH) / 2;
+    /**
+     * The margins on the top and bottom side of the play area.
+     */
+    public final static int MARGIN_Y = (APP_HEIGHT - PLAY_AREA_HEIGHT) / 2;
+    /**
+     * Random number generator.
+     */
     public final static Random RNG = new Random();
-
+    /**
+     * The root group to be drawn to screen.
+     */
     public final static Group root = new Group();
-
+    /**
+     * The player obejct.
+     */
     public static Player player;
+
+    /*
+     * An array of TextBubbles
+     */
     private static TextBubble[] textBubbles;
+
+    /*
+     * The current number of enemies in play.
+     */
     private static int enemyCount;
 
-    public final static int MARGIN_X = (APP_WIDTH - PLAY_AREA_SIZE) / 2;
-    public final static int MARGIN_Y = (APP_HEIGHT - PLAY_AREA_SIZE) / 2;
     /**
-     * Displays an image centered in a window.
+     * Starts the game.
      *
      * @param primaryStage a Stage
      */
@@ -55,7 +87,7 @@ public class EmojiApp extends Application {
         setUpTextBubbleArrays();
 
         for (int tb = 0; tb < 3; tb++) {
-            spawnTextBubble();
+            spawnEnemyTextBubble();
         }
 
 
@@ -75,6 +107,9 @@ public class EmojiApp extends Application {
         launch();
     }
 
+    /*
+     * Loads the background image.
+     */
     private void createBackground() {
         try (InputStream is = Files.newInputStream(Paths.get("resources/bg/blue-pink-background.jpg"))) {
             ImageView backgroundImageView = new ImageView(new Image(is));
@@ -87,12 +122,15 @@ public class EmojiApp extends Application {
         }
     }
 
+    /*
+     * Creates the main play area where the action takes place.
+     */
     private void createPlayArea() {
         Rectangle playArea = new Rectangle(
                 MARGIN_X,
                 MARGIN_Y,
-                PLAY_AREA_SIZE,
-                PLAY_AREA_SIZE);
+                PLAY_AREA_WIDTH,
+                PLAY_AREA_HEIGHT);
         playArea.setStroke(Color.BLACK);
         playArea.setFill(new Color(1, 1, 1, 0.8));
         playArea.setArcHeight(10);
@@ -100,6 +138,9 @@ public class EmojiApp extends Application {
         root.getChildren().add(playArea);
     }
 
+    /*
+     * Create the player.
+     */
     private void createPlayer() {
         player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
         root.getChildren().add(player);
@@ -111,12 +152,15 @@ public class EmojiApp extends Application {
      * Set up an array of text bubbles.
      */
     private void setUpTextBubbleArrays() {
-        int textBubblesPerSide = PLAY_AREA_SIZE / TextBubble.TEXT_BUBBLE_HEIGHT;
+        int textBubblesPerSide = PLAY_AREA_HEIGHT / TextBubble.TEXT_BUBBLE_HEIGHT;
         textBubbles = new TextBubble[textBubblesPerSide];
         enemyCount = 0;
     }
 
-    private void spawnTextBubble() {
+    /*
+     * Randomly spawn a TextBubble containing an enemy
+     */
+    private void spawnEnemyTextBubble() {
         if (enemyCount >= textBubbles.length) {
             return;
         }
