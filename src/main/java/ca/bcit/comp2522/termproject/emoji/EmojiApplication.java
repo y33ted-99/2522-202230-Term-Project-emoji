@@ -30,7 +30,7 @@ public class EmojiApplication extends Application {
     public final static int EMOJI_SIZE = 40;
     public final static Random RNG = new Random();
 
-    private final static Group root = new Group();
+    public final static Group root = new Group();
 
     private static TextBubble[] textBubbles;
     private static int enemyCount;
@@ -52,9 +52,9 @@ public class EmojiApplication extends Application {
 
         setUpTextBubbleArrays();
 
-        for (int tb = 0; tb < 50; tb++)
+        for (int tb = 0; tb < 3; tb++) {
             spawnTextBubble();
-
+        }
 
 
         Scene scene = new Scene(root, APP_WIDTH, APP_HEIGHT);

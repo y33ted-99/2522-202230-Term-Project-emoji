@@ -12,23 +12,24 @@ public class Letter extends Group implements Runnable{
     private final Text letter = new Text();
     private final int fontSize = 30;
 
-    private int xVelocity = 3;
-    private int yVelocity = 2;
+    private int xVelocity = 4;
+    private int yVelocity = 3;
     private int bounceCount;
 
     private final int[] LRTB = {
             EmojiApplication.MARGIN_X,
             EmojiApplication.MARGIN_X + EmojiApplication.PLAY_AREA_SIZE - fontSize,
-            EmojiApplication.MARGIN_Y - fontSize,
+            EmojiApplication.MARGIN_Y + fontSize,
             EmojiApplication.MARGIN_Y + EmojiApplication.PLAY_AREA_SIZE,};
 
-    public Letter(final String character) {
+    public Letter(final String character, final int xStart, final int yStart) {
         letter.setText(character);
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, fontSize));
         letter.setFill(Color.BLUE);
-        letter.setX(EmojiApplication.APP_WIDTH / 2);
-        letter.setY(EmojiApplication.APP_HEIGHT / 2);
-        getChildren().add(letter);
+        letter.setX(xStart);
+        letter.setY(yStart);
+//        getChildren().add(letter);
+        EmojiApplication.root.getChildren().add(letter);
     }
 
     public void run() {

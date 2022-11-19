@@ -18,9 +18,12 @@ public class TextBubble extends Group {
     private ImageView textBubbleImageView;
     private Entity emoji;
     private Text phrase;
+    private GameSide side;
+    private int position;
 
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
-
+        this.side = side;
+        this.position = position;
         textBubbleImageView = createTextBubbleImage(side);
         emoji = createEmoji(type);
         phrase = createPhrase(type);
@@ -69,11 +72,13 @@ public class TextBubble extends Group {
     }
 
     private Entity createEmoji(final EmojiType type) {
-        Entity enemy = new Enemy(type);
+        Enemy enemy = new Enemy(type);
         int margin = (TEXT_BUBBLE_HEIGHT - Entity.IMAGE_SIZE) / 2;
-        System.out.println(textBubbleWidth);
         enemy.setTranslateX(textBubbleWidth - (margin * 2));
         enemy.setTranslateY(margin);
+        enemy.setShootFromX(EmojiApplication.MARGIN_X + 5);
+        enemy.setShootFromY(position + (TEXT_BUBBLE_HEIGHT / 2));
+        enemy.shoot();
         return enemy;
     }
 
