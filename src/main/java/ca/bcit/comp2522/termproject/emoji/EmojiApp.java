@@ -124,13 +124,28 @@ public class EmojiApp extends Application {
             index = RNG.nextInt(textBubbles.length);
         }
         while (textBubbles[index] != null);
-        EnemyType type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
+        EnemyType type;
+        do {
+            type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
+        }while(checkIfEmojiExists(type));
+
         int position = (TextBubble.TEXT_BUBBLE_HEIGHT * index) + MARGIN_Y;
         TextBubble enemy = new TextBubble(GameSide.LEFT, position, type);
-//        textBubbles.add()
         enemyCount++;
         root.getChildren().add(enemy);
         textBubbles[index] = enemy;
+    }
+
+    private boolean checkIfEmojiExists(EmojiType emoji) {
+        for (TextBubble tb: textBubbles) {
+            if (tb == null){
+                continue;
+            }
+            if (tb.getType() == emoji) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

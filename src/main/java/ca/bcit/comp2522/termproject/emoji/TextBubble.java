@@ -14,12 +14,14 @@ import java.nio.file.Path;
 public class TextBubble extends Group {
 
     public static final int TEXT_BUBBLE_HEIGHT = 110;
+    private GameSide side;
+    private int position;
+    private EmojiType type;
+
     private int textBubbleWidth;
     private ImageView textBubbleImageView;
     private Entity emoji;
     private Text phrase;
-    private GameSide side;
-    private int position;
 
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
         this.side = side;
@@ -30,6 +32,18 @@ public class TextBubble extends Group {
 
         getChildren().addAll(textBubbleImageView, emoji, phrase);
         positionTextBubble(this, side, position);
+    }
+
+    public GameSide getSide() {
+        return side;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public EmojiType getType() {
+        return type;
     }
 
     private ImageView createTextBubbleImage(final GameSide side) {

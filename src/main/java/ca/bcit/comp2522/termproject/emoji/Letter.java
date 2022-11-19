@@ -4,8 +4,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -14,8 +12,10 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Letter extends Group implements Runnable {
+    private static final int FONT_SIZE = 30;
+    private static final int COLLISION_DISTANCE = 10;
+
     private final Text letter = new Text();
-    private final int fontSize = 30;
 
     private int xVelocity = 4;
     private int yVelocity = 3;
@@ -23,13 +23,13 @@ public class Letter extends Group implements Runnable {
 
     private final int[] LRTB = {
             EmojiApp.MARGIN_X,
-            EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_SIZE - fontSize,
-            EmojiApp.MARGIN_Y + fontSize,
+            EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_SIZE - FONT_SIZE,
+            EmojiApp.MARGIN_Y + FONT_SIZE,
             EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_SIZE,};
 
     public Letter(final String character, final int xStart, final int yStart) {
         letter.setText(character);
-        letter.setFont(Font.font("Arial Black", FontWeight.BOLD, fontSize));
+        letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(Color.BLUE);
         letter.setX(xStart);
         letter.setY(yStart);
@@ -46,7 +46,7 @@ public class Letter extends Group implements Runnable {
             }
             Platform.runLater(() -> {
                 // check if collides with player
-                if (isCollidePlayer()) {
+                if (detectCollision()) {
                     captureLetter();
                     return;
                 }
@@ -65,9 +65,9 @@ public class Letter extends Group implements Runnable {
         }
     }
 
-    private boolean isCollidePlayer() {
-        return (Math.abs(letter.getX() - EmojiApp.player.getTranslateX()) < 30
-                && Math.abs(letter.getY() - EmojiApp.player.getTranslateY()) < 30);
+    private boolean detectCollision() {
+        return (Math.abs(letter.getX() - EmojiApp.player.getTranslateX()) < COLLISION_DISTANCE
+                && Math.abs(letter.getY() - EmojiApp.player.getTranslateY()) < COLLISION_DISTANCE);
     }
 
     /*
@@ -77,7 +77,7 @@ public class Letter extends Group implements Runnable {
         Timeline timeline = new Timeline();
         KeyValue keyValueX = new KeyValue(letter.translateXProperty(), 0);
         KeyValue keyValueY = new KeyValue(letter.yProperty(), EmojiApp.APP_HEIGHT);
-        Duration duration = Duration.millis(500);
+        Duration duration = Duration.millis(300);
         KeyFrame keyFrame = new KeyFrame(duration, keyValueX, keyValueY);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
