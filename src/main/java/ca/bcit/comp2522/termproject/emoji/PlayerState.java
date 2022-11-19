@@ -1,5 +1,12 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+/**
+ * A player's state.
+ *
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
+ */
 public enum PlayerState {
     CRYING("cat_crying.png"),
     HEART_EYES("cat_heart-eyes.png"),
@@ -11,10 +18,20 @@ public enum PlayerState {
 
     private String filename;
 
-    PlayerState(String filename) {
+    /**
+     * Create instance of PlayerState enum.
+     *
+     * @param filename a String
+     */
+    PlayerState(final String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Returns the player state's filename.
+     *
+     * @return filename as String
+     */
     public String getFilename() {
         return filename;
     }
