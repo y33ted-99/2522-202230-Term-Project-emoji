@@ -1,13 +1,17 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -31,6 +35,8 @@ public class EmojiApp extends Application {
      * Height of the main app screen.
      */
     public final static int APP_HEIGHT = 800;
+
+    public final Rectangle playArea = new Rectangle();
     /**
      * Width of the play area.
      */
@@ -52,24 +58,59 @@ public class EmojiApp extends Application {
      * Random number generator.
      */
     public final static Random RNG = new Random();
+
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
     /**
-     * The root group to be drawn to screen.
+     * The player object.
      */
-    public final static Group root = new Group();
-    /**
-     * The player obejct.
-     */
-    public static Player player;
+    public static Entity player;
+
+    // TODO: restructure to make root and player private!!
+
+    public static Pane root;
 
     /*
-     * An array of TextBubbles
+     * Groups of TextBubbles
      */
-    private static TextBubble[] textBubbles;
+    private static TextBubbleGroup LeftTextBubbleGroup;
+    private static TextBubbleGroup RightTextBubbleGroup;
 
     /*
      * The current number of enemies in play.
      */
     private static int enemyCount;
+
+    private Parent createContent() {
+        root = new Pane();
+        root.setPrefSize(APP_WIDTH, APP_HEIGHT);
+
+        createBackground();
+        createPlayArea();
+        createPlayer();
+        LeftTextBubbleGroup = new TextBubbleGroup(GameSide.LEFT);
+        RightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
+        root.getChildren().addAll(LeftTextBubbleGroup, RightTextBubbleGroup);
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                onUpdate();
+            }
+        };
+        timer.start();
+        return root;
+    }
+
+    private void onUpdate() {
+
+        if (Math.random() < 0.005) {
+            LeftTextBubbleGroup.spawnEnemyTextBubble();
+            RightTextBubbleGroup.spawnEnemyTextBubble();
+        }
+    }
 
     /**
      * Starts the game.
@@ -78,29 +119,10 @@ public class EmojiApp extends Application {
      */
     @Override
     public void start(final Stage primaryStage) {
-        boolean gameNotOver = true;
-
-        createBackground();
-        createPlayArea();
-        createPlayer();
-
-        setUpTextBubbleArrays();
-
-        for (int tb = 0; tb < 3; tb++) {
-            spawnEnemyTextBubble();
-        }
-
-
-        Scene scene = new Scene(root, APP_WIDTH, APP_HEIGHT);
         primaryStage.setResizable(false);
         primaryStage.setTitle("Untitled Emoji Game");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(createContent()));
         primaryStage.show();
-
-        // main game loop
-//        while (gameNotOver) {
-//            gameNotOver = player.isAlive();
-//        }
     }
 
     public static void main(final String[] args) {
@@ -126,11 +148,10 @@ public class EmojiApp extends Application {
      * Creates the main play area where the action takes place.
      */
     private void createPlayArea() {
-        Rectangle playArea = new Rectangle(
-                MARGIN_X,
-                MARGIN_Y,
-                PLAY_AREA_WIDTH,
-                PLAY_AREA_HEIGHT);
+        playArea.setX(MARGIN_X);
+        playArea.setY(MARGIN_Y);
+        playArea.setWidth(PLAY_AREA_WIDTH);
+        playArea.setHeight(PLAY_AREA_HEIGHT);
         playArea.setStroke(Color.BLACK);
         playArea.setFill(new Color(1, 1, 1, 0.8));
         playArea.setArcHeight(10);
@@ -147,50 +168,56 @@ public class EmojiApp extends Application {
 
     }
 
-    // TODO: expand setUpTextBubbleArrays() to accommodate all sides of game area
-    /*
-     * Set up an array of text bubbles.
-     */
-    private void setUpTextBubbleArrays() {
-        int textBubblesPerSide = PLAY_AREA_HEIGHT / TextBubble.TEXT_BUBBLE_HEIGHT;
-        textBubbles = new TextBubble[textBubblesPerSide];
-        enemyCount = 0;
+    public boolean isPlayerInPlayArea() {
+        return playArea.getBoundsInParent().contains(player.getBoundsInParent());
     }
+//
+//    private Parent content() {
+//
+//        /*APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75)*/
+//
+//        Group player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
+//        root.getChildren().add(player);
+//        if (move) {
+//            KeyFrame frame = new KeyFrame(Duration.millis(75), event -> {
+//                if (!running)
+//                    return;
+//
+//                switch (direction) {
+//                    case UP:
+//                        player.setTranslateX(player.getTranslateX());
+//                        player.setTranslateY(player.getTranslateY() - EMOJI_SIZE);
+//                        break;
+//
+//                    case DOWN:
+//                        player.setTranslateX(player.getTranslateX());
+//                        player.setTranslateY(player.getTranslateY() + EMOJI_SIZE);
+//                        break;
+//
+//                    case LEFT:
+//                        player.setTranslateX(player.getTranslateX() - EMOJI_SIZE);
+//                        player.setTranslateY(player.getTranslateY());
+//                        break;
+//
+//                    case RIGHT:
+//                        player.setTranslateX(player.getTranslateX() + EMOJI_SIZE);
+//                        player.setTranslateY(player.getTranslateY());
+//                        break;
+//                }
+//
+//                if (player.getTranslateX() < 0 || player.getTranslateX() >= MARGIN_X || player.getTranslateY() < 0 ||
+//                        player.getTranslateY() >= MARGIN_Y) {
+//                    /*resetPosition();*/
+//                }
+//
+//            });
+//
+//            timeline.getKeyFrames().add(frame);
+//            timeline.setCycleCount(Timeline.INDEFINITE);
+//
+//        }
+//        return root;
+//    }
 
-    /*
-     * Randomly spawn a TextBubble containing an enemy
-     */
-    private void spawnEnemyTextBubble() {
-        if (enemyCount >= textBubbles.length) {
-            return;
-        }
-        int index;
-        do {
-            index = RNG.nextInt(textBubbles.length);
-        }
-        while (textBubbles[index] != null);
-        EnemyType type;
-        do {
-            type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
-        }while(checkIfEmojiExists(type));
-
-        int position = (TextBubble.TEXT_BUBBLE_HEIGHT * index) + MARGIN_Y;
-        TextBubble enemy = new TextBubble(GameSide.LEFT, position, type);
-        enemyCount++;
-        root.getChildren().add(enemy);
-        textBubbles[index] = enemy;
-    }
-
-    private boolean checkIfEmojiExists(EmojiType emoji) {
-        for (TextBubble tb: textBubbles) {
-            if (tb == null){
-                continue;
-            }
-            if (tb.getType() == emoji) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 
