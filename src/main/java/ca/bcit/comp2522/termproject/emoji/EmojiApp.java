@@ -100,8 +100,8 @@ public class EmojiApp extends Application {
         // Main game loop
         AnimationTimer timer = new AnimationTimer() {
             @Override
-            public void handle(long l) {
-                onUpdate();
+            public void handle(final long now) {
+                onUpdate(now);
             }
         };
         timer.start();
@@ -111,9 +111,8 @@ public class EmojiApp extends Application {
     /*
      * Update entities during main game loop.
      */
-    private void onUpdate() {
-
-        if (RNG.nextFloat() < 0.005) {
+    private void onUpdate(final long now) {
+        if (now % 25000 == 0) {
             if (RNG.nextInt(2) > 0) {
                 LeftTextBubbleGroup.spawnEnemyTextBubble();
             } else {
