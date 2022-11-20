@@ -110,8 +110,15 @@ public class TextBubble extends Group {
         int margin = (TEXT_BUBBLE_HEIGHT - Entity.IMAGE_SIZE) / 2;
         enemy.setTranslateX(textBubbleWidth - (margin * 2));
         enemy.setTranslateY(margin);
-        enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
-        enemy.setShootFromY(position + (TEXT_BUBBLE_HEIGHT / 2));
+
+
+        if (side == GameSide.LEFT) {
+            enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
+        }else {
+            enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 10);
+        }
+        enemy.setShootFromY(EmojiApp.MARGIN_Y + position + (TEXT_BUBBLE_HEIGHT / 2));
+
         enemy.shoot();
         return enemy;
     }

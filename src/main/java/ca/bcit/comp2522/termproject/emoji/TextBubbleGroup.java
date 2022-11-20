@@ -64,7 +64,8 @@ public class TextBubbleGroup extends Group {
             type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
         } while (checkIfEmojiExists(type));
 
-        int position = (TextBubble.TEXT_BUBBLE_HEIGHT * index);
+        int gapBetweenTextBubbles = (EmojiApp.PLAY_AREA_HEIGHT - (textBubbles.length * TextBubble.TEXT_BUBBLE_HEIGHT)) / textBubbles.length;
+        int position = (TextBubble.TEXT_BUBBLE_HEIGHT + gapBetweenTextBubbles) * index;
         TextBubble textBubble = new TextBubble(side, position, type);
         enemyCount++;
         this.getChildren().add(textBubble);

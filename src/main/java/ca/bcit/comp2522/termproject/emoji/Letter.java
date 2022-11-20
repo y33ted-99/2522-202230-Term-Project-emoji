@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -17,30 +18,31 @@ import javafx.util.Duration;
  */
 public class Letter extends Group implements Runnable {
     private static final int FONT_SIZE = 30;
-    private static final int COLLISION_DISTANCE = 10;
 
     private final Text letter = new Text();
 
-    private int speed = 4;
+    private int speed;
     private int xVelocity;
     private int yVelocity;
+    private float opacity = 1;
     private int bounceCount;
-    private int maxBounces = 10;
+    private final int maxBounces = 10;
+    private boolean hasEnteredPlayArea = false;
 
     // Play area borders (left, right, top, bottom)
     private final int[] LRTB = {
             EmojiApp.MARGIN_X,
-            EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - FONT_SIZE,
-            EmojiApp.MARGIN_Y + FONT_SIZE,
+            EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH,
+            EmojiApp.MARGIN_Y,
             EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_HEIGHT,};
 
     /**
      * Creates an instance of a type Letter.
      *
      * @param character a String
-     * @param xStart initial
-     * @param yStart
-     * @param speed
+     * @param xStart    initial x position as int
+     * @param yStart    initial y position as int
+     * @param speed     an int
      */
     public Letter(final String character, final int xStart, final int yStart, final int speed) {
         this.speed = speed;
@@ -54,8 +56,6 @@ public class Letter extends Group implements Runnable {
         EmojiApp.root.getChildren().add(letter);
     }
 
-    //TODO: modify to not reference Player as a global!
-
     /*
      * Sets the letter's initial movement direction toward the player.
      */
@@ -63,8 +63,8 @@ public class Letter extends Group implements Runnable {
         double yDiff = EmojiApp.player.getTranslateY() - yStart;
         double xDiff = EmojiApp.player.getTranslateX() - xStart;
         double hyp = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-        xVelocity = (int)(speed * (xDiff / hyp));
-        yVelocity = (int)(speed * (yDiff / hyp));
+        xVelocity = (int) (speed * (xDiff / hyp));
+        yVelocity = (int) (speed * (yDiff / hyp));
     }
 
     /*
@@ -83,18 +83,35 @@ public class Letter extends Group implements Runnable {
                     captureLetter();
                     return;
                 }
-                // if bounce off left or right of Panel
-                if (letter.getX() <= LRTB[0] || letter.getX() >= LRTB[1]) {
-                    xVelocity *= -1; // reverses velocity in x direction
-                    bounceCount++;
-                }// if bounce off top or bottom of Panel
-                if (letter.getY() <= LRTB[2] || letter.getY() >= LRTB[3]) {
-                    yVelocity *= -1; // reverses velocity in y direction
-                    bounceCount++;
+                checkIfEnteredPlayArea();
+                if (hasEnteredPlayArea) {
+                    boolean hasBounced = false;
+                    // if bounce off left or right of Panel
+                    Bounds letterBounds = letter.getBoundsInParent();
+                    if (letterBounds.getMinX() <= LRTB[0] || letterBounds.getMaxX() >= LRTB[1]) {
+                        xVelocity *= -1; // reverses velocity in x direction
+                        hasBounced = true;
+                    }// if bounce off top or bottom of Panel
+                    if (letterBounds.getMinY() <= LRTB[2] || letterBounds.getMaxY() >= LRTB[3]) {
+                        yVelocity *= -1; // reverses velocity in y direction
+
+                        hasBounced = true;
+                    }
+                    if (hasBounced) {
+                        bounceCount++;
+                        opacity -= (1 / (float) maxBounces);
+                        letter.setOpacity(opacity);
+                    }
                 }
                 letter.setX(letter.getX() + xVelocity); // determines new x-position
                 letter.setY(letter.getY() + yVelocity); // determines new y-position
             });
+        }
+    }
+
+    private void checkIfEnteredPlayArea() {
+        if (EmojiApp.playArea.getBoundsInParent().contains(letter.getBoundsInParent())) {
+            hasEnteredPlayArea = true;
         }
     }
 
@@ -112,8 +129,10 @@ public class Letter extends Group implements Runnable {
         Timeline timeline = new Timeline();
         KeyValue keyValueX = new KeyValue(letter.translateXProperty(), 0);
         KeyValue keyValueY = new KeyValue(letter.yProperty(), EmojiApp.APP_HEIGHT);
+        KeyValue keyValueR = new KeyValue(letter.rotateProperty(), 720);
+
         Duration duration = Duration.millis(300);
-        KeyFrame keyFrame = new KeyFrame(duration, keyValueX, keyValueY);
+        KeyFrame keyFrame = new KeyFrame(duration, keyValueX, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
     }

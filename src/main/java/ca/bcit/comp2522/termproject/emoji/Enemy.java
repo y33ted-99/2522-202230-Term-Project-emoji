@@ -8,7 +8,7 @@ package ca.bcit.comp2522.termproject.emoji;
  * @version Fall 2022
  */
 public class Enemy extends Entity {
-    private  EmojiType emoji;
+    private EmojiType emoji;
     private int shootFromX;
     private int shootFromY;
 
@@ -44,8 +44,12 @@ public class Enemy extends Entity {
      * Shoots Letters at the Player.
      */
     public void shoot() {
-        int speed = EmojiApp.RNG.nextInt(3, 15);
-        Letter letter = new Letter(emoji.getPhrase().substring(0, 1), shootFromX, shootFromY, speed);
+        int speed = EmojiApp.RNG.nextInt(2, 10);
+        Letter letter = new Letter(
+                emoji.getPhrase().substring(0, 1),
+                shootFromX,
+                shootFromY,
+                speed);
         Thread bouncer = new Thread(letter);
         bouncer.setDaemon(true);
         bouncer.start();
