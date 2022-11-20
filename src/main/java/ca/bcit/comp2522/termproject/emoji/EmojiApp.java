@@ -184,8 +184,6 @@ public class EmojiApp extends Application {
     private boolean isValidMove(Direction direction) {
         Bounds playerBounds = player.getBoundsInParent();
         Bounds playAreaBounds = playArea.getBoundsInParent();
-        System.out.println("player " + playerBounds);
-        System.out.println("p_area " + playAreaBounds);
         switch (direction) {
             case LEFT -> {
                 return playerBounds.getMinX() + (Player.SPEED * -1) > playAreaBounds.getMinX();
