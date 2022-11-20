@@ -17,8 +17,8 @@ import java.nio.file.Path;
 public class TextBubble extends Group {
 
     public static final int TEXT_BUBBLE_HEIGHT = 110;
-    private GameSide side;
-    private int position;
+    private final GameSide side;
+    private final int position;
     private EmojiType type;
 
     private int textBubbleWidth;
@@ -29,9 +29,9 @@ public class TextBubble extends Group {
     /**
      * Creates an instance of type TextBubble.
      *
-     * @param side side of play area as GameSide
+     * @param side     side of play area as GameSide
      * @param position position along side as int
-     * @param type the type of emoji as EmojiType
+     * @param type     the type of emoji as EmojiType
      */
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
         this.side = side;
@@ -79,7 +79,7 @@ public class TextBubble extends Group {
         Image textBubbleImage;
         try (InputStream is = Files.newInputStream(textBubbleFilename)) {
             textBubbleImage = new Image(is);
-            textBubbleWidth = (int)(textBubbleImage.getWidth() * (TEXT_BUBBLE_HEIGHT / textBubbleImage.getHeight() ));
+            textBubbleWidth = (int) (textBubbleImage.getWidth() * (TEXT_BUBBLE_HEIGHT / textBubbleImage.getHeight()));
             textBubbleImageView = new ImageView(textBubbleImage);
         } catch (IOException e) {
             System.out.println("Cannot load image");
@@ -96,22 +96,9 @@ public class TextBubble extends Group {
      */
     private void positionTextBubble() {
         switch (side) {
-            case LEFT -> {
-                this.setTranslateX(0);
-                this.setTranslateY(position);
-            }
-            case RIGHT -> {
-                this.setTranslateX(EmojiApp.APP_WIDTH + EmojiApp.MARGIN_X);
-                this.setTranslateY(position);
-            }
-            case TOP -> {
-                this.setTranslateX(EmojiApp.MARGIN_X + position);
-                this.setTranslateY(0);
-            }
-            default -> {
-                this.setTranslateX(EmojiApp.MARGIN_X + position);
-                this.setTranslateY(EmojiApp.APP_WIDTH + EmojiApp.MARGIN_Y);
-            }
+            case LEFT, RIGHT -> this.setTranslateY(position);
+            default -> this.setTranslateX(position);
+
         }
     }
 
