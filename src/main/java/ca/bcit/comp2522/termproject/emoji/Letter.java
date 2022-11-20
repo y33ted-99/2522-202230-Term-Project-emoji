@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.util.Duration;
 
 /**
@@ -46,6 +47,7 @@ public class Letter extends Group implements Runnable {
         letter.setText(character);
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(Color.BLUE);
+        letter.setBoundsType(TextBoundsType.VISUAL);
         letter.setX(xStart);
         letter.setY(yStart);
         setDirection(xStart, yStart);
@@ -100,8 +102,7 @@ public class Letter extends Group implements Runnable {
      * Returns true if the letter has collided with the player.
      */
     private boolean detectCollision() {
-        return (Math.abs(letter.getX() - EmojiApp.player.getCenterX()) < COLLISION_DISTANCE
-                && Math.abs(letter.getY() - EmojiApp.player.getCenterY()) < COLLISION_DISTANCE);
+        return letter.getBoundsInParent().intersects(EmojiApp.player.getBoundsInParent());
     }
 
     /*
