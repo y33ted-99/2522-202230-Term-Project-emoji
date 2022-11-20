@@ -11,24 +11,69 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Represents a TextBubble that contains an emoji and it's associated phrase.
+ */
 public class TextBubble extends Group {
 
     public static final int TEXT_BUBBLE_HEIGHT = 110;
+    private GameSide side;
+    private int position;
+    private EmojiType type;
+
     private int textBubbleWidth;
     private ImageView textBubbleImageView;
     private Entity emoji;
     private Text phrase;
 
+    /**
+     * Creates an instance of type TextBubble.
+     *
+     * @param side side of play area as GameSide
+     * @param position position along side as int
+     * @param type the type of emoji as EmojiType
+     */
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
-
+        this.side = side;
+        this.position = position;
         textBubbleImageView = createTextBubbleImage(side);
         emoji = createEmoji(type);
         phrase = createPhrase(type);
 
         getChildren().addAll(textBubbleImageView, emoji, phrase);
-        positionTextBubble(this, side, position);
+        positionTextBubble();
     }
 
+    /**
+     * Returns the side of the play area where this TextBubble exists.
+     *
+     * @return the side of the play area where this TextBubble exists as GameSide
+     */
+    public GameSide getSide() {
+        return side;
+    }
+
+    /**
+     * Returns the position along the side of the play area where this TextBubble exists.
+     *
+     * @return the position along the side of the play area where this TextBubble exists as int
+     */
+    public int getPosition() {
+        return position;
+    }
+
+    /**
+     * Returns the type of emoji.
+     *
+     * @return the type of emoji as EmojiType
+     */
+    public EmojiType getType() {
+        return type;
+    }
+
+    /*
+     * Creates the TextBubble image.
+     */
     private ImageView createTextBubbleImage(final GameSide side) {
         Path textBubbleFilename = Path.of("resources/text-bubble/" + side.getFilename());
         Image textBubbleImage;
@@ -46,37 +91,47 @@ public class TextBubble extends Group {
         return textBubbleImageView;
     }
 
-    private void positionTextBubble(final Group textBubble, final GameSide side, final int position) {
+    /*
+     * Positions the TextBubble according to side and position.
+     */
+    private void positionTextBubble() {
         switch (side) {
             case LEFT -> {
-                textBubble.setTranslateX(0);
-                textBubble.setTranslateY(position);
+                this.setTranslateX(0);
+                this.setTranslateY(position);
             }
             case RIGHT -> {
-                textBubble.setTranslateX(700);
-                textBubble.setTranslateY(position);
+                this.setTranslateX(EmojiApp.APP_WIDTH + EmojiApp.MARGIN_X);
+                this.setTranslateY(position);
             }
             case TOP -> {
-                textBubble.setTranslateX(100 + position);
-                textBubble.setTranslateY(100);
+                this.setTranslateX(EmojiApp.MARGIN_X + position);
+                this.setTranslateY(0);
             }
             default -> {
-                textBubble.setTranslateX(100 + position);
-                textBubble.setTranslateY(600);
+                this.setTranslateX(EmojiApp.MARGIN_X + position);
+                this.setTranslateY(EmojiApp.APP_WIDTH + EmojiApp.MARGIN_Y);
             }
         }
-
     }
 
+    /*
+     * Creates the emoji.
+     */
     private Entity createEmoji(final EmojiType type) {
-        Entity enemy = new Enemy(type);
+        Enemy enemy = new Enemy(type);
         int margin = (TEXT_BUBBLE_HEIGHT - Entity.IMAGE_SIZE) / 2;
-        System.out.println(textBubbleWidth);
         enemy.setTranslateX(textBubbleWidth - (margin * 2));
         enemy.setTranslateY(margin);
+        enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
+        enemy.setShootFromY(position + (TEXT_BUBBLE_HEIGHT / 2));
+        enemy.shoot();
         return enemy;
     }
 
+    /*
+     * Creates the TextBubble's text based on the phrase associated with the emoji.
+     */
     private Text createPhrase(final EmojiType type) {
         int fontSize = 28;
         int margin = (TEXT_BUBBLE_HEIGHT / 2);
@@ -86,6 +141,9 @@ public class TextBubble extends Group {
         return phrase;
     }
 
+    /**
+     * Pops the bubble and removes it (and its associated emoji and its letters) from game.
+     */
     public void pop() {
         // when bubble pops emoji flies out in a fun animation
     }

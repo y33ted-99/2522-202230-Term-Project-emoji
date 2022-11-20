@@ -2,6 +2,9 @@ package ca.bcit.comp2522.termproject.emoji;
 
 /**
  * A side of the play area.
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
  */
 public enum GameSide {
     LEFT("text-bubble-left.png"),
@@ -11,10 +14,20 @@ public enum GameSide {
 
     private String filename;
 
-    GameSide(String filename) {
+    /**
+     * Create instance of enum GameSide.
+     *
+     * @param filename a String
+     */
+    GameSide(final String filename) {
         this.filename = filename;
     }
 
+    /**
+     * Returns the text-bubble's filename.
+     *
+     * @return filename as String
+     */
     public String getFilename() {
         return filename;
     }

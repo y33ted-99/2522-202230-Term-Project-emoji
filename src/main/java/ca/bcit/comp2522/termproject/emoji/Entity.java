@@ -12,36 +12,68 @@ import java.nio.file.Paths;
 
 /**
  * An abstract game entity.
+ *
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
  */
 public abstract class Entity extends Group {
 
-    public static final int IMAGE_SIZE = EmojiApplication.EMOJI_SIZE;
+    /**
+     * The default image size for an Entity's ImageView
+     */
+    public static final int IMAGE_SIZE = 40;
     protected ImageView imageView;
+    protected int size;
 
     public Entity() {
         this("enemy/no_mouth.png");
     }
-
     public Entity(final String image) {
         this(0, 0, image);
     }
     public Entity(final int xPosition, final int yPosition, final String image) {
         this(xPosition, yPosition, IMAGE_SIZE, image);
     }
-
-    public Entity(final int xPosition, final int yPosition, final int size, final String image) {
-        try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(image)))) {
+    /**
+     * Create an instance of type Entity.
+     *
+     * @param xPosition as int
+     * @param yPosition as int
+     * @param size as int
+     * @param imageFilename a String representing the filename of the image loaded into the ImageView
+     */
+    public Entity(final int xPosition, final int yPosition, final int size, final String imageFilename) {
+        this.size = size;
+        try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(imageFilename)))) {
             imageView = new ImageView(new Image(is));
         } catch (IOException e) {
-            System.out.println("Cannot load image: " + image);
+            System.out.println("Cannot load image: " + imageFilename);
         }
-        imageView.setFitWidth(size);
+        imageView.setFitWidth(this.size);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.setCache(true);
-        getChildren().add(imageView);
+        this.getChildren().add(imageView);
 
         this.setTranslateX(xPosition);
         this.setTranslateY(yPosition);
+    }
+
+    /**
+     * Returns the x coordinate of the center
+     *
+     * @return the x coordinate of the center as int
+     */
+    public int getCenterX() {
+        return (int)(this.getTranslateX() + (size / 2));
+    }
+    /**
+     * Returns the y coordinate of the center
+     *
+     * @return the y coordinate of the center as int
+     */
+    public int getCenterY() {
+        return (int)(this.getTranslateY() + (size / 2));
     }
 }
