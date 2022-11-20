@@ -20,8 +20,7 @@ public enum EnemyType implements EmojiType {
     RAGE("rage.png", "GRRR", Color.RED),
     ROFL("rofl.png", "ROFL", Color.ORANGE),
     SOB("sob.png", "WAAH", Color.BLUE),
-    THINK("thinking_face.png", "HMMM", Color.GREY),
-    ;
+    THINK("thinking_face.png", "HMMM", Color.GREY),;
 
     private String filename;
     private String phrase;

@@ -4,8 +4,12 @@ import javafx.scene.paint.Color;
 
 /**
  * A Power-up emoji type.
+ *
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
  */
-public enum ItemType implements EmojiType{
+public enum ItemType implements EmojiType {
     PIZZA("pizza.png", "ZAAA", Color.RED);
 
     private String filename;
@@ -16,8 +20,8 @@ public enum ItemType implements EmojiType{
      * Create instance of enum PowerUp.
      *
      * @param filename a String
-     * @param phrase a String
-     * @param color a Color
+     * @param phrase   a String
+     * @param color    a Color
      */
     ItemType(final String filename, final String phrase, final Color color) {
         this.filename = filename;

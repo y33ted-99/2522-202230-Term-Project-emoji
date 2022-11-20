@@ -13,9 +13,16 @@ import java.nio.file.Path;
 
 /**
  * Represents a TextBubble that contains an emoji and it's associated phrase.
+ *
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
  */
 public class TextBubble extends Group {
 
+    /**
+     * Height of text bubble.
+     */
     public static final int TEXT_BUBBLE_HEIGHT = 110;
     private final GameSide side;
     private final int position;
@@ -36,7 +43,7 @@ public class TextBubble extends Group {
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
         this.side = side;
         this.position = position;
-        textBubbleImageView = createTextBubbleImage(side);
+        textBubbleImageView = createTextBubbleImage();
         emoji = createEmoji(type);
         phrase = createPhrase(type);
 
@@ -74,7 +81,7 @@ public class TextBubble extends Group {
     /*
      * Creates the TextBubble image.
      */
-    private ImageView createTextBubbleImage(final GameSide side) {
+    private ImageView createTextBubbleImage() {
         Path textBubbleFilename = Path.of("resources/text-bubble/" + side.getFilename());
         Image textBubbleImage;
         try (InputStream is = Files.newInputStream(textBubbleFilename)) {
@@ -115,7 +122,7 @@ public class TextBubble extends Group {
         if (side == GameSide.LEFT) {
             enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
         }else {
-            enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 15);
+            enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 20);
         }
         enemy.setShootFromY(EmojiApp.MARGIN_Y + position + (TEXT_BUBBLE_HEIGHT / 2));
 
