@@ -32,6 +32,7 @@ public enum EnemyType implements EmojiType {
      *
      * @param filename a String
      * @param phrase a String
+     * @param color a Color
      */
     EnemyType(final String filename, final String phrase, final Color color) {
         this.filename = filename;
@@ -58,7 +59,7 @@ public enum EnemyType implements EmojiType {
     }
 
     /**
-     * Returns the emoji's text color.
+     * Returns the emoji text color.
      *
      * @return color as Color
      */
