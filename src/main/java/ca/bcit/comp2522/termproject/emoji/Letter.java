@@ -41,11 +41,17 @@ public class Letter extends Group implements Runnable {
      * Creates an instance of a type Letter.
      *
      * @param character a String
+     * @param color     letter color as Color
      * @param xStart    initial x position as int
      * @param yStart    initial y position as int
+     * @param xTarget   target x position as int
+     * @param yTarget   target y position as int
      * @param speed     an int
      */
-    public Letter(final char character, final int xStart, final int yStart, final int speed, final Color color) {
+    public Letter(final char character, final Color color,
+                  final int xStart, final int yStart,
+                  final int xTarget, final int yTarget,
+                  final int speed) {
         this.speed = speed;
         letter.setText(String.valueOf(character));
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
@@ -53,16 +59,16 @@ public class Letter extends Group implements Runnable {
         letter.setBoundsType(TextBoundsType.VISUAL);
         letter.setX(xStart);
         letter.setY(yStart);
-        setDirection(xStart, yStart);
+        setDirection(xStart, yStart, xTarget, yTarget);
         EmojiApp.root.getChildren().add(letter);
     }
 
     /*
      * Sets the letter's initial movement direction toward the player.
      */
-    private void setDirection(final int xStart, final int yStart) {
-        double yDiff = EmojiApp.player.getTranslateY() - yStart;
-        double xDiff = EmojiApp.player.getTranslateX() - xStart;
+    private void setDirection(final int xStart, final int yStart, final int xTarget, final int yTarget) {
+        double xDiff = xTarget - xStart;
+        double yDiff = yTarget - yStart;
         double hyp = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
         xVelocity = (int) (speed * (xDiff / hyp));
         yVelocity = (int) (speed * (yDiff / hyp));

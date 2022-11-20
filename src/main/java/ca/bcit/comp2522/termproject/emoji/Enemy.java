@@ -63,7 +63,11 @@ public class Enemy extends Entity {
         if (shootFromSide == GameSide.LEFT) {
             charArray = reverseCharArray(charArray);
         }
-        ShotLetters shotLetters = new ShotLetters(charArray, speed);
+        ShotLetters shotLetters = new ShotLetters(
+                charArray,
+                (int) EmojiApp.player.getTranslateX(),
+                (int) EmojiApp.player.getTranslateY(),
+                speed);
         Thread shotLettersThread = new Thread(shotLetters);
         shotLettersThread.setDaemon(true);
         shotLettersThread.start();
@@ -79,10 +83,14 @@ public class Enemy extends Entity {
 
     private class ShotLetters implements Runnable {
         char[] letters;
+        int xTarget;
+        int yTarget;
         int speed;
 
-        ShotLetters(final char[] letters, final int speed) {
+        ShotLetters(final char[] letters, final int xTarget, final int yTarget, final int speed) {
             this.letters = letters;
+            this.xTarget = xTarget;
+            this.yTarget = yTarget;
             this.speed = speed;
         }
 
@@ -99,10 +107,12 @@ public class Enemy extends Entity {
                 Platform.runLater(() -> {
                     Letter letter = new Letter(
                             chr,
+                            emoji.getColor(),
                             shootFromX,
                             shootFromY,
-                            speed,
-                            emoji.getColor());
+                            xTarget,
+                            yTarget,
+                            speed);
                     Thread letterBouncer = new Thread(letter);
                     letterBouncer.setDaemon(true);
                     letterBouncer.start();
