@@ -2,11 +2,14 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -63,7 +66,15 @@ public class EmojiApp extends Application {
     /**
      * The player object.
      */
-    public static Entity player;
+    public static Player player;
+
+    /**
+     * Movement directions.
+     */
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
     /**
      * The main game pane to which all entities drawn.
      */
@@ -105,7 +116,7 @@ public class EmojiApp extends Application {
         if (RNG.nextFloat() < 0.005) {
             if (RNG.nextInt(2) > 0) {
                 LeftTextBubbleGroup.spawnEnemyTextBubble();
-            }else {
+            } else {
                 RightTextBubbleGroup.spawnEnemyTextBubble();
             }
         }
@@ -119,9 +130,12 @@ public class EmojiApp extends Application {
     @Override
     public void start(final Stage primaryStage) {
         // set up the main game window
+        Scene scene = new Scene(createContent());
+        scene.setOnKeyPressed(this::keyPressHandler);
+
         primaryStage.setResizable(false);
         primaryStage.setTitle("Untitled Emoji Game");
-        primaryStage.setScene(new Scene(createContent()));
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
@@ -165,6 +179,49 @@ public class EmojiApp extends Application {
     private void createPlayer() {
         player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
         root.getChildren().add(player);
+    }
+
+    private boolean isValidMove(Direction direction) {
+        Bounds playerBounds = player.getBoundsInParent();
+        Bounds playAreaBounds = playArea.getBoundsInParent();
+        System.out.println("player " + playerBounds);
+        System.out.println("p_area " + playAreaBounds);
+        switch (direction) {
+            case LEFT -> {
+                return playerBounds.getMinX() + (Player.SPEED * -1) > playAreaBounds.getMinX();
+            }
+            case RIGHT -> {
+                return playerBounds.getMaxX() + (Player.SPEED) < playAreaBounds.getMaxX();
+            }
+            case UP -> {
+                return playerBounds.getMinY() + (Player.SPEED * -1) > playAreaBounds.getMinY();
+            }
+            case DOWN -> {
+                return playerBounds.getMaxY() + (Player.SPEED) < playAreaBounds.getMaxY();
+            }
+        }
+        return false;
+    }
+
+
+    private void movePlayer(final Direction direction) {
+        if (!isValidMove(direction)) return;
+        switch (direction) {
+            case LEFT -> player.setTranslateX(player.getTranslateX() + Player.SPEED * -1);
+            case RIGHT -> player.setTranslateX(player.getTranslateX() + Player.SPEED);
+            case UP -> player.setTranslateY(player.getTranslateY() + Player.SPEED * -1);
+            case DOWN -> player.setTranslateY(player.getTranslateY() + Player.SPEED);
+
+        }
+    }
+
+    private void keyPressHandler(KeyEvent event) {
+        switch (event.getCode()) {
+            case A -> movePlayer(Direction.LEFT);
+            case D -> movePlayer(Direction.RIGHT);
+            case W -> movePlayer(Direction.UP);
+            case S -> movePlayer(Direction.DOWN);
+        }
     }
 }
 
