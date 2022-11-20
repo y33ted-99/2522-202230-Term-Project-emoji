@@ -1,5 +1,7 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+import javafx.scene.paint.Color;
+
 /**
  * An enemy emoji type.
  *
@@ -8,21 +10,22 @@ package ca.bcit.comp2522.termproject.emoji;
  * @version Fall 2022
  */
 public enum EnemyType implements EmojiType {
-    ANGRY("angry.png", "OMFG"),
-    DROOL("drooling_face.png", "DURR"),
-    VOMIT("face_vomiting.png", "BARF"),
-    SWEAR("face_with_symbols_on_mouth.png", "&$!#%"),
-    GRIMACE("grimacing.png", "OOF"),
-    HALO("innocent.png", "WWJD"),
-    SICK("nauseated_face.png", "YUCK"),
-    RAGE("rage.png", "GRRR"),
-    ROFL("rofl.png", "ROFL"),
-    SOB("sob.png", "WAAH"),
-    THINK("thinking_face.png", "HMMM"),
+    ANGRY("angry.png", "OMFG", Color.INDIANRED),
+    DROOL("drooling_face.png", "DURR", Color.LIGHTBLUE),
+    VOMIT("face_vomiting.png", "BARF", Color.GREEN),
+    SWEAR("face_with_symbols_on_mouth.png", "&$!#%", Color.ORANGE),
+    GRIMACE("grimacing.png", "OOF", Color.DARKRED),
+    HALO("innocent.png", "WWJD", Color.SKYBLUE),
+    SICK("nauseated_face.png", "YUCK", Color.DARKGREEN),
+    RAGE("rage.png", "GRRR", Color.RED),
+    ROFL("rofl.png", "ROFL", Color.ORANGE),
+    SOB("sob.png", "WAAH", Color.BLUE),
+    THINK("thinking_face.png", "HMMM", Color.GREY),
     ;
 
     private String filename;
     private String phrase;
+    private Color color;
 
     /**
      * Create instance of enum EnemyType.
@@ -30,9 +33,10 @@ public enum EnemyType implements EmojiType {
      * @param filename a String
      * @param phrase a String
      */
-    EnemyType(final String filename, final String phrase) {
+    EnemyType(final String filename, final String phrase, final Color color) {
         this.filename = filename;
         this.phrase = phrase;
+        this.color = color;
     }
 
     /**
@@ -51,5 +55,14 @@ public enum EnemyType implements EmojiType {
      */
     public String getPhrase() {
         return phrase;
+    }
+
+    /**
+     * Returns the emoji's text color.
+     *
+     * @return color as Color
+     */
+    public Color getColor() {
+        return color;
     }
 }

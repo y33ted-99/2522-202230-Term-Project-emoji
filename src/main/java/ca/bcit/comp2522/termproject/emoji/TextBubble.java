@@ -131,6 +131,7 @@ public class TextBubble extends Group {
         int margin = (TEXT_BUBBLE_HEIGHT / 2);
         Text phrase = new Text(margin - (fontSize / 2), margin + (fontSize / 2), type.getPhrase());
         Font font = new Font("Arial Black", fontSize);
+        phrase.setFill(type.getColor());
         phrase.setFont(font);
         return phrase;
     }

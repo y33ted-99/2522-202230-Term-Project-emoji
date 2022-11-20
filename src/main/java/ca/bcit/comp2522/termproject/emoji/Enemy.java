@@ -49,7 +49,8 @@ public class Enemy extends Entity {
                 emoji.getPhrase().substring(0, 1),
                 shootFromX,
                 shootFromY,
-                speed);
+                speed,
+                emoji.getColor());
         Thread bouncer = new Thread(letter);
         bouncer.setDaemon(true);
         bouncer.start();

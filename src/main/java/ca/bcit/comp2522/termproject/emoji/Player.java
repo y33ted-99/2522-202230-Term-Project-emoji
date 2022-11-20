@@ -8,7 +8,7 @@ package ca.bcit.comp2522.termproject.emoji;
  * @version Fall 2022
  */
 public class Player extends Entity{
-    public static final int SPEED = 15;
+    public static final int SPEED = 20;
 
     /**
      * Creates instance of type Player.

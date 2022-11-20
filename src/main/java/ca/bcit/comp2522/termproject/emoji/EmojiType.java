@@ -1,5 +1,7 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+import javafx.scene.paint.Color;
+
 /**
  * Interface for emoji type enumerations.
  *
@@ -10,4 +12,5 @@ package ca.bcit.comp2522.termproject.emoji;
 public interface EmojiType {
     String getFilename();
     String getPhrase();
+    Color getColor();
 }

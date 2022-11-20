@@ -45,11 +45,11 @@ public class Letter extends Group implements Runnable {
      * @param yStart    initial y position as int
      * @param speed     an int
      */
-    public Letter(final String character, final int xStart, final int yStart, final int speed) {
+    public Letter(final String character, final int xStart, final int yStart, final int speed, final Color color) {
         this.speed = speed;
         letter.setText(character);
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
-        letter.setFill(Color.BLUE);
+        letter.setFill(color);
         letter.setBoundsType(TextBoundsType.VISUAL);
         letter.setX(xStart);
         letter.setY(yStart);
