@@ -82,19 +82,37 @@ public class EmojiApp extends Application {
      */
     private static int enemyCount;
 
-    public final static int MARGIN_X = (APP_WIDTH - PLAY_AREA_SIZE) / 2;
-    public final static int MARGIN_Y = (APP_HEIGHT - PLAY_AREA_SIZE) / 2;
-
+    /**
+     * Player's movement direction
+     */
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
+    /**
+     * Boolean to indicate game running
+     */
     private boolean running = false;
 
+    /**
+     * Boolean to indicate player movement
+     */
     private boolean move = true;
+
+    /**
+     * create Timeline
+     */
     private Timeline timeline = new Timeline();
 
+    /**
+     * Initial starting direction
+     */
     private Direction direction = Direction.UP;
+
+    /**
+     * Player size
+     */
+    public final static int EMOJI_SIZE = 40;
 
     /**
      * Starts the game.
@@ -107,8 +125,8 @@ public class EmojiApp extends Application {
 
         createBackground();
         createPlayArea();
-
         setUpTextBubbleArrays();
+        createPlayer();
 
         for (int tb = 0; tb < 3; tb++) {
             spawnEnemyTextBubble();
