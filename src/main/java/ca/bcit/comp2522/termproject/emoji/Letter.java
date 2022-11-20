@@ -45,9 +45,9 @@ public class Letter extends Group implements Runnable {
      * @param yStart    initial y position as int
      * @param speed     an int
      */
-    public Letter(final String character, final int xStart, final int yStart, final int speed, final Color color) {
+    public Letter(final char character, final int xStart, final int yStart, final int speed, final Color color) {
         this.speed = speed;
-        letter.setText(character);
+        letter.setText(String.valueOf(character));
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(color);
         letter.setBoundsType(TextBoundsType.VISUAL);
@@ -68,11 +68,11 @@ public class Letter extends Group implements Runnable {
         yVelocity = (int) (speed * (yDiff / hyp));
     }
 
-    /*
+    /**
      * Runs the letter's animation (bouncing around the play area).
      */
     public void run() {
-        while (true) {
+        while (isAlive) {
             try {
                 Thread.sleep(20); // sleep for 20 milliseconds
             } catch (InterruptedException exception) {
@@ -96,12 +96,13 @@ public class Letter extends Group implements Runnable {
         checkIfEnteredPlayArea();
         boolean hasBounced = false;
         if (hasEnteredPlayArea) {
-            // if bounce off left or right of Panel
             Bounds letterBounds = letter.getBoundsInParent();
+            // if bounce off left or right of Panel
             if (letterBounds.getMinX() <= LRTB[0] || letterBounds.getMaxX() >= LRTB[1]) {
                 xVelocity *= -1; // reverses velocity in x direction
                 hasBounced = true;
-            }// if bounce off top or bottom of Panel
+            }
+            // if bounce off top or bottom of Panel
             if (letterBounds.getMinY() <= LRTB[2] || letterBounds.getMaxY() >= LRTB[3]) {
                 yVelocity *= -1; // reverses velocity in y direction
 

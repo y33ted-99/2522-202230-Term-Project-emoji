@@ -24,14 +24,17 @@ public class TextBubble extends Group {
      * Height of text bubble.
      */
     public static final int TEXT_BUBBLE_HEIGHT = 110;
+    /**
+     * Size of font used in text bubble phrase.
+     */
+    public static final int FONT_SIZE = 28;
     private final GameSide side;
     private final int position;
-    private EmojiType type;
-
-    private int textBubbleWidth;
+    private final EmojiType type;
     private ImageView textBubbleImageView;
-    private Entity emoji;
+    private final Entity emoji;
     private Text phrase;
+    private int textBubbleWidth;
 
     /**
      * Creates an instance of type TextBubble.
@@ -43,9 +46,10 @@ public class TextBubble extends Group {
     public TextBubble(final GameSide side, final int position, final EmojiType type) {
         this.side = side;
         this.position = position;
+        this.type = type;
         textBubbleImageView = createTextBubbleImage();
-        emoji = createEmoji(type);
-        phrase = createPhrase(type);
+        emoji = createEmoji();
+        phrase = createPhrase();
 
         getChildren().addAll(textBubbleImageView, emoji, phrase);
         positionTextBubble();
@@ -112,20 +116,19 @@ public class TextBubble extends Group {
     /*
      * Creates the emoji.
      */
-    private Entity createEmoji(final EmojiType type) {
+    private Entity createEmoji() {
         Enemy enemy = new Enemy(type);
         int margin = (TEXT_BUBBLE_HEIGHT - Entity.IMAGE_SIZE) / 2;
         enemy.setTranslateX(textBubbleWidth - (margin * 2));
         enemy.setTranslateY(margin);
 
-
         if (side == GameSide.LEFT) {
             enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
-        }else {
+        } else {
             enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 20);
         }
         enemy.setShootFromY(EmojiApp.MARGIN_Y + position + (TEXT_BUBBLE_HEIGHT / 2));
-
+        enemy.setShootFromSide(side);
         enemy.shoot();
         return enemy;
     }
@@ -133,11 +136,10 @@ public class TextBubble extends Group {
     /*
      * Creates the TextBubble's text based on the phrase associated with the emoji.
      */
-    private Text createPhrase(final EmojiType type) {
-        int fontSize = 28;
+    private Text createPhrase() {
         int margin = (TEXT_BUBBLE_HEIGHT / 2);
-        Text phrase = new Text(margin - (fontSize / 2), margin + (fontSize / 2), type.getPhrase());
-        Font font = new Font("Arial Black", fontSize);
+        phrase = new Text(margin - (FONT_SIZE / 2), margin + (FONT_SIZE / 2), type.getPhrase());
+        Font font = new Font("Arial Black", FONT_SIZE);
         phrase.setFill(type.getColor());
         phrase.setFont(font);
         return phrase;
