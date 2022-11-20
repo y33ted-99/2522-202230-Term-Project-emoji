@@ -112,7 +112,7 @@ public class EmojiApp extends Application {
      * Update entities during main game loop.
      */
     private void onUpdate(final long now) {
-        if (now % 25000 == 0) {
+        if (now % 20000 < 10) {
             if (RNG.nextInt(2) > 0) {
                 LeftTextBubbleGroup.spawnEnemyTextBubble();
             } else {
@@ -176,7 +176,9 @@ public class EmojiApp extends Application {
      * Create the player.
      */
     private void createPlayer() {
-        player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
+        player = new Player(
+                APP_WIDTH / 2 - Entity.IMAGE_SIZE / 2,
+                APP_HEIGHT / 2 - Entity.IMAGE_SIZE / 2);
         root.getChildren().add(player);
     }
 

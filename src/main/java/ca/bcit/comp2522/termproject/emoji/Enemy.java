@@ -53,7 +53,7 @@ public class Enemy extends Entity {
     public void setShootFromSide(final GameSide shootFromSide) {
         this.shootFromSide = shootFromSide;
     }
-
+    // TODO: When letters dead end thread, wait a bit, then shoot again.
     /**
      * Shoots Letters at the Player.
      */

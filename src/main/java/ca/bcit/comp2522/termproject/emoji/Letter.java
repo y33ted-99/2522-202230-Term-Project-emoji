@@ -85,7 +85,6 @@ public class Letter extends Group implements Runnable {
                 exception.printStackTrace();
             }
             Platform.runLater(() -> {
-                if (!isAlive) return;
                 // check if collides with player
                 if (detectCollisionWithPlayer() || bounceCount > maxBounces) {
                     captureLetter();
@@ -111,7 +110,6 @@ public class Letter extends Group implements Runnable {
             // if bounce off top or bottom of Panel
             if (letterBounds.getMinY() <= LRTB[2] || letterBounds.getMaxY() >= LRTB[3]) {
                 yVelocity *= -1; // reverses velocity in y direction
-
                 hasBounced = true;
             }
             if (hasBounced) {
