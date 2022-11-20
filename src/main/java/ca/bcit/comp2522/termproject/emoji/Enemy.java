@@ -44,7 +44,7 @@ public class Enemy extends Entity {
      * Shoots Letters at the Player.
      */
     public void shoot() {
-        int speed = EmojiApp.RNG.nextInt(2, 10);
+        int speed = EmojiApp.RNG.nextInt(3, 9);
         Letter letter = new Letter(
                 emoji.getPhrase().substring(0, 1),
                 shootFromX,

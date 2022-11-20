@@ -28,6 +28,7 @@ public class Letter extends Group implements Runnable {
     private int bounceCount;
     private final int maxBounces = 10;
     private boolean hasEnteredPlayArea = false;
+    private boolean isAlive = true;
 
     // Play area borders (left, right, top, bottom)
     private final int[] LRTB = {
@@ -78,34 +79,39 @@ public class Letter extends Group implements Runnable {
                 exception.printStackTrace();
             }
             Platform.runLater(() -> {
+                if (!isAlive) return;
                 // check if collides with player
-                if (detectCollision() || bounceCount > maxBounces) {
+                if (detectCollisionWithPlayer() || bounceCount > maxBounces) {
                     captureLetter();
                     return;
                 }
-                checkIfEnteredPlayArea();
-                if (hasEnteredPlayArea) {
-                    boolean hasBounced = false;
-                    // if bounce off left or right of Panel
-                    Bounds letterBounds = letter.getBoundsInParent();
-                    if (letterBounds.getMinX() <= LRTB[0] || letterBounds.getMaxX() >= LRTB[1]) {
-                        xVelocity *= -1; // reverses velocity in x direction
-                        hasBounced = true;
-                    }// if bounce off top or bottom of Panel
-                    if (letterBounds.getMinY() <= LRTB[2] || letterBounds.getMaxY() >= LRTB[3]) {
-                        yVelocity *= -1; // reverses velocity in y direction
-
-                        hasBounced = true;
-                    }
-                    if (hasBounced) {
-                        bounceCount++;
-                        opacity -= (1 / (float) maxBounces);
-                        letter.setOpacity(opacity);
-                    }
-                }
+                detectCollisionWIthBorder();
                 letter.setX(letter.getX() + xVelocity); // determines new x-position
                 letter.setY(letter.getY() + yVelocity); // determines new y-position
             });
+        }
+    }
+
+    private void detectCollisionWIthBorder() {
+        checkIfEnteredPlayArea();
+        boolean hasBounced = false;
+        if (hasEnteredPlayArea) {
+            // if bounce off left or right of Panel
+            Bounds letterBounds = letter.getBoundsInParent();
+            if (letterBounds.getMinX() <= LRTB[0] || letterBounds.getMaxX() >= LRTB[1]) {
+                xVelocity *= -1; // reverses velocity in x direction
+                hasBounced = true;
+            }// if bounce off top or bottom of Panel
+            if (letterBounds.getMinY() <= LRTB[2] || letterBounds.getMaxY() >= LRTB[3]) {
+                yVelocity *= -1; // reverses velocity in y direction
+
+                hasBounced = true;
+            }
+            if (hasBounced) {
+                bounceCount++;
+                opacity -= (1 / (float) (maxBounces - 1));
+                letter.setOpacity(opacity);
+            }
         }
     }
 
@@ -118,8 +124,12 @@ public class Letter extends Group implements Runnable {
     /*
      * Returns true if the letter has collided with the player.
      */
-    private boolean detectCollision() {
-        return letter.getBoundsInParent().intersects(EmojiApp.player.getBoundsInParent());
+    private boolean detectCollisionWithPlayer() {
+        if (letter.getBoundsInParent().intersects(EmojiApp.player.getBoundsInParent())) {
+            isAlive = false;
+            return true;
+        }
+        return false;
     }
 
     /*

@@ -115,7 +115,7 @@ public class TextBubble extends Group {
         if (side == GameSide.LEFT) {
             enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
         }else {
-            enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 10);
+            enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 15);
         }
         enemy.setShootFromY(EmojiApp.MARGIN_Y + position + (TEXT_BUBBLE_HEIGHT / 2));
 

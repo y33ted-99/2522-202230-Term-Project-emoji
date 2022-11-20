@@ -36,7 +36,7 @@ public class EmojiApp extends Application {
      */
     public final static int APP_HEIGHT = 800;
 
-    public final Rectangle playArea = new Rectangle();
+    public final static Rectangle playArea = new Rectangle();
     /**
      * Width of the play area.
      */
@@ -59,29 +59,21 @@ public class EmojiApp extends Application {
      */
     public final static Random RNG = new Random();
 
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT
-    }
-
+    // TODO: restructure to make root and player private
     /**
      * The player object.
      */
     public static Entity player;
-
-    // TODO: restructure to make root and player private!!
-
+    /**
+     * The main game pane to which all entities drawn.
+     */
     public static Pane root;
 
     /*
-     * Groups of TextBubbles
+     * Groups of TextBubbles.
      */
     private static TextBubbleGroup LeftTextBubbleGroup;
     private static TextBubbleGroup RightTextBubbleGroup;
-
-    /*
-     * The current number of enemies in play.
-     */
-    private static int enemyCount;
 
     private Parent createContent() {
         root = new Pane();
@@ -94,6 +86,7 @@ public class EmojiApp extends Application {
         RightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
         root.getChildren().addAll(LeftTextBubbleGroup, RightTextBubbleGroup);
 
+        // Main game loop
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -104,11 +97,17 @@ public class EmojiApp extends Application {
         return root;
     }
 
+    /*
+     * Update entities during main game loop.
+     */
     private void onUpdate() {
 
-        if (Math.random() < 0.005) {
-            LeftTextBubbleGroup.spawnEnemyTextBubble();
-            RightTextBubbleGroup.spawnEnemyTextBubble();
+        if (RNG.nextFloat() < 0.005) {
+            if (RNG.nextInt(2) > 0) {
+                LeftTextBubbleGroup.spawnEnemyTextBubble();
+            }else {
+                RightTextBubbleGroup.spawnEnemyTextBubble();
+            }
         }
     }
 
@@ -119,6 +118,7 @@ public class EmojiApp extends Application {
      */
     @Override
     public void start(final Stage primaryStage) {
+        // set up the main game window
         primaryStage.setResizable(false);
         primaryStage.setTitle("Untitled Emoji Game");
         primaryStage.setScene(new Scene(createContent()));
@@ -165,59 +165,6 @@ public class EmojiApp extends Application {
     private void createPlayer() {
         player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
         root.getChildren().add(player);
-
     }
-
-    public boolean isPlayerInPlayArea() {
-        return playArea.getBoundsInParent().contains(player.getBoundsInParent());
-    }
-//
-//    private Parent content() {
-//
-//        /*APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75)*/
-//
-//        Group player = new Player(APP_WIDTH / 2, (int) (APP_HEIGHT * 0.75));
-//        root.getChildren().add(player);
-//        if (move) {
-//            KeyFrame frame = new KeyFrame(Duration.millis(75), event -> {
-//                if (!running)
-//                    return;
-//
-//                switch (direction) {
-//                    case UP:
-//                        player.setTranslateX(player.getTranslateX());
-//                        player.setTranslateY(player.getTranslateY() - EMOJI_SIZE);
-//                        break;
-//
-//                    case DOWN:
-//                        player.setTranslateX(player.getTranslateX());
-//                        player.setTranslateY(player.getTranslateY() + EMOJI_SIZE);
-//                        break;
-//
-//                    case LEFT:
-//                        player.setTranslateX(player.getTranslateX() - EMOJI_SIZE);
-//                        player.setTranslateY(player.getTranslateY());
-//                        break;
-//
-//                    case RIGHT:
-//                        player.setTranslateX(player.getTranslateX() + EMOJI_SIZE);
-//                        player.setTranslateY(player.getTranslateY());
-//                        break;
-//                }
-//
-//                if (player.getTranslateX() < 0 || player.getTranslateX() >= MARGIN_X || player.getTranslateY() < 0 ||
-//                        player.getTranslateY() >= MARGIN_Y) {
-//                    /*resetPosition();*/
-//                }
-//
-//            });
-//
-//            timeline.getKeyFrames().add(frame);
-//            timeline.setCycleCount(Timeline.INDEFINITE);
-//
-//        }
-//        return root;
-//    }
-
 }
 
