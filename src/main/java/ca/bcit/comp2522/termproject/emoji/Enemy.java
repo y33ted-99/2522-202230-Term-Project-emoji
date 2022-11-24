@@ -2,6 +2,9 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.application.Platform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents an Enemy emoji.
  *
@@ -65,8 +68,8 @@ public class Enemy extends Entity {
         }
         ShotLetters shotLetters = new ShotLetters(
                 charArray,
-                (int) EmojiApp.player.getTranslateX(),
-                (int) EmojiApp.player.getTranslateY(),
+                (int) EmojiApp.player.getCenterX(),
+                (int) EmojiApp.player.getCenterY(),
                 speed);
         Thread shotLettersThread = new Thread(shotLetters);
         shotLettersThread.setDaemon(true);
@@ -86,12 +89,15 @@ public class Enemy extends Entity {
         int xTarget;
         int yTarget;
         int speed;
+        List<Letter> shotLetters;
+        boolean shotLettersAlive;
 
         ShotLetters(final char[] letters, final int xTarget, final int yTarget, final int speed) {
             this.letters = letters;
             this.xTarget = xTarget;
             this.yTarget = yTarget;
             this.speed = speed;
+            shotLetters = new ArrayList<>();
         }
 
         /*
@@ -113,11 +119,27 @@ public class Enemy extends Entity {
                             xTarget,
                             yTarget,
                             speed);
+                    shotLetters.add(letter);
                     Thread letterBouncer = new Thread(letter);
                     letterBouncer.setDaemon(true);
                     letterBouncer.start();
+                    shotLettersAlive = true;
                 });
             }
+        }
+
+        /**
+         * Returns true if at least one shot letter is alive.
+         *
+         * @return true if at least one shot letter is alive
+         */
+        public boolean isAlive() {
+            for (Letter letter: shotLetters) {
+                if (letter.isAlive()) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

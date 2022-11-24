@@ -5,24 +5,28 @@ import javafx.scene.Group;
 import java.util.Random;
 
 /**
- * Represents a group of TextBubbles
+ * Represents a group of TextBubbles.
  *
  * @author Terence Grigoruk
  * @author Brian Mak
  * @version Fall 2022
  */
 public class TextBubbleGroup extends Group {
-    private GameSide side;
+    private final GameSide side;
     private TextBubble[] textBubbles;
     private int enemyCount;
 
+    /**
+     * Create instance of type TextBubbleGroup.
+     *
+     * @param side play area side as GameSide enum
+     */
     public TextBubbleGroup(GameSide side) {
         this.side = side;
         initTextBubbleArrays();
         positionGroup();
     }
 
-    // TODO: expand setUpTextBubbleArrays() to accommodate all sides of game area
     /*
      * Set up an array of text bubbles.
      */
@@ -31,12 +35,12 @@ public class TextBubbleGroup extends Group {
         textBubbles = new TextBubble[textBubblesPerSide];
     }
 
-    private void positionGroup(){
-        switch (side){
+    private void positionGroup() {
+        switch (side) {
             case LEFT -> this.setTranslateY(EmojiApp.MARGIN_Y);
             case RIGHT -> {
                 this.setTranslateY(EmojiApp.MARGIN_Y);
-                this.setTranslateX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 20);
+                this.setTranslateX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - (Entity.IMAGE_SIZE / 2));
             }
             case TOP -> this.setTranslateX(EmojiApp.MARGIN_X);
             default -> {
@@ -45,8 +49,9 @@ public class TextBubbleGroup extends Group {
             }
         }
     }
-    /*
-     * Randomly spawn a TextBubble containing an enemy
+
+    /**
+     * Spawns a TextBubble containing an enemy.
      */
     public void spawnEnemyTextBubble() {
         if (enemyCount >= textBubbles.length) {
@@ -72,7 +77,10 @@ public class TextBubbleGroup extends Group {
         textBubbles[index] = textBubble;
     }
 
-    private boolean checkIfEmojiExists(EmojiType emoji) {
+    /*
+     * Returns true if an emoji of the given type exists in this text bubble group.
+     */
+    private boolean checkIfEmojiExists(final EmojiType emoji) {
         for (TextBubble tb : textBubbles) {
             if (tb == null) {
                 continue;

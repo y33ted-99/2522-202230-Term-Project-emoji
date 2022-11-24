@@ -63,6 +63,15 @@ public class Letter extends Group implements Runnable {
         EmojiApp.root.getChildren().add(letter);
     }
 
+    /**
+     * Returns true if letter is still in play.
+     *
+     * @return true if letter is still in play
+     */
+    public boolean isAlive() {
+        return isAlive;
+    }
+
     /*
      * Sets the letter's initial movement direction toward the player.
      */
@@ -87,7 +96,7 @@ public class Letter extends Group implements Runnable {
             Platform.runLater(() -> {
                 // check if collides with player
                 if (detectCollisionWithPlayer() || bounceCount > maxBounces) {
-                    captureLetter();
+                    removeLetter();
                     return;
                 }
                 detectCollisionWIthBorder();
@@ -121,7 +130,7 @@ public class Letter extends Group implements Runnable {
     }
 
     private void checkIfEnteredPlayArea() {
-        if (EmojiApp.playArea.getBoundsInParent().contains(letter.getBoundsInParent())) {
+        if (EmojiApp.PLAY_AREA.getBoundsInParent().contains(letter.getBoundsInParent())) {
             hasEnteredPlayArea = true;
         }
     }
@@ -138,9 +147,9 @@ public class Letter extends Group implements Runnable {
     }
 
     /*
-     * Does an animation for the letter when it collides with player.
+     * Remove letter from play area.
      */
-    private void captureLetter() {
+    private void removeLetter() {
         Timeline timeline = new Timeline();
         KeyValue keyValueX = new KeyValue(letter.translateXProperty(), 0);
         KeyValue keyValueY = new KeyValue(letter.yProperty(), EmojiApp.APP_HEIGHT);

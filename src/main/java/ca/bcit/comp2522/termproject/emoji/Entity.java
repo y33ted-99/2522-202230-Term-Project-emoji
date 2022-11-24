@@ -25,6 +25,7 @@ public abstract class Entity extends Group {
     public static final int IMAGE_SIZE = 40;
     protected ImageView imageView;
     protected int size;
+    protected boolean isAlive = true;
 
     public Entity() {
         this("enemy/no_mouth.png");
