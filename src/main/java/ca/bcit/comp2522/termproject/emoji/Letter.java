@@ -152,7 +152,7 @@ public class Letter extends Group implements Runnable {
     private void removeLetter() {
         Timeline timeline = new Timeline();
         KeyValue keyValueX = new KeyValue(letter.translateXProperty(), 0);
-        KeyValue keyValueY = new KeyValue(letter.yProperty(), EmojiApp.APP_HEIGHT);
+        KeyValue keyValueY = new KeyValue(letter.yProperty(), EmojiApp.APP_HEIGHT - 40);
         KeyValue keyValueR = new KeyValue(letter.rotateProperty(), 720);
 
         Duration duration = Duration.millis(300);

@@ -4,6 +4,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -95,10 +97,11 @@ public class EmojiApp extends Application {
 
         createBackground();
         createPlayArea();
+        Group letterBar = new LetterBar();
         createPlayer();
         leftTextBubbleGroup = new TextBubbleGroup(GameSide.LEFT);
         rightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
-        root.getChildren().addAll(leftTextBubbleGroup, rightTextBubbleGroup);
+        root.getChildren().addAll(letterBar, leftTextBubbleGroup, rightTextBubbleGroup);
 
         // Main game loop
         AnimationTimer timer = new AnimationTimer() {
@@ -115,6 +118,8 @@ public class EmojiApp extends Application {
      * Update entities during the main game loop.
      */
     private void onUpdate(final long now) {
+
+        // searchForLetters(leftTextBubbleGroup);
 
         if (now % 20000 < 10) {
             if (RNG.nextInt(2) > 0) {
@@ -149,7 +154,7 @@ public class EmojiApp extends Application {
         scene.setOnMouseClicked(this::mouseClickHandler);
 
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Untitled Emoji Game");
+        primaryStage.setTitle("La Chat-room");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -237,6 +242,16 @@ public class EmojiApp extends Application {
      */
     private void mouseClickHandler(final MouseEvent event) {
         player.setSpeed(Player.POUNCE_SPEED);
+    }
+
+    private void searchForLetters(final Group textBubbleGroup) {
+        for (Node textBubble: textBubbleGroup.getChildren()) {
+            for (Node textBubbleComponent: ((Group) textBubble).getChildren()) {
+                if (textBubbleComponent.getClass() == Enemy.class) {
+                    System.out.println(((Enemy) textBubbleComponent).getChildren());
+                }
+            }
+        }
     }
 }
 

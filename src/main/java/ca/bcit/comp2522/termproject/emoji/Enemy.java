@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class Enemy extends Entity {
     private static final int SHOOT_RATE = 300;
-    private static final int[] SPEED_RANGE = {3, 9};
+    private static final int[] SPEED_RANGE = {3, 11};
     private EmojiType emoji;
     private int shootFromX;
     private int shootFromY;
