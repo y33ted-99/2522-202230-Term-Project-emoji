@@ -28,7 +28,7 @@ public class TextBubble extends Group {
      * Size of font used in text bubble phrase.
      */
     public static final int FONT_SIZE = 28;
-    private final GameSide side;
+    private final Side side;
     private final int position;
     private final EmojiType type;
     private ImageView textBubbleImageView;
@@ -39,11 +39,11 @@ public class TextBubble extends Group {
     /**
      * Creates an instance of type TextBubble.
      *
-     * @param side     side of play area as GameSide
+     * @param side     side of play area as Side
      * @param position position along side as int
      * @param type     the type of emoji as EmojiType
      */
-    public TextBubble(final GameSide side, final int position, final EmojiType type) {
+    public TextBubble(final Side side, final int position, final EmojiType type) {
         this.side = side;
         this.position = position;
         this.type = type;
@@ -58,9 +58,9 @@ public class TextBubble extends Group {
     /**
      * Returns the side of the play area where this TextBubble exists.
      *
-     * @return the side of the play area where this TextBubble exists as GameSide
+     * @return the side of the play area where this TextBubble exists as Side
      */
-    public GameSide getSide() {
+    public Side getSide() {
         return side;
     }
 
@@ -122,7 +122,7 @@ public class TextBubble extends Group {
         enemy.setTranslateX(textBubbleWidth - (margin * 2));
         enemy.setTranslateY(margin);
 
-        if (side == GameSide.LEFT) {
+        if (side == Side.LEFT) {
             enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
         } else {
             enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 25);

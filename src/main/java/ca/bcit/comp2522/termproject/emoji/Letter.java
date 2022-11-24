@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -17,7 +18,7 @@ import javafx.util.Duration;
  * Represents a letter that is shot out by an enemy at the player.
  */
 public class Letter extends Group implements Runnable {
-    private static final int FONT_SIZE = 30;
+    private static final int FONT_SIZE = 29;
 
     private final Text letter = new Text();
 
@@ -56,6 +57,7 @@ public class Letter extends Group implements Runnable {
         letter.setText(String.valueOf(character));
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(color);
+        letter.setStroke(color.darker());
         letter.setBoundsType(TextBoundsType.VISUAL);
         letter.setX(xStart);
         letter.setY(yStart);

@@ -12,16 +12,16 @@ import java.util.Random;
  * @version Fall 2022
  */
 public class TextBubbleGroup extends Group {
-    private final GameSide side;
+    private final Side side;
     private TextBubble[] textBubbles;
     private int enemyCount;
 
     /**
      * Create instance of type TextBubbleGroup.
      *
-     * @param side play area side as GameSide enum
+     * @param side play area side as Side enum
      */
-    public TextBubbleGroup(GameSide side) {
+    public TextBubbleGroup(Side side) {
         this.side = side;
         initTextBubbleArrays();
         positionGroup();
@@ -53,7 +53,7 @@ public class TextBubbleGroup extends Group {
     /**
      * Spawns a TextBubble containing an enemy.
      */
-    public void spawnEnemyTextBubble() {
+    public void spawnTextBubble() {
         if (enemyCount >= textBubbles.length) {
             return;
         }

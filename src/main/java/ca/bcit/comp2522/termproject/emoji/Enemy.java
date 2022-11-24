@@ -18,7 +18,7 @@ public class Enemy extends Entity {
     private EmojiType emoji;
     private int shootFromX;
     private int shootFromY;
-    private GameSide shootFromSide;
+    private Side shootFromSide;
 
     /**
      * Creates an instance of type Enemy.
@@ -51,9 +51,9 @@ public class Enemy extends Entity {
     /**
      * Sets the side of play area the enemy shoots from.
      *
-     * @param shootFromSide side of play area the enemy shoots from as GameSide
+     * @param shootFromSide side of play area the enemy shoots from as Side
      */
-    public void setShootFromSide(final GameSide shootFromSide) {
+    public void setShootFromSide(final Side shootFromSide) {
         this.shootFromSide = shootFromSide;
     }
     // TODO: When letters dead end thread, wait a bit, then shoot again.
@@ -63,7 +63,7 @@ public class Enemy extends Entity {
     public void shoot() {
         int speed = EmojiApp.RNG.nextInt(SPEED_RANGE[0], SPEED_RANGE[1]);
         char[] charArray = emoji.getPhrase().toCharArray();
-        if (shootFromSide == GameSide.LEFT) {
+        if (shootFromSide == Side.LEFT) {
             charArray = reverseCharArray(charArray);
         }
         ShotLetters shotLetters = new ShotLetters(

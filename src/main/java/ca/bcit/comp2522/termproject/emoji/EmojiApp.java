@@ -99,8 +99,8 @@ public class EmojiApp extends Application {
         createPlayArea();
         Group letterBar = new LetterBar();
         createPlayer();
-        leftTextBubbleGroup = new TextBubbleGroup(GameSide.LEFT);
-        rightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
+        leftTextBubbleGroup = new TextBubbleGroup(Side.LEFT);
+        rightTextBubbleGroup = new TextBubbleGroup(Side.RIGHT);
         root.getChildren().addAll(letterBar, leftTextBubbleGroup, rightTextBubbleGroup);
 
         // Main game loop
@@ -123,9 +123,9 @@ public class EmojiApp extends Application {
 
         if (now % 20000 < 10) {
             if (RNG.nextInt(2) > 0) {
-                leftTextBubbleGroup.spawnEnemyTextBubble();
+                leftTextBubbleGroup.spawnTextBubble();
             } else {
-                rightTextBubbleGroup.spawnEnemyTextBubble();
+                rightTextBubbleGroup.spawnTextBubble();
             }
         }
         double xMove = (player.getTranslateX() - playerMovementVector.getX());

@@ -6,7 +6,7 @@ package ca.bcit.comp2522.termproject.emoji;
  * @author Brian Mak
  * @version Fall 2022
  */
-public enum GameSide {
+public enum Side {
     LEFT("text-bubble-left.png"),
     RIGHT("text-bubble-right.png"),
     TOP("text-bubble-top.png"),
@@ -15,11 +15,11 @@ public enum GameSide {
     private String filename;
 
     /**
-     * Create instance of enum GameSide.
+     * Create instance of enum Side.
      *
      * @param filename a String
      */
-    GameSide(final String filename) {
+    Side(final String filename) {
         this.filename = filename;
     }
 
