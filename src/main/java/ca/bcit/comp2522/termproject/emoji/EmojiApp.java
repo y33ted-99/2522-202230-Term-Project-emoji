@@ -3,13 +3,12 @@ package ca.bcit.comp2522.termproject.emoji;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
-import javafx.scene.Group;
+import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -33,36 +32,38 @@ public class EmojiApp extends Application {
     /**
      * Width of the main app screen.
      */
-    public final static int APP_WIDTH = 1000;
+    public static final int APP_WIDTH = 1000;
     /**
      * Height of the main app screen.
      */
-    public final static int APP_HEIGHT = 800;
+    public static final  int APP_HEIGHT = 800;
 
-    public final static Rectangle playArea = new Rectangle();
+    /**
+     * The play area in which the player and letters exist.
+     */
+    public static final  Rectangle PLAY_AREA = new Rectangle();
     /**
      * Width of the play area.
      */
-    public final static int PLAY_AREA_WIDTH = 600;
+    public static  final  int PLAY_AREA_WIDTH = 600;
     /**
      * Height of the play area.
      */
-    public final static int PLAY_AREA_HEIGHT = 600;
+    public static final  int PLAY_AREA_HEIGHT = 600;
 
     /**
      * The margins on the left and right side of the play area.
      */
-    public final static int MARGIN_X = (APP_WIDTH - PLAY_AREA_WIDTH) / 2;
+    public static final  int MARGIN_X = (APP_WIDTH - PLAY_AREA_WIDTH) / 2;
     /**
      * The margins on the top and bottom side of the play area.
      */
-    public final static int MARGIN_Y = (APP_HEIGHT - PLAY_AREA_HEIGHT) / 2;
+    public static final  int MARGIN_Y = (APP_HEIGHT - PLAY_AREA_HEIGHT) / 2;
     /**
      * Random number generator.
      */
-    public final static Random RNG = new Random();
+    public static final  Random RNG = new Random();
 
-    // TODO: restructure to make root and player private
     /**
      * The player object.
      */
@@ -83,8 +84,10 @@ public class EmojiApp extends Application {
     /*
      * Groups of TextBubbles.
      */
-    private static TextBubbleGroup LeftTextBubbleGroup;
-    private static TextBubbleGroup RightTextBubbleGroup;
+    private static TextBubbleGroup leftTextBubbleGroup;
+    private static TextBubbleGroup rightTextBubbleGroup;
+    private static Point2D playerMovementVector = new Point2D(0, 0);
+    private static MouseEvent mouseMoveEvent;
 
     private Parent createContent() {
         root = new Pane();
@@ -93,9 +96,9 @@ public class EmojiApp extends Application {
         createBackground();
         createPlayArea();
         createPlayer();
-        LeftTextBubbleGroup = new TextBubbleGroup(GameSide.LEFT);
-        RightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
-        root.getChildren().addAll(LeftTextBubbleGroup, RightTextBubbleGroup);
+        leftTextBubbleGroup = new TextBubbleGroup(GameSide.LEFT);
+        rightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
+        root.getChildren().addAll(leftTextBubbleGroup, rightTextBubbleGroup);
 
         // Main game loop
         AnimationTimer timer = new AnimationTimer() {
@@ -109,16 +112,27 @@ public class EmojiApp extends Application {
     }
 
     /*
-     * Update entities during main game loop.
+     * Update entities during the main game loop.
      */
     private void onUpdate(final long now) {
+
         if (now % 20000 < 10) {
             if (RNG.nextInt(2) > 0) {
-                LeftTextBubbleGroup.spawnEnemyTextBubble();
+                leftTextBubbleGroup.spawnEnemyTextBubble();
             } else {
-                RightTextBubbleGroup.spawnEnemyTextBubble();
+                rightTextBubbleGroup.spawnEnemyTextBubble();
             }
         }
+        double xMove = (player.getTranslateX() - playerMovementVector.getX());
+        double yMove = (player.getTranslateY() - playerMovementVector.getY());
+        if (isValidMouseMove(xMove, yMove)) {
+            player.setTranslateX(xMove);
+            player.setTranslateY(yMove);
+        }
+        if (player.getSpeed() > Player.INIT_SPEED) {
+            player.setSpeed(player.getSpeed() - 0.02);
+        }
+
     }
 
     /**
@@ -128,9 +142,11 @@ public class EmojiApp extends Application {
      */
     @Override
     public void start(final Stage primaryStage) {
-        // set up the main game window
+
         Scene scene = new Scene(createContent());
-        scene.setOnKeyPressed(this::keyPressHandler);
+
+        scene.setOnMouseMoved(this::mouseMoveHandler);
+        scene.setOnMouseClicked(this::mouseClickHandler);
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("Untitled Emoji Game");
@@ -138,6 +154,11 @@ public class EmojiApp extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Entry point to program.
+     *
+     * @param args not used
+     */
     public static void main(final String[] args) {
         launch();
     }
@@ -161,15 +182,15 @@ public class EmojiApp extends Application {
      * Creates the main play area where the action takes place.
      */
     private void createPlayArea() {
-        playArea.setX(MARGIN_X);
-        playArea.setY(MARGIN_Y);
-        playArea.setWidth(PLAY_AREA_WIDTH);
-        playArea.setHeight(PLAY_AREA_HEIGHT);
-        playArea.setStroke(Color.BLACK);
-        playArea.setFill(new Color(1, 1, 1, 0.8));
-        playArea.setArcHeight(10);
-        playArea.setArcWidth(10);
-        root.getChildren().add(playArea);
+        PLAY_AREA.setX(MARGIN_X);
+        PLAY_AREA.setY(MARGIN_Y);
+        PLAY_AREA.setWidth(PLAY_AREA_WIDTH);
+        PLAY_AREA.setHeight(PLAY_AREA_HEIGHT);
+        PLAY_AREA.setStroke(Color.BLACK);
+        PLAY_AREA.setFill(new Color(1, 1, 1, 0.8));
+        PLAY_AREA.setArcHeight(10);
+        PLAY_AREA.setArcWidth(10);
+        root.getChildren().add(PLAY_AREA);
     }
 
     /*
@@ -182,45 +203,40 @@ public class EmojiApp extends Application {
         root.getChildren().add(player);
     }
 
-    private boolean isValidMove(Direction direction) {
+    /*
+     * Handle mouse movement.
+     */
+    private void mouseMoveHandler(final MouseEvent event) {
+        mouseMoveEvent = event;
+        playerMovementVector = new Point2D(
+                player.getCenterX() - event.getSceneX(),
+                player.getCenterY() - event.getSceneY())
+                .normalize();
+        playerMovementVector = playerMovementVector.multiply(player.getSpeed());
+    }
+
+    /*
+     * Checks if movement destination is within bounds and does not overlap with cursor.
+     */
+    private boolean isValidMouseMove(final double xDestination, final double yDestination) {
+        if (mouseMoveEvent == null) {
+            return false;
+        }
         Bounds playerBounds = player.getBoundsInParent();
-        Bounds playAreaBounds = playArea.getBoundsInParent();
-        switch (direction) {
-            case LEFT -> {
-                return playerBounds.getMinX() + (Player.SPEED * -1) > playAreaBounds.getMinX();
-            }
-            case RIGHT -> {
-                return playerBounds.getMaxX() + (Player.SPEED) < playAreaBounds.getMaxX();
-            }
-            case UP -> {
-                return playerBounds.getMinY() + (Player.SPEED * -1) > playAreaBounds.getMinY();
-            }
-            case DOWN -> {
-                return playerBounds.getMaxY() + (Player.SPEED) < playAreaBounds.getMaxY();
-            }
-        }
-        return false;
+        Bounds playAreaBounds = PLAY_AREA.getBoundsInParent();
+        Point2D mouse = new Point2D(mouseMoveEvent.getSceneX(), mouseMoveEvent.getSceneY());
+        return !playerBounds.contains(mouse)
+                && xDestination > playAreaBounds.getMinX()
+                && xDestination < playAreaBounds.getMaxX() - Player.IMAGE_SIZE
+                && yDestination > playAreaBounds.getMinY()
+                && yDestination < playAreaBounds.getMaxY() - Player.IMAGE_SIZE;
     }
 
-
-    private void movePlayer(final Direction direction) {
-        if (!isValidMove(direction)) return;
-        switch (direction) {
-            case LEFT -> player.setTranslateX(player.getTranslateX() + Player.SPEED * -1);
-            case RIGHT -> player.setTranslateX(player.getTranslateX() + Player.SPEED);
-            case UP -> player.setTranslateY(player.getTranslateY() + Player.SPEED * -1);
-            case DOWN -> player.setTranslateY(player.getTranslateY() + Player.SPEED);
-
-        }
-    }
-
-    private void keyPressHandler(KeyEvent event) {
-        switch (event.getCode()) {
-            case A -> movePlayer(Direction.LEFT);
-            case D -> movePlayer(Direction.RIGHT);
-            case W -> movePlayer(Direction.UP);
-            case S -> movePlayer(Direction.DOWN);
-        }
+    /*
+     * Makes player "pounce" in direction of cursor and/or pop text bubble.
+     */
+    private void mouseClickHandler(final MouseEvent event) {
+        player.setSpeed(Player.POUNCE_SPEED);
     }
 }
 
