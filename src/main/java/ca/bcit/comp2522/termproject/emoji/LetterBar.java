@@ -7,23 +7,29 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A GUI element representing the letters the player hos collided with.
  */
 public class LetterBar extends Group {
+    private static final int HEIGHT = 50;
+    private static final int CAPACITY = 20;
     private static final Rectangle container = new Rectangle();
-    private static final Text[] letterArray = new Text[20];
+    private static List<Text> letterArray = new ArrayList<>();
+    private static Text[] lArr = new Text[CAPACITY];
 
     /**
      * Creates instance of type LetterBar.
      */
     public LetterBar() {
         createContainer();
-        this.setTranslateX(EmojiApp.MARGIN_X);
-        this.setTranslateY(EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_HEIGHT + ((EmojiApp.MARGIN_Y - container.getHeight()) / 2));
+        this.setTranslateX(PlayArea.getMarginX());
+        this.setTranslateY(PlayArea.getMarginY() + PlayArea.HEIGHT + ((PlayArea.getMarginY() - container.getHeight()) / 2));
 
         // draw cells that Letters are placed in after capture by player
-        for (int i = 0; i < letterArray.length; i++) {
+        for (int i = 0; i < CAPACITY; i++) {
             Text letter = new Text();
             letter.setText(String.valueOf(i % 10));
             letter.setFont(Font.font("Arial Black", FontWeight.BOLD, 29));
@@ -38,7 +44,7 @@ public class LetterBar extends Group {
 
             this.getChildren().add(cell);
             this.getChildren().add(letter);
-            letterArray[i] = letter;
+            letterArray.add(letter);
         }
     }
 
@@ -47,8 +53,8 @@ public class LetterBar extends Group {
      * Creates the main play area where the action takes place.
      */
     private void createContainer() {
-        container.setWidth(EmojiApp.PLAY_AREA_WIDTH);
-        container.setHeight(50);
+        container.setWidth(PlayArea.WIDTH);
+        container.setHeight(HEIGHT);
         container.setStroke(Color.BLACK);
         container.setFill(new Color(1, 1, 1, 0.8));
         container.setArcHeight(10);

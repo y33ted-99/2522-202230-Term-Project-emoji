@@ -68,8 +68,8 @@ public class Enemy extends Entity {
         }
         ShotLetters shotLetters = new ShotLetters(
                 charArray,
-                (int) EmojiApp.player.getCenterX(),
-                (int) EmojiApp.player.getCenterY(),
+                (int) EmojiApp.getPlayerBounds().getCenterX(),
+                (int) EmojiApp.getPlayerBounds().getCenterY(),
                 speed);
         Thread shotLettersThread = new Thread(shotLetters);
         shotLettersThread.setDaemon(true);

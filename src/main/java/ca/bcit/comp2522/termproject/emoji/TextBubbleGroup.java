@@ -31,21 +31,21 @@ public class TextBubbleGroup extends Group {
      * Set up an array of text bubbles.
      */
     private void initTextBubbleArrays() {
-        int textBubblesPerSide = EmojiApp.PLAY_AREA_HEIGHT / TextBubble.TEXT_BUBBLE_HEIGHT;
+        int textBubblesPerSide = PlayArea.HEIGHT / TextBubble.TEXT_BUBBLE_HEIGHT;
         textBubbles = new TextBubble[textBubblesPerSide];
     }
 
     private void positionGroup() {
         switch (side) {
-            case LEFT -> this.setTranslateY(EmojiApp.MARGIN_Y);
+            case LEFT -> this.setTranslateY(PlayArea.getMarginY());
             case RIGHT -> {
-                this.setTranslateY(EmojiApp.MARGIN_Y);
-                this.setTranslateX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - (Entity.IMAGE_SIZE / 2));
+                this.setTranslateY(PlayArea.getMarginY());
+                this.setTranslateX(PlayArea.getMarginX() + PlayArea.WIDTH - (Entity.IMAGE_SIZE / 2));
             }
-            case TOP -> this.setTranslateX(EmojiApp.MARGIN_X);
+            case TOP -> this.setTranslateX(PlayArea.getMarginX());
             default -> {
-                this.setTranslateX(EmojiApp.MARGIN_X);
-                this.setTranslateY(EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_HEIGHT);
+                this.setTranslateX(PlayArea.getMarginX());
+                this.setTranslateY(PlayArea.getMarginY() + PlayArea.HEIGHT);
             }
         }
     }
@@ -69,7 +69,7 @@ public class TextBubbleGroup extends Group {
             type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
         } while (checkIfEmojiExists(type));
 
-        int gapBetweenTextBubbles = (EmojiApp.PLAY_AREA_HEIGHT - (textBubbles.length * TextBubble.TEXT_BUBBLE_HEIGHT)) / textBubbles.length;
+        int gapBetweenTextBubbles = (PlayArea.HEIGHT - (textBubbles.length * TextBubble.TEXT_BUBBLE_HEIGHT)) / textBubbles.length;
         int position = (TextBubble.TEXT_BUBBLE_HEIGHT + gapBetweenTextBubbles) * index;
         TextBubble textBubble = new TextBubble(side, position, type);
         enemyCount++;

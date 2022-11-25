@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -33,10 +32,10 @@ public class Letter extends Group implements Runnable {
 
     // Play area borders (left, right, top, bottom)
     private final int[] LRTB = {
-            EmojiApp.MARGIN_X,
-            EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH,
-            EmojiApp.MARGIN_Y,
-            EmojiApp.MARGIN_Y + EmojiApp.PLAY_AREA_HEIGHT,};
+            PlayArea.getMarginX(),
+            PlayArea.getMarginX() + PlayArea.WIDTH,
+            PlayArea.getMarginY(),
+            PlayArea.getMarginY() + PlayArea.HEIGHT,};
 
     /**
      * Creates an instance of a type Letter.
@@ -98,7 +97,7 @@ public class Letter extends Group implements Runnable {
             Platform.runLater(() -> {
                 // check if collides with player
                 if (detectCollisionWithPlayer() || bounceCount > maxBounces) {
-                    removeLetter();
+                    moveLetterToLetterBar();
                     return;
                 }
                 detectCollisionWIthBorder();
@@ -131,8 +130,11 @@ public class Letter extends Group implements Runnable {
         }
     }
 
+    /*
+     *
+     */
     private void checkIfEnteredPlayArea() {
-        if (EmojiApp.PLAY_AREA.getBoundsInParent().contains(letter.getBoundsInParent())) {
+        if (PlayArea.getBounds().contains(letter.getBoundsInParent())) {
             hasEnteredPlayArea = true;
         }
     }
@@ -141,7 +143,7 @@ public class Letter extends Group implements Runnable {
      * Returns true if the letter has collided with the player.
      */
     private boolean detectCollisionWithPlayer() {
-        if (letter.getBoundsInParent().intersects(EmojiApp.player.getBoundsInParent())) {
+        if (letter.getBoundsInParent().intersects(EmojiApp.getPlayerBounds())) {
             isAlive = false;
             return true;
         }
@@ -149,9 +151,9 @@ public class Letter extends Group implements Runnable {
     }
 
     /*
-     * Remove letter from play area.
+     * Move letter to player's letter bar..
      */
-    private void removeLetter() {
+    private void moveLetterToLetterBar() {
         Timeline timeline = new Timeline();
         KeyValue keyValueX = new KeyValue(letter.translateXProperty(), 0);
         KeyValue keyValueY = new KeyValue(letter.yProperty(), EmojiApp.APP_HEIGHT - 40);

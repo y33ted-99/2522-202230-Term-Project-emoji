@@ -123,11 +123,11 @@ public class TextBubble extends Group {
         enemy.setTranslateY(margin);
 
         if (side == Side.LEFT) {
-            enemy.setShootFromX(EmojiApp.MARGIN_X + 5);
+            enemy.setShootFromX(PlayArea.getMarginX() + 5);
         } else {
-            enemy.setShootFromX(EmojiApp.MARGIN_X + EmojiApp.PLAY_AREA_WIDTH - 25);
+            enemy.setShootFromX(PlayArea.getMarginX() + PlayArea.WIDTH - 25);
         }
-        enemy.setShootFromY(EmojiApp.MARGIN_Y + position + (TEXT_BUBBLE_HEIGHT / 2) + 10);
+        enemy.setShootFromY(PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + 10);
         enemy.setShootFromSide(side);
         enemy.shoot();
         return enemy;

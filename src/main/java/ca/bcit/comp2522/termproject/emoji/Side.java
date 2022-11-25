@@ -12,7 +12,7 @@ public enum Side {
     TOP("text-bubble-top.png"),
     BOTTOM("text-bubble-bottom.png");
 
-    private String filename;
+    private final String filename;
 
     /**
      * Create instance of enum Side.
