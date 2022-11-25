@@ -2,22 +2,33 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -93,12 +104,14 @@ public class EmojiApp extends Application {
         root = new Pane();
         root.setPrefSize(APP_WIDTH, APP_HEIGHT);
 
+
         createBackground();
         createPlayArea();
         createPlayer();
+
         leftTextBubbleGroup = new TextBubbleGroup(GameSide.LEFT);
         rightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
-        root.getChildren().addAll(leftTextBubbleGroup, rightTextBubbleGroup);
+
 
         // Main game loop
         AnimationTimer timer = new AnimationTimer() {
@@ -107,7 +120,18 @@ public class EmojiApp extends Application {
                 onUpdate(now);
             }
         };
-        timer.start();
+        VBox box = new VBox(
+                    20,
+                    new MenuItem("START", () -> timer.start()),
+                    new MenuItem("HIGHSCORE", () -> {}),
+                    new MenuItem("QUIT", () -> Platform.exit())
+            );
+
+            box.setTranslateX(380);
+            box.setTranslateY(380);
+
+
+            root.getChildren().addAll(leftTextBubbleGroup, rightTextBubbleGroup, box);
         return root;
     }
 
@@ -147,6 +171,8 @@ public class EmojiApp extends Application {
 
         scene.setOnMouseMoved(this::mouseMoveHandler);
         scene.setOnMouseClicked(this::mouseClickHandler);
+
+
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("Untitled Emoji Game");
@@ -237,6 +263,27 @@ public class EmojiApp extends Application {
      */
     private void mouseClickHandler(final MouseEvent event) {
         player.setSpeed(Player.POUNCE_SPEED);
+    }
+
+    private static class MenuItem extends StackPane {
+        MenuItem(String name, Runnable action) {
+            LinearGradient gradient = new LinearGradient(
+                    0.5, 0.5, 1, 0.5, true, CycleMethod.NO_CYCLE,
+                    new Stop(0.8, Color.web("Pink", 0.5)),
+                    new Stop(1, Color.web("white", 0.5)));
+            Rectangle bg = new Rectangle(250, 30, gradient);
+
+
+            Text text = new Text(name);
+            text.setFont(Font.font(25));
+            text.fillProperty().bind(
+                    Bindings.when(hoverProperty()).then(Color.WHITE).otherwise(Color.BLACK)
+            );
+
+            setOnMouseClicked(e -> action.run());
+
+            getChildren().addAll(bg, text);
+        }
     }
 }
 
