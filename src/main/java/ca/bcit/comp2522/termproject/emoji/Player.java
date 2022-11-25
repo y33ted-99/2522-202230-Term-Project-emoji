@@ -52,6 +52,7 @@ public class Player extends Entity {
     public void move() {
         double xMove = getTranslateX() - moveVector.getX();
         double yMove = getTranslateY() - moveVector.getY();
+//        System.out.println(xMove);
         if (isValidMove(xMove, yMove)) {
             setTranslateX(xMove);
             setTranslateY(yMove);
@@ -68,23 +69,21 @@ public class Player extends Entity {
         if (moveDestination == null) {
             return false;
         }
-        Bounds playerBounds = getBoundsInParent();
         Bounds playAreaBounds = PlayArea.getBounds();
-        Point2D mouse = new Point2D(moveDestination.getX(), moveDestination.getY());
-        return !playerBounds.contains(mouse)
+        return !getBoundsInParent().contains(moveDestination)
                 && xDestination > playAreaBounds.getMinX()
                 && xDestination < playAreaBounds.getMaxX() - Player.IMAGE_SIZE
                 && yDestination > playAreaBounds.getMinY()
                 && yDestination < playAreaBounds.getMaxY() - Player.IMAGE_SIZE;
     }
 
-//    public void moveToMouse(final MouseEvent event) {
-//        Point2D moveVector = new Point2D(
-//                getBoundsInParent().getCenterX() - event.getSceneX(),
-//                EmojiApp.getPlayerBounds().getCenterY() - event.getSceneY())
-//                .normalize()
-//                .multiply(EmojiApp.getPlayerSpeed());
-//        EmojiApp.setPlayerMoveVector(moveVector);
-//        EmojiApp.setPlayerMousePosition(new Point2D(event.getSceneX(), event.getSceneY()));
-//    }
+    public void moveToMouse(final MouseEvent event) {
+        moveVector = new Point2D(
+                getBoundsInParent().getCenterX() - event.getSceneX(),
+                getBoundsInParent().getCenterY() - event.getSceneY())
+                .normalize()
+                .multiply(speed);
+
+        moveDestination = new Point2D(event.getSceneX(), event.getSceneY());
+    }
 }

@@ -104,9 +104,8 @@ public class EmojiApp extends Application {
 
         Scene scene = new Scene(createContent());
 
-        scene.setOnMouseMoved((event)->
-        {
-//            player.moveToMouse(event);
+        scene.setOnMouseMoved((event) -> {
+            player.moveToMouse(event);
         });
 //        scene.setOnMouseClicked(InputController::mouseClickHandler);
 
@@ -153,20 +152,5 @@ public class EmojiApp extends Application {
     public static Bounds getPlayerBounds() {
         return player.getBoundsInParent();
     }
-
-//    public static double getPlayerSpeed() {
-//        return player.getSpeed();
-//    }
-//
-//    public static void setPlayerMoveVector(final Point2D vector) {
-//        player.setMoveVector(vector);
-//    }
-//
-//    public static void setPlayerMousePosition(final Point2D mousePosition) {
-//        player.setMoveValues(mousePosition);
-//    }
-//    public setPlayerMouse(final Point2D mousePosition) {
-//
-//    }
 }
 

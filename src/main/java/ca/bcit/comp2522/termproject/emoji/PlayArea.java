@@ -51,16 +51,15 @@ public class PlayArea {
      * Creates the main play area where the action takes place.
      */
     public static Rectangle createPlayArea() {
-        Rectangle playArea = new Rectangle();
-        playArea.setX(getMarginX());
-        playArea.setY(getMarginY());
-        playArea.setWidth(WIDTH);
-        playArea.setHeight(HEIGHT);
-        playArea.setStroke(Color.BLACK);
-        playArea.setFill(new Color(1, 1, 1, 0.8));
-        playArea.setArcHeight(10);
-        playArea.setArcWidth(10);
-        return playArea;
+        PLAY_AREA.setX(getMarginX());
+        PLAY_AREA.setY(getMarginY());
+        PLAY_AREA.setWidth(WIDTH);
+        PLAY_AREA.setHeight(HEIGHT);
+        PLAY_AREA.setStroke(Color.BLACK);
+        PLAY_AREA.setFill(new Color(1, 1, 1, 0.8));
+        PLAY_AREA.setArcHeight(10);
+        PLAY_AREA.setArcWidth(10);
+        return PLAY_AREA;
     }
 
     public static Bounds getBounds() {
