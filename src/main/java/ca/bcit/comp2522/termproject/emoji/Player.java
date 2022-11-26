@@ -86,4 +86,6 @@ public class Player extends Entity {
 
         moveDestination = new Point2D(event.getSceneX(), event.getSceneY());
     }
+
+    // TODO: mouseclick pops bubble / removes word if player in vicinity
 }

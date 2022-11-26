@@ -81,14 +81,22 @@ public class TextBubbleGroup extends Group {
      * Returns true if an emoji of the given type exists in this text bubble group.
      */
     private boolean checkIfEmojiExists(final EmojiType emoji) {
-        for (TextBubble tb : textBubbles) {
-            if (tb == null) {
-                continue;
-            }
-            if (tb.getType() == emoji) {
+        for (TextBubble textBubble : textBubbles) {
+            if (textBubble != null && textBubble.getType() == emoji) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Updates all text bubbles in this group.
+     */
+    public void update() {
+        for (TextBubble textBubble : textBubbles) {
+            if (textBubble != null) {
+                textBubble.update();
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -22,35 +23,23 @@ public class Letter extends Group implements Runnable {
     private final Text letter = new Text();
 
     private int speed;
-    private int xVelocity;
-    private int yVelocity;
-    private float opacity = 1;
+    private double xVelocity;
+    private double yVelocity;
     private int bounceCount;
-    private final int maxBounces = 10;
-    private boolean hasEnteredPlayArea = false;
-    private boolean isAlive = true;
-
-    // Play area borders (left, right, top, bottom)
-    private final int[] LRTB = {
-            PlayArea.getMarginX(),
-            PlayArea.getMarginX() + PlayArea.WIDTH,
-            PlayArea.getMarginY(),
-            PlayArea.getMarginY() + PlayArea.HEIGHT,};
+    private boolean hasEnteredPlayArea;
+    private boolean isAlive;
 
     /**
      * Creates an instance of a type Letter.
      *
      * @param character a String
      * @param color     letter color as Color
-     * @param xStart    initial x position as int
-     * @param yStart    initial y position as int
-     * @param xTarget   target x position as int
-     * @param yTarget   target y position as int
+     * @param path      path the letter follows
      * @param speed     an int
      */
-    public Letter(final char character, final Color color,
-                  final int xStart, final int yStart,
-                  final int xTarget, final int yTarget,
+    public Letter(final char character,
+                  final Color color,
+                  final Line path,
                   final int speed) {
         this.speed = speed;
         letter.setText(String.valueOf(character));
@@ -58,10 +47,11 @@ public class Letter extends Group implements Runnable {
         letter.setFill(color);
         letter.setStroke(color.darker());
         letter.setBoundsType(TextBoundsType.VISUAL);
-        letter.setX(xStart);
-        letter.setY(yStart);
-        setDirection(xStart, yStart, xTarget, yTarget);
-        EmojiApp.root.getChildren().add(letter);
+        letter.setX(path.getStartX());
+        letter.setY(path.getStartY());
+        setDirection(path.getStartX(), path.getStartY(), path.getEndX(), path.getEndY());
+        EmojiApp.addToScene(letter);
+        isAlive = true;
     }
 
     /**
@@ -76,12 +66,12 @@ public class Letter extends Group implements Runnable {
     /*
      * Sets the letter's initial movement direction toward the player.
      */
-    private void setDirection(final int xStart, final int yStart, final int xTarget, final int yTarget) {
-        double xDiff = xTarget - xStart;
-        double yDiff = yTarget - yStart;
+    private void setDirection(final double startX, final double startY, final double endX, final double endY) {
+        double xDiff = endX - startX;
+        double yDiff = endY - startY;
         double hyp = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-        xVelocity = (int) (speed * (xDiff / hyp));
-        yVelocity = (int) (speed * (yDiff / hyp));
+        xVelocity = speed * (xDiff / hyp);
+        yVelocity = speed * (yDiff / hyp);
     }
 
     /**
@@ -96,7 +86,7 @@ public class Letter extends Group implements Runnable {
             }
             Platform.runLater(() -> {
                 // check if collides with player
-                if (detectCollisionWithPlayer() || bounceCount > maxBounces) {
+                if (detectCollisionWithPlayer()) {
                     moveLetterToLetterBar();
                     return;
                 }
@@ -113,25 +103,25 @@ public class Letter extends Group implements Runnable {
         if (hasEnteredPlayArea) {
             Bounds letterBounds = letter.getBoundsInParent();
             // if bounce off left or right of Panel
-            if (letterBounds.getMinX() <= LRTB[0] || letterBounds.getMaxX() >= LRTB[1]) {
+            if (letterBounds.getMinX() <= PlayArea.getMarginX()
+                    || letterBounds.getMaxX() >= PlayArea.getMarginX() + PlayArea.WIDTH) {
                 xVelocity *= -1; // reverses velocity in x direction
                 hasBounced = true;
             }
             // if bounce off top or bottom of Panel
-            if (letterBounds.getMinY() <= LRTB[2] || letterBounds.getMaxY() >= LRTB[3]) {
+            if (letterBounds.getMinY() <= PlayArea.getMarginY()
+                    || letterBounds.getMaxY() >= PlayArea.getMarginY() + PlayArea.HEIGHT) {
                 yVelocity *= -1; // reverses velocity in y direction
                 hasBounced = true;
             }
             if (hasBounced) {
                 bounceCount++;
-                opacity -= (1 / (float) (maxBounces - 1));
-                letter.setOpacity(opacity);
             }
         }
     }
 
     /*
-     *
+     * Checks if letter has fully entered play area after being shot out.
      */
     private void checkIfEnteredPlayArea() {
         if (PlayArea.getBounds().contains(letter.getBoundsInParent())) {
@@ -165,4 +155,7 @@ public class Letter extends Group implements Runnable {
         timeline.play();
     }
 
+    public void update() {
+
+    }
 }

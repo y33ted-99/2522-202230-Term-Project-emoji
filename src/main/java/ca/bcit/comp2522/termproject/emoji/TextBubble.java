@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -40,6 +41,7 @@ public class TextBubble extends Group {
     private final Entity emoji;
     private Text phrase;
     private int textBubbleWidth;
+    private LetterGroup letterGroup;
 
     /**
      * Creates an instance of type TextBubble.
@@ -130,54 +132,51 @@ public class TextBubble extends Group {
         // letter speed is random
         int speed = EmojiApp.RNG.nextInt(SPEED_RANGE[0], SPEED_RANGE[1]);
         char[] charArray = type.getPhrase().toCharArray();
-        int xStart;
+
+        int startX;
         if (side == Side.LEFT) {
-            xStart = PlayArea.getMarginX() + 5;
+            startX = PlayArea.getMarginX() + 5;
         } else {
-            xStart = PlayArea.getMarginX() + PlayArea.WIDTH - 25;
+            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 25;
         }
-        LetterGroup shotLetters = new LetterGroup(
-                charArray,
-                xStart,
+        Line path = new Line(startX,
                 PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + 10,
-                (int) EmojiApp.getPlayerBounds().getCenterX(),
-                (int) EmojiApp.getPlayerBounds().getCenterY(),
-                speed);
-        Thread shotLettersThread = new Thread(shotLetters);
+                EmojiApp.getPlayerBounds().getCenterX(),
+                EmojiApp.getPlayerBounds().getCenterY());
+        letterGroup = new LetterGroup(charArray, path, speed);
+        Thread shotLettersThread = new Thread(letterGroup);
         shotLettersThread.setDaemon(true);
         shotLettersThread.start();
     }
 
     private class LetterGroup implements Runnable {
+        static int pauseBeforeShoot = 300;
         char[] letters;
-        int xStart;
-        int yStart;
-        int xTarget;
-        int yTarget;
+        Line path;
+        int startX;
+        int startY;
+        int endX;
+        int endY;
         int speed;
         List<Letter> letterList;
         boolean isAlive;
 
-        LetterGroup(final char[] letters,
-                           final int xStart,
-                           final int yStart,
-                           final int xTarget,
-                           final int yTarget,
-                           final int speed) {
+        LetterGroup(final char[] letters, final Line path, final int speed) {
             this.letters = letters;
-            this.xStart = xStart;
-            this.yStart = yStart;
-            this.xTarget = xTarget;
-            this.yTarget = yTarget;
+            this.path = path;
             this.speed = speed;
             this.letterList = new ArrayList<>();
-            this.isAlive = false;
         }
 
         /*
          * Runs the letter's animation (bouncing around the play area).
          */
         public void run() {
+            try {
+                Thread.sleep(pauseBeforeShoot);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
             for (char chr : letters) {
                 try {
                     Thread.sleep(SHOOT_RATE);
@@ -188,16 +187,13 @@ public class TextBubble extends Group {
                     Letter letter = new Letter(
                             chr,
                             type.getColor(),
-                            xStart,
-                            yStart,
-                            xTarget,
-                            yTarget,
+                            path,
                             speed);
                     letterList.add(letter);
+                    getChildren().add(letter);
                     Thread letterBouncer = new Thread(letter);
                     letterBouncer.setDaemon(true);
                     letterBouncer.start();
-                    isAlive = true;
                 });
             }
         }
@@ -208,12 +204,21 @@ public class TextBubble extends Group {
          * @return true if at least one shot letter is alive
          */
         public boolean isAlive() {
-            for (Letter letter: letterList) {
+            for (Letter letter : letterList) {
                 if (letter.isAlive()) {
                     return true;
                 }
             }
             return false;
+        }
+
+        /**
+         * Updates each letter.
+         */
+        public void update() {
+            for (Letter letter : letterList) {
+                letter.update();
+            }
         }
     }
 
@@ -221,6 +226,17 @@ public class TextBubble extends Group {
      * Pops the bubble and removes it (and its associated emoji and its letters) from game.
      */
     public void pop() {
-        // when bubble pops emoji flies out in a fun animation
+        // TODO: when bubble pops emoji flies out in a fun animation
+    }
+
+    /**
+     * Updates the group of letters.
+     */
+    public void update() {
+        // TODO: if player in vicinity, set poppable = true
+        letterGroup.update();
+        if (!letterGroup.isAlive()) {
+//            shoot();
+        }
     }
 }
