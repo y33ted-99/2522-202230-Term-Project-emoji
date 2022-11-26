@@ -36,10 +36,10 @@ public class EmojiApp extends Application {
      */
     public static final Random RNG = new Random();
 
-    /**
+    /*
      * The main game pane to which all entities drawn.
      */
-    public static Pane root;
+    private static Pane root;
 
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
@@ -91,6 +91,7 @@ public class EmojiApp extends Application {
                 rightTextBubbleGroup.spawnTextBubble();
             }
         }
+        rightTextBubbleGroup.update();
         player.move();
     }
 
@@ -151,6 +152,10 @@ public class EmojiApp extends Application {
      */
     public static Bounds getPlayerBounds() {
         return player.getBoundsInParent();
+    }
+
+    public static void addToScene(final Node node) {
+        root.getChildren().add(node);
     }
 }
 
