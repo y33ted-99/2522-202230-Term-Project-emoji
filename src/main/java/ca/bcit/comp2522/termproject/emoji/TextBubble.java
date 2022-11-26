@@ -1,5 +1,6 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a TextBubble that contains an emoji and it's associated phrase.
@@ -28,6 +31,8 @@ public class TextBubble extends Group {
      * Size of font used in text bubble phrase.
      */
     public static final int FONT_SIZE = 28;
+    private static final int SHOOT_RATE = 300;
+    private static final int[] SPEED_RANGE = {3, 11};
     private final Side side;
     private final int position;
     private final EmojiType type;
@@ -48,29 +53,11 @@ public class TextBubble extends Group {
         this.position = position;
         this.type = type;
         textBubbleImageView = createTextBubbleImage();
-        emoji = createEmoji();
         phrase = createPhrase();
-
+        emoji = createEmoji();
         getChildren().addAll(textBubbleImageView, emoji, phrase);
         positionTextBubble();
-    }
-
-    /**
-     * Returns the side of the play area where this TextBubble exists.
-     *
-     * @return the side of the play area where this TextBubble exists as Side
-     */
-    public Side getSide() {
-        return side;
-    }
-
-    /**
-     * Returns the position along the side of the play area where this TextBubble exists.
-     *
-     * @return the position along the side of the play area where this TextBubble exists as int
-     */
-    public int getPosition() {
-        return position;
+        shoot();
     }
 
     /**
@@ -114,26 +101,6 @@ public class TextBubble extends Group {
     }
 
     /*
-     * Creates the emoji.
-     */
-    private Entity createEmoji() {
-        Enemy enemy = new Enemy(type);
-        int margin = (TEXT_BUBBLE_HEIGHT - Entity.IMAGE_SIZE) / 2;
-        enemy.setTranslateX(textBubbleWidth - (margin * 2));
-        enemy.setTranslateY(margin);
-
-        if (side == Side.LEFT) {
-            enemy.setShootFromX(PlayArea.getMarginX() + 5);
-        } else {
-            enemy.setShootFromX(PlayArea.getMarginX() + PlayArea.WIDTH - 25);
-        }
-        enemy.setShootFromY(PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + 10);
-        enemy.setShootFromSide(side);
-        enemy.shoot();
-        return enemy;
-    }
-
-    /*
      * Creates the TextBubble's text based on the phrase associated with the emoji.
      */
     private Text createPhrase() {
@@ -143,6 +110,111 @@ public class TextBubble extends Group {
         phrase.setFill(type.getColor());
         phrase.setFont(font);
         return phrase;
+    }
+
+    /*
+     * Creates the emoji.
+     */
+    private Entity createEmoji() {
+        Enemy enemy = new Enemy(type);
+        int margin = (TEXT_BUBBLE_HEIGHT - Entity.IMAGE_SIZE) / 2;
+        enemy.setTranslateX(textBubbleWidth - (margin * 2));
+        enemy.setTranslateY(margin);
+        return enemy;
+    }
+
+    /**
+     * Shoots a group of letters at the Player.
+     */
+    public void shoot() {
+        // letter speed is random
+        int speed = EmojiApp.RNG.nextInt(SPEED_RANGE[0], SPEED_RANGE[1]);
+        char[] charArray = type.getPhrase().toCharArray();
+        int xStart;
+        if (side == Side.LEFT) {
+            xStart = PlayArea.getMarginX() + 5;
+        } else {
+            xStart = PlayArea.getMarginX() + PlayArea.WIDTH - 25;
+        }
+        LetterGroup shotLetters = new LetterGroup(
+                charArray,
+                xStart,
+                PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + 10,
+                (int) EmojiApp.getPlayerBounds().getCenterX(),
+                (int) EmojiApp.getPlayerBounds().getCenterY(),
+                speed);
+        Thread shotLettersThread = new Thread(shotLetters);
+        shotLettersThread.setDaemon(true);
+        shotLettersThread.start();
+    }
+
+    private class LetterGroup implements Runnable {
+        char[] letters;
+        int xStart;
+        int yStart;
+        int xTarget;
+        int yTarget;
+        int speed;
+        List<Letter> letterList;
+        boolean isAlive;
+
+        LetterGroup(final char[] letters,
+                           final int xStart,
+                           final int yStart,
+                           final int xTarget,
+                           final int yTarget,
+                           final int speed) {
+            this.letters = letters;
+            this.xStart = xStart;
+            this.yStart = yStart;
+            this.xTarget = xTarget;
+            this.yTarget = yTarget;
+            this.speed = speed;
+            this.letterList = new ArrayList<>();
+            this.isAlive = false;
+        }
+
+        /*
+         * Runs the letter's animation (bouncing around the play area).
+         */
+        public void run() {
+            for (char chr : letters) {
+                try {
+                    Thread.sleep(SHOOT_RATE);
+                } catch (InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+                Platform.runLater(() -> {
+                    Letter letter = new Letter(
+                            chr,
+                            type.getColor(),
+                            xStart,
+                            yStart,
+                            xTarget,
+                            yTarget,
+                            speed);
+                    letterList.add(letter);
+                    Thread letterBouncer = new Thread(letter);
+                    letterBouncer.setDaemon(true);
+                    letterBouncer.start();
+                    isAlive = true;
+                });
+            }
+        }
+
+        /**
+         * Returns true if at least one shot letter is alive.
+         *
+         * @return true if at least one shot letter is alive
+         */
+        public boolean isAlive() {
+            for (Letter letter: letterList) {
+                if (letter.isAlive()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     /**
