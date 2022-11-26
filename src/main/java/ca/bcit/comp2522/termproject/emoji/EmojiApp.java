@@ -53,7 +53,7 @@ public class EmojiApp extends Application {
 
         Node background = PlayArea.createBackground();
         Node playArea = PlayArea.createPlayArea();
-        Node letterBar = new LetterBar();
+        Node letterBar = LetterBar.createLetterBar();
 
         player = createPlayer();
         leftTextBubbleGroup = new TextBubbleGroup(Side.LEFT);

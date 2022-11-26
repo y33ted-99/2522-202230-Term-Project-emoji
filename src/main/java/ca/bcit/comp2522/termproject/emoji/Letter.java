@@ -145,14 +145,16 @@ public class Letter extends Group implements Runnable {
      */
     private void moveLetterToLetterBar() {
         Timeline timeline = new Timeline();
-        KeyValue keyValueX = new KeyValue(letter.translateXProperty(), 0);
-        KeyValue keyValueY = new KeyValue(letter.yProperty(), EmojiApp.APP_HEIGHT - 40);
+        System.out.println(LetterBar.getNextSlot());
+        KeyValue keyValueX = new KeyValue(letter.xProperty(), LetterBar.getNextSlot().getX());
+        KeyValue keyValueY = new KeyValue(letter.yProperty(), LetterBar.getNextSlot().getY());
         KeyValue keyValueR = new KeyValue(letter.rotateProperty(), 720);
 
         Duration duration = Duration.millis(300);
         KeyFrame keyFrame = new KeyFrame(duration, keyValueX, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
+        LetterBar.addLetter(letter);
     }
 
     public void update() {
