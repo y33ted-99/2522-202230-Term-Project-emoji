@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A GUI element representing the letters the player hos collided with.
+ * A GUI element that manages the players letters.
  *
  * @author Terence Grigoruk
  * @author Brian Mak
@@ -27,7 +27,7 @@ public class LetterBar extends Group {
     private static final int HEIGHT = 50;
     private static final int CAPACITY = 20;
     private static final int FONT_SIZE = 29;
-    private static final int CELL_GAP = 9;
+    private static final int CELL_MARGIN = 9;
     private static final int LETTER_MARGIN = 14;
     private static final Group letterBar = new Group();
     private static final Rectangle container = new Rectangle();
@@ -57,6 +57,8 @@ public class LetterBar extends Group {
 
     /**
      * Returns a Group containing elements of a letter bar.
+     *
+     * @return a Group containing elements of a letter bar
      */
     public static Group createLetterBar() {
         createContainer();
@@ -90,34 +92,48 @@ public class LetterBar extends Group {
             Rectangle cell = new Rectangle(FONT_SIZE, FONT_SIZE + 1);
             cell.setFill(Color.WHITE);
             cell.setStroke(Color.LIGHTGRAY);
-            cell.setTranslateX((i * FONT_SIZE) + CELL_GAP);
+            cell.setTranslateX((i * FONT_SIZE) + CELL_MARGIN);
             cell.setTranslateY(10);
             letterBar.getChildren().add(cell);
         }
     }
 
-    public static int getSize() {
-        return letters.size();
-    }
-
+    /**
+     * Returns the coordinates of the next available slot for a letter in the letter bar.
+     *
+     * @return the coordinate of the next slot position as Point2D
+     */
     public static Point2D getNextSlot() {
         return new Point2D(
                 letterBar.getTranslateX() + (letters.size() * FONT_SIZE) + LETTER_MARGIN,
                 letterBar.getTranslateY() + 36);
     }
 
+    /**
+     * Adds a letter to the letter bar.
+     *
+     * @param letter the letter to add as Text
+     */
     public static void addLetter(final Text letter) {
         letters.add(letter);
-        int pointsGained = checkIfContainsWords();
-        while (pointsGained > 0) {
-            EmojiApp.addToScore(pointsGained);
-            pointsGained = checkIfContainsWords();
+        int totalPoints = 0;
+        int points = checkIfContainsWords();
+        while (points > 0) {
+            totalPoints += points;
+            EmojiApp.addToScore(points);
+            points = checkIfContainsWords();
+        }
+        if (totalPoints > 0) {
+            repositionLetters();
         }
         if (letters.size() == CAPACITY) {
             EmojiApp.setGameOver(true);
         }
     }
 
+    /*
+     * Checks if letter bar contains a words and returns the number of letters removed form the letter bar.
+     */
     private static int checkIfContainsWords() {
         StringBuilder stringBuilder = new StringBuilder();
         for (Text letter : letters) {
@@ -143,6 +159,9 @@ public class LetterBar extends Group {
         return 0;
     }
 
+    /*
+     * Removes a word from the letter bar.
+     */
     private static void removeWord(final int index, final int length) {
         Text letter;
         // remove letters from arraylist
@@ -150,9 +169,30 @@ public class LetterBar extends Group {
             letter = letters.remove(index);
             EmojiApp.removeFromRootScene(letter);
         }
-        // shift letters on right side of removed word to the left
-        for (int i = index; i < Math.min(index + length, letters.size()); i++) {
-            letters.get(i).setTranslateX(letterBar.getTranslateX() + (i * FONT_SIZE) + LETTER_MARGIN);
+    }
+
+    // TODO: removeLetter() should remove letters belonging to a particular set i.e. a TextBubble
+    /*
+     * Removes a specific letter from the letter bar.
+     */
+    private static void removeLetter(final Text letterToRemove) {
+        for (int i = 0; i < letters.size(); i++) {
+            if (letters.get(i) == letterToRemove) {
+                letters.remove(letterToRemove);
+                EmojiApp.removeFromRootScene(letterToRemove);
+            }
+        }
+        repositionLetters();
+    }
+
+    /*
+     * Repositions letters i.e. if some were removed.
+     */
+    private static void repositionLetters() {
+        for (int i = 0; i < letters.size(); i++) {
+            double translate = letterBar.getTranslateX() + (i * FONT_SIZE) + 9;
+            System.out.println(translate);
+            letters.get(i).setX(translate);
         }
     }
 }

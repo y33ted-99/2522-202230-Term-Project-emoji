@@ -26,7 +26,7 @@ public class Player extends Entity {
     /**
      * The player's initial speed.
      */
-    public static final double INIT_SPEED = 2.8;
+    public static final double INIT_SPEED = 3.14;
     /**
      * The player's speed when pouncing.
      */
