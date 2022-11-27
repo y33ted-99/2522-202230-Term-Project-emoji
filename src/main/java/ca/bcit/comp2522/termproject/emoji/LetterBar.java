@@ -28,7 +28,8 @@ public class LetterBar extends Group {
     private static final int CAPACITY = 20;
     private static final int FONT_SIZE = 29;
     private static final int CELL_MARGIN = 9;
-    private static final int LETTER_MARGIN = 14;
+    private static final int LETTER_MARGIN_X = 14;
+    private static final int LETTER_MARGIN_Y = 35;
     private static final Group letterBar = new Group();
     private static final Rectangle container = new Rectangle();
     private static List<Text> letters = new ArrayList<>();
@@ -62,7 +63,7 @@ public class LetterBar extends Group {
      */
     public static Group createLetterBar() {
         createContainer();
-        drawCells();
+//        drawCells();
         letterBar.setTranslateX(PlayArea.getMarginX());
         letterBar.setTranslateY(PlayArea.getMarginY()
                 + PlayArea.HEIGHT
@@ -78,7 +79,7 @@ public class LetterBar extends Group {
         container.setWidth(PlayArea.WIDTH);
         container.setHeight(HEIGHT);
         container.setStroke(Color.BLACK);
-        container.setFill(new Color(1, 1, 1, 0.8));
+        container.setFill(new Color(1, 1, 1, 0.9));
         container.setArcHeight(10);
         container.setArcWidth(10);
         letterBar.getChildren().add(container);
@@ -105,8 +106,8 @@ public class LetterBar extends Group {
      */
     public static Point2D getNextSlot() {
         return new Point2D(
-                letterBar.getTranslateX() + (letters.size() * FONT_SIZE) + LETTER_MARGIN,
-                letterBar.getTranslateY() + 36);
+                letterBar.getTranslateX() + (letters.size() * FONT_SIZE) + LETTER_MARGIN_X,
+                letterBar.getTranslateY() + LETTER_MARGIN_Y);
     }
 
     /**
@@ -149,7 +150,6 @@ public class LetterBar extends Group {
             if (letterBarString.contains(word)) {
                 index = letterBarString.indexOf(word);
                 wordLength = word.length();
-                System.out.println("removing " + word + " from " + letterBarString);
             }
         }
         if (index >= 0) {
@@ -190,8 +190,7 @@ public class LetterBar extends Group {
      */
     private static void repositionLetters() {
         for (int i = 0; i < letters.size(); i++) {
-            double translate = letterBar.getTranslateX() + (i * FONT_SIZE) + 9;
-            System.out.println(translate);
+            double translate = letterBar.getTranslateX() + (i * FONT_SIZE) + LETTER_MARGIN_X;
             letters.get(i).setX(translate);
         }
     }

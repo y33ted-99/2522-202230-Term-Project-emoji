@@ -21,7 +21,7 @@ import javafx.util.Duration;
  * @version Fall 2022
  */
 public class Letter extends Group {
-    private static final int FONT_SIZE = 28;
+    private static final int FONT_SIZE = 25;
 
     private final Text letter = new Text();
 
