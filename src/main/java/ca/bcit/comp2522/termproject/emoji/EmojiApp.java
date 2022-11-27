@@ -100,6 +100,10 @@ public class EmojiApp extends Application {
     private static Point2D playerMovementVector = new Point2D(0, 0);
     private static MouseEvent mouseMoveEvent;
 
+    private Integer time = 0;
+
+    private final Text text = new Text (time.toString());
+
     private Parent createContent() {
         root = new Pane();
         root.setPrefSize(APP_WIDTH, APP_HEIGHT);
@@ -108,9 +112,18 @@ public class EmojiApp extends Application {
         createBackground();
         createPlayArea();
         createPlayer();
+        showScore("SCORE:");
 
         leftTextBubbleGroup = new TextBubbleGroup(GameSide.LEFT);
         rightTextBubbleGroup = new TextBubbleGroup(GameSide.RIGHT);
+
+        final Text text = new Text (time.toString());
+        text.setStroke(Color.BLACK);
+        text.setFont(Font.font(25));
+        final StackPane stack2 = new StackPane();
+        stack2.getChildren().addAll(text);
+        stack2.setLayoutX(700);
+        stack2.setLayoutY(70);
 
 
         // Main game loop
@@ -118,8 +131,13 @@ public class EmojiApp extends Application {
             @Override
             public void handle(final long now) {
                 onUpdate(now);
+                text.setText(time.toString());
+                time++;
+
+
             }
         };
+
         VBox box = new VBox(
                     20,
                     new MenuItem("START", () -> timer.start()),
@@ -131,7 +149,7 @@ public class EmojiApp extends Application {
             box.setTranslateY(380);
 
 
-            root.getChildren().addAll(leftTextBubbleGroup, rightTextBubbleGroup, box);
+            root.getChildren().addAll(leftTextBubbleGroup, rightTextBubbleGroup, box, stack2);
         return root;
     }
 
@@ -285,5 +303,19 @@ public class EmojiApp extends Application {
             getChildren().addAll(bg, text);
         }
     }
+
+    private void showScore (String count) {
+        final Text score = new Text(count);
+        score.setStroke(Color.BLACK);
+        score.setFont(Font.font(25));
+        final StackPane stack1 = new StackPane();
+        stack1.getChildren().addAll(score);
+        stack1.setLayoutX(600);
+        stack1.setLayoutY(70);
+
+        root.getChildren().addAll(stack1);
+
+    }
+
 }
 
