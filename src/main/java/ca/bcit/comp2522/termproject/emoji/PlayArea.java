@@ -13,6 +13,10 @@ import java.nio.file.Paths;
 
 /**
  * Represents components of the game play area.
+ *
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
  */
 public class PlayArea {
 

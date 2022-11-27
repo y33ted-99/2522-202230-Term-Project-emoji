@@ -33,7 +33,7 @@ public class TextBubble extends Group {
      */
     public static final int FONT_SIZE = 28;
     private static final int SHOOT_RATE = 300;
-    private static final int[] SPEED_RANGE = {3, 11};
+    private static final int[] SPEED_RANGE = {1, 4};
     private final Side side;
     private final int position;
     private final EmojiType type;
@@ -42,12 +42,13 @@ public class TextBubble extends Group {
     private Text phrase;
     private int textBubbleWidth;
     private LetterGroup letterGroup;
+    private Thread shotLettersThread;
 
     /**
      * Creates an instance of type TextBubble.
      *
      * @param side     side of play area as Side
-     * @param position position along side as int
+     * @param position position along a side as int
      * @param type     the type of emoji as EmojiType
      */
     public TextBubble(final Side side, final int position, final EmojiType type) {
@@ -129,34 +130,31 @@ public class TextBubble extends Group {
      * Shoots a group of letters at the Player.
      */
     public void shoot() {
+        int margin = 10;
         // letter speed is random
         int speed = EmojiApp.RNG.nextInt(SPEED_RANGE[0], SPEED_RANGE[1]);
         char[] charArray = type.getPhrase().toCharArray();
 
         int startX;
         if (side == Side.LEFT) {
-            startX = PlayArea.getMarginX() + 5;
+            startX = PlayArea.getMarginX() + margin;
         } else {
-            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 25;
+            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin;
         }
         Line path = new Line(startX,
-                PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + 10,
+                PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + margin,
                 EmojiApp.getPlayerBounds().getCenterX(),
                 EmojiApp.getPlayerBounds().getCenterY());
         letterGroup = new LetterGroup(charArray, path, speed);
-        Thread shotLettersThread = new Thread(letterGroup);
+        shotLettersThread = new Thread(letterGroup);
         shotLettersThread.setDaemon(true);
         shotLettersThread.start();
     }
 
     private class LetterGroup implements Runnable {
-        static int pauseBeforeShoot = 300;
+        static final int INITIAL_PAUSE = 300;
         char[] letters;
         Line path;
-        int startX;
-        int startY;
-        int endX;
-        int endY;
         int speed;
         List<Letter> letterList;
         boolean isAlive;
@@ -173,7 +171,7 @@ public class TextBubble extends Group {
          */
         public void run() {
             try {
-                Thread.sleep(pauseBeforeShoot);
+                Thread.sleep(INITIAL_PAUSE);
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             }
@@ -191,9 +189,9 @@ public class TextBubble extends Group {
                             speed);
                     letterList.add(letter);
                     getChildren().add(letter);
-                    Thread letterBouncer = new Thread(letter);
-                    letterBouncer.setDaemon(true);
-                    letterBouncer.start();
+//                    Thread letterBouncer = new Thread(letter);
+//                    letterBouncer.setDaemon(true);
+//                    letterBouncer.start();
                 });
             }
         }
@@ -209,6 +207,7 @@ public class TextBubble extends Group {
                     return true;
                 }
             }
+//            shotLettersThread.stop(); // needed??
             return false;
         }
 

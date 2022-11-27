@@ -13,6 +13,10 @@ import java.util.List;
 
 /**
  * A GUI element representing the letters the player hos collided with.
+ *
+ * @author Terence Grigoruk
+ * @author Brian Mak
+ * @version Fall 2022
  */
 public class LetterBar extends Group {
     private static final int HEIGHT = 50;

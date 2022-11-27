@@ -91,6 +91,7 @@ public class EmojiApp extends Application {
                 rightTextBubbleGroup.spawnTextBubble();
             }
         }
+        leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
         player.move();
     }
