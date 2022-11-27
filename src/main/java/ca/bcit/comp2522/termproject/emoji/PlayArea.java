@@ -38,7 +38,7 @@ public class PlayArea {
      * Loads the background image.
      */
     public static ImageView createBackground() {
-        ImageView backgroundImageView = new ImageView(new Image(Entity.class.getResource("bg/blue-pink-background.jpg").toExternalForm()));
+        ImageView backgroundImageView = new ImageView(new Image(EmojiApp.class.getResource("bg/blue-pink-background.jpg").toExternalForm()));
         backgroundImageView.setFitHeight(EmojiApp.APP_HEIGHT);
         backgroundImageView.setPreserveRatio(true);
         backgroundImageView.setCache(true);

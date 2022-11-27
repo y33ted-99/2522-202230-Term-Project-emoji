@@ -35,6 +35,7 @@ public class Player extends Entity {
     private double speed;
     private Point2D moveVector;
     private Point2D moveDestination;
+    private int score;
 
     /**
      * Creates instance of type Player.
@@ -101,7 +102,7 @@ public class Player extends Entity {
     // TODO: mouseclick pops bubble / removes word if player in vicinity
 
     public void die() {
-        image = new Image(Entity.class.getResource("player/" + PlayerState.SCREAM.getFilename()).toExternalForm());
+        image = new Image(EmojiApp.class.getResource("player/" + PlayerState.SCREAM.getFilename()).toExternalForm());
         Timeline timeline = new Timeline();
         KeyValue keyValueY = new KeyValue(imageView.yProperty(), EmojiApp.APP_HEIGHT + imageView.getFitHeight());
         KeyValue keyValueR = new KeyValue(imageView.rotateProperty(), 180);
@@ -109,5 +110,23 @@ public class Player extends Entity {
         KeyFrame keyFrame = new KeyFrame(duration, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
+    }
+
+    /**
+     * Returns the player's score.
+     *
+     * @return score as int
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
+     * Adds points to the player's score.
+     *
+     * @param points an int
+     */
+    public void addToScore(final int points) {
+        score += points;
     }
 }

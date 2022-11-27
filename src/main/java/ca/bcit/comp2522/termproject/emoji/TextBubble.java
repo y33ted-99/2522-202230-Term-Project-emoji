@@ -33,7 +33,7 @@ public class TextBubble extends Group {
      */
     public static final int FONT_SIZE = 28;
     private static final int SHOOT_RATE = 300;
-    private static final double[] SPEED_RANGE = {1, 4};
+    private static final double[] SPEED_RANGE = {0.5, 2};
     private final Side side;
     private final int position;
     private final EmojiType type;
@@ -77,7 +77,7 @@ public class TextBubble extends Group {
      */
     private ImageView createTextBubbleImage() {
         String textBubbleFilename = "text-bubble/" + side.getFilename();
-        Image textBubbleImage = new Image(Entity.class.getResource(textBubbleFilename).toExternalForm());
+        Image textBubbleImage = new Image(EmojiApp.class.getResource(textBubbleFilename).toExternalForm());
         textBubbleWidth = (int) (textBubbleImage.getWidth() * (TEXT_BUBBLE_HEIGHT / textBubbleImage.getHeight()));
         textBubbleImageView = new ImageView(textBubbleImage);
         textBubbleImageView.setFitHeight(TEXT_BUBBLE_HEIGHT);

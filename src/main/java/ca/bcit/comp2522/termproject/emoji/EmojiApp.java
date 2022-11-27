@@ -3,11 +3,9 @@ package ca.bcit.comp2522.termproject.emoji;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -45,6 +43,7 @@ public class EmojiApp extends Application {
     private static TextBubbleGroup leftTextBubbleGroup;
     private static TextBubbleGroup rightTextBubbleGroup;
     private static boolean gameOver = false;
+    private static int score = 0;
 
     private Parent createContent() {
         root = new Pane();
@@ -161,8 +160,17 @@ public class EmojiApp extends Application {
      *
      * @param node a node to be added to the root scene
      */
-    public static void addToScene(final Node node) {
+    public static void addToRootScene(final Node node) {
         root.getChildren().add(node);
+    }
+
+    /**
+     * Removes a node from the root scene.
+     *
+     * @param node a node to be added to the root scene
+     */
+    public static void removeFromRootScene(final Node node) {
+        root.getChildren().remove(node);
     }
 
     /**
@@ -184,6 +192,15 @@ public class EmojiApp extends Application {
      */
     public static boolean isGameOver() {
         return gameOver;
+    }
+
+    /**
+     * Adds points to the player's score.
+     *
+     * @param points
+     */
+    public static void addToScore(final int points) {
+        player.addToScore(points);
     }
 }
 

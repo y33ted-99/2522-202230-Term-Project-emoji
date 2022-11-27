@@ -53,7 +53,7 @@ public class Letter extends Group {
         letter.setX(path.getStartX());
         letter.setY(path.getStartY());
         setDirection(path.getStartX(), path.getStartY(), path.getEndX(), path.getEndY());
-        EmojiApp.addToScene(letter);
+        EmojiApp.addToRootScene(letter);
         isAlive = true;
     }
 
@@ -147,12 +147,12 @@ public class Letter extends Group {
      * Move letter to player's letter bar.
      */
     private void moveLetterToLetterBar() {
+        final double letterRotation = 720;
+        final Duration duration = Duration.millis(300);
         Timeline timeline = new Timeline();
         KeyValue keyValueX = new KeyValue(letter.xProperty(), LetterBar.getNextSlot().getX());
         KeyValue keyValueY = new KeyValue(letter.yProperty(), LetterBar.getNextSlot().getY());
-        KeyValue keyValueR = new KeyValue(letter.rotateProperty(), 720);
-
-        Duration duration = Duration.millis(300);
+        KeyValue keyValueR = new KeyValue(letter.rotateProperty(), letterRotation);
         KeyFrame keyFrame = new KeyFrame(duration, keyValueX, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
@@ -160,11 +160,12 @@ public class Letter extends Group {
     }
 
     public void update() {
+        final double fadeTime = 0.0018;
         if (!isAlive) {
             return;
         }
         if (EmojiApp.isGameOver()) {
-            letter.setOpacity(letter.getOpacity() - 0.002);
+            letter.setOpacity(letter.getOpacity() - fadeTime);
         } else if (detectCollisionWithPlayer()) {
             isAlive = false;
             moveLetterToLetterBar();

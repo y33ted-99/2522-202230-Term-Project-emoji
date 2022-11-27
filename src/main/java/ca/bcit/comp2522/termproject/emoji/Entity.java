@@ -47,7 +47,7 @@ public abstract class Entity extends Group {
      */
     public Entity(final int xPosition, final int yPosition, final int size, final String imageFilename) {
         this.size = size;
-        image = new Image(Entity.class.getResource(imageFilename).toExternalForm());
+        image = new Image(EmojiApp.class.getResource(imageFilename).toExternalForm());
         imageView = new ImageView(image);
         imageView.setFitWidth(this.size);
         imageView.setPreserveRatio(true);
