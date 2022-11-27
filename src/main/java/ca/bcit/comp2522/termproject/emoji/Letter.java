@@ -21,11 +21,11 @@ import javafx.util.Duration;
  * @version Fall 2022
  */
 public class Letter extends Group {
-    private static final int FONT_SIZE = 29;
+    private static final int FONT_SIZE = 28;
 
     private final Text letter = new Text();
 
-    private int speed;
+    private double speed;
     private double deltaX;
     private double deltaY;
     private int bounceCount;
@@ -43,7 +43,7 @@ public class Letter extends Group {
     public Letter(final char character,
                   final Color color,
                   final Line path,
-                  final int speed) {
+                  final double speed) {
         this.speed = speed;
         letter.setText(String.valueOf(character));
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
@@ -148,7 +148,6 @@ public class Letter extends Group {
      */
     private void moveLetterToLetterBar() {
         Timeline timeline = new Timeline();
-        System.out.println("next slot: "+LetterBar.getNextSlot());
         KeyValue keyValueX = new KeyValue(letter.xProperty(), LetterBar.getNextSlot().getX());
         KeyValue keyValueY = new KeyValue(letter.yProperty(), LetterBar.getNextSlot().getY());
         KeyValue keyValueR = new KeyValue(letter.rotateProperty(), 720);
@@ -164,7 +163,9 @@ public class Letter extends Group {
         if (!isAlive) {
             return;
         }
-        if (detectCollisionWithPlayer()) {
+        if (EmojiApp.isGameOver()) {
+            letter.setOpacity(letter.getOpacity() - 0.002);
+        } else if (detectCollisionWithPlayer()) {
             isAlive = false;
             moveLetterToLetterBar();
             return;

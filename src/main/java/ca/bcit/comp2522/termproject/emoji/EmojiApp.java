@@ -44,8 +44,7 @@ public class EmojiApp extends Application {
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
     private static TextBubbleGroup rightTextBubbleGroup;
-    private static Point2D playerMovementVector = new Point2D(0, 0);
-    private static MouseEvent mouseMoveEvent;
+    private static boolean gameOver = false;
 
     private Parent createContent() {
         root = new Pane();
@@ -84,7 +83,7 @@ public class EmojiApp extends Application {
 
         // searchForLetters(leftTextBubbleGroup);
 
-        if (now % 20000 < 10) {
+        if (!gameOver && now % 15000 < 10) {
             if (RNG.nextInt(2) > 0) {
                 leftTextBubbleGroup.spawnTextBubble();
             } else {
@@ -93,7 +92,9 @@ public class EmojiApp extends Application {
         }
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
-        player.move();
+        if (!gameOver) {
+            player.move();
+        }
     }
 
     /**
@@ -155,8 +156,34 @@ public class EmojiApp extends Application {
         return player.getBoundsInParent();
     }
 
+    /**
+     * Adds a node to the root scene.
+     *
+     * @param node a node to be added to the root scene
+     */
     public static void addToScene(final Node node) {
         root.getChildren().add(node);
+    }
+
+    /**
+     * Sets the game over state.
+     *
+     * @param go game over state as boolean
+     */
+    public static void setGameOver(final boolean go) {
+        gameOver = go;
+        if (gameOver) {
+            player.die();
+        }
+    }
+
+    /**
+     * Returns the game over state.
+     *
+     * @return true if game is over
+     */
+    public static boolean isGameOver() {
+        return gameOver;
     }
 }
 

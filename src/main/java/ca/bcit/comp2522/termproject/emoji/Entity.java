@@ -23,6 +23,7 @@ public abstract class Entity extends Group {
      * The default image size for an Entity's ImageView
      */
     public static final int IMAGE_SIZE = 40;
+    protected Image image;
     protected ImageView imageView;
     protected int size;
     protected boolean isAlive = true;
@@ -46,11 +47,8 @@ public abstract class Entity extends Group {
      */
     public Entity(final int xPosition, final int yPosition, final int size, final String imageFilename) {
         this.size = size;
-        try (InputStream is = Files.newInputStream(Path.of("resources/" + Paths.get(imageFilename)))) {
-            imageView = new ImageView(new Image(is));
-        } catch (IOException e) {
-            System.out.println("Cannot load image: " + imageFilename);
-        }
+        image = new Image(Entity.class.getResource(imageFilename).toExternalForm());
+        imageView = new ImageView(image);
         imageView.setFitWidth(this.size);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);

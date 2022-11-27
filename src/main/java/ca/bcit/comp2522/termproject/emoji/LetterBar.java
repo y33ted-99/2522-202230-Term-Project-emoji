@@ -84,5 +84,8 @@ public class LetterBar extends Group {
 
     public static void addLetter(final Text letter) {
         letters.add(letter);
+        if (letters.size() == CAPACITY) {
+            EmojiApp.setGameOver(true);
+        }
     }
 }

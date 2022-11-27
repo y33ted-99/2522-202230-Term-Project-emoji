@@ -1,8 +1,19 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
+
+import java.nio.file.Path;
 
 /**
  * Represents the player.
@@ -15,9 +26,9 @@ public class Player extends Entity {
     /**
      * The player's initial speed.
      */
-    public static final int INIT_SPEED = 2;
+    public static final double INIT_SPEED = 2.8;
     /**
-     * THe player's speed when pouncing.
+     * The player's speed when pouncing.
      */
     public static final int POUNCE_SPEED = 8;
 
@@ -88,4 +99,15 @@ public class Player extends Entity {
     }
 
     // TODO: mouseclick pops bubble / removes word if player in vicinity
+
+    public void die() {
+        image = new Image(Entity.class.getResource("player/" + PlayerState.SCREAM.getFilename()).toExternalForm());
+        Timeline timeline = new Timeline();
+        KeyValue keyValueY = new KeyValue(imageView.yProperty(), EmojiApp.APP_HEIGHT + imageView.getFitHeight());
+        KeyValue keyValueR = new KeyValue(imageView.rotateProperty(), 180);
+        Duration duration = Duration.millis(8000);
+        KeyFrame keyFrame = new KeyFrame(duration, keyValueY, keyValueR);
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
+    }
 }

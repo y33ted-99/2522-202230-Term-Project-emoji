@@ -23,31 +23,25 @@ public class PlayArea {
     /**
      * Width of the play area.
      */
-    public static  final  int WIDTH = 600;
+    public static final int WIDTH = 600;
     /**
      * Height of the play area.
      */
-    public static final  int HEIGHT = 600;
+    public static final int HEIGHT = 600;
 
     /**
      * The play area in which the player and letters exist.
      */
-    private static final  Rectangle PLAY_AREA = new Rectangle();
+    private static final Rectangle PLAY_AREA = new Rectangle();
 
     /**
      * Loads the background image.
      */
     public static ImageView createBackground() {
-        ImageView backgroundImageView = null;
-        try (InputStream is = Files.newInputStream(Paths.get("resources/bg/blue-pink-background.jpg"))) {
-            backgroundImageView = new ImageView(new Image(is));
-            backgroundImageView.setFitHeight(EmojiApp.APP_HEIGHT);
-            backgroundImageView.setPreserveRatio(true);
-            backgroundImageView.setCache(true);
-            return backgroundImageView;
-        } catch (IOException e) {
-            System.out.println("Cannot load image");
-        }
+        ImageView backgroundImageView = new ImageView(new Image(Entity.class.getResource("bg/blue-pink-background.jpg").toExternalForm()));
+        backgroundImageView.setFitHeight(EmojiApp.APP_HEIGHT);
+        backgroundImageView.setPreserveRatio(true);
+        backgroundImageView.setCache(true);
         return backgroundImageView;
     }
 

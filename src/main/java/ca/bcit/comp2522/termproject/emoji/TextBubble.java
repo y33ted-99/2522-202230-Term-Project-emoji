@@ -33,7 +33,7 @@ public class TextBubble extends Group {
      */
     public static final int FONT_SIZE = 28;
     private static final int SHOOT_RATE = 300;
-    private static final int[] SPEED_RANGE = {1, 4};
+    private static final double[] SPEED_RANGE = {1, 4};
     private final Side side;
     private final int position;
     private final EmojiType type;
@@ -76,15 +76,10 @@ public class TextBubble extends Group {
      * Creates the TextBubble image.
      */
     private ImageView createTextBubbleImage() {
-        Path textBubbleFilename = Path.of("resources/text-bubble/" + side.getFilename());
-        Image textBubbleImage;
-        try (InputStream is = Files.newInputStream(textBubbleFilename)) {
-            textBubbleImage = new Image(is);
-            textBubbleWidth = (int) (textBubbleImage.getWidth() * (TEXT_BUBBLE_HEIGHT / textBubbleImage.getHeight()));
-            textBubbleImageView = new ImageView(textBubbleImage);
-        } catch (IOException e) {
-            System.out.println("Cannot load image");
-        }
+        String textBubbleFilename = "text-bubble/" + side.getFilename();
+        Image textBubbleImage = new Image(Entity.class.getResource(textBubbleFilename).toExternalForm());
+        textBubbleWidth = (int) (textBubbleImage.getWidth() * (TEXT_BUBBLE_HEIGHT / textBubbleImage.getHeight()));
+        textBubbleImageView = new ImageView(textBubbleImage);
         textBubbleImageView.setFitHeight(TEXT_BUBBLE_HEIGHT);
         textBubbleImageView.setPreserveRatio(true);
         textBubbleImageView.setSmooth(true);
@@ -132,14 +127,14 @@ public class TextBubble extends Group {
     public void shoot() {
         int margin = 10;
         // letter speed is random
-        int speed = EmojiApp.RNG.nextInt(SPEED_RANGE[0], SPEED_RANGE[1]);
+        double speed = EmojiApp.RNG.nextDouble(SPEED_RANGE[0], SPEED_RANGE[1]);
         char[] charArray = type.getPhrase().toCharArray();
 
         int startX;
         if (side == Side.LEFT) {
             startX = PlayArea.getMarginX() + margin;
         } else {
-            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin;
+            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin - 5;
         }
         Line path = new Line(startX,
                 PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + margin,
@@ -155,11 +150,11 @@ public class TextBubble extends Group {
         static final int INITIAL_PAUSE = 300;
         char[] letters;
         Line path;
-        int speed;
+        double speed;
         List<Letter> letterList;
         boolean isAlive;
 
-        LetterGroup(final char[] letters, final Line path, final int speed) {
+        LetterGroup(final char[] letters, final Line path, final double speed) {
             this.letters = letters;
             this.path = path;
             this.speed = speed;
