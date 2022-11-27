@@ -181,6 +181,8 @@ public class EmojiApp extends Application {
     public static void setGameOver(final boolean go) {
         gameOver = go;
         if (gameOver) {
+            root.getChildren().remove(player);
+            root.getChildren().add(player);
             player.die();
         }
     }

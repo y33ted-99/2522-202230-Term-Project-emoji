@@ -102,6 +102,7 @@ public class Player extends Entity {
     // TODO: mouseclick pops bubble / removes word if player in vicinity
 
     public void die() {
+
         image = new Image(EmojiApp.class.getResource("player/" + PlayerState.SCREAM.getFilename()).toExternalForm());
         Timeline timeline = new Timeline();
         KeyValue keyValueY = new KeyValue(imageView.yProperty(), EmojiApp.APP_HEIGHT + imageView.getFitHeight());
