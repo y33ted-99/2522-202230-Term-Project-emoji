@@ -172,6 +172,68 @@ public class TextBubble extends Group {
         shotLettersThread.start();
     }
 
+    private void showOverlay(final boolean show) {
+        if (show) {
+            overlay.setOpacity(1);
+        } else {
+            overlay.setOpacity(0);
+        }
+    }
+
+    private boolean isPlayerAdjacent() {
+        final double proximityRange = 15;
+        Bounds player = EmojiApp.getPlayerBounds();
+        double nearestY = getTranslateY()
+                + PlayArea.getMarginY()
+                + textBubbleImageView.getFitHeight() / 2;
+        double nearestX = PlayArea.getMarginX() + Player.IMAGE_SIZE / 2;
+        if (side == Side.RIGHT) {
+            nearestX = EmojiApp.APP_WIDTH - nearestX;
+        }
+        return  Math.abs(player.getCenterX() - nearestX) < proximityRange
+                && Math.abs(player.getCenterY() - nearestY) < textBubbleImageView.getFitHeight() / 2;
+    }
+
+
+    public void mouseClickHandler(final MouseEvent event) {
+        if (poppable) {
+            pop();
+            System.out.println(phrase.getText().toString());
+        }
+    }
+
+    /**
+     * Pops the bubble and removes it (and its associated emoji and its letters) from game.
+     */
+    public void pop() {
+        // TODO: when bubble pops emoji flies out in a fun animation
+        isAlive = false;
+    }
+
+    /**
+     * Returns true if text bubble has not been popped.
+     *
+     * @return true if is alive
+     */
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    /**
+     * Updates the group of letters.
+     */
+    public void update() {
+        poppable = isPlayerAdjacent();
+        showOverlay(poppable);
+        letterGroup.update();
+        if (!letterGroup.isAlive()) {
+//            shoot();
+        }
+    }
+
+    /*
+     * Represents a group of letters, i.e. a phrase shot out by a text bubble
+     */
     private class LetterGroup implements Runnable {
         static final int INITIAL_PAUSE = 300;
         char[] letters;
@@ -240,64 +302,5 @@ public class TextBubble extends Group {
                 letter.update();
             }
         }
-    }
-
-    /**
-     * Updates the group of letters.
-     */
-    public void update() {
-        poppable = isPlayerAdjacent();
-        showOverlay(poppable);
-        letterGroup.update();
-        if (!letterGroup.isAlive()) {
-//            shoot();
-        }
-    }
-
-    private void showOverlay(final boolean show) {
-        if (show) {
-            overlay.setOpacity(1);
-        } else {
-            overlay.setOpacity(0);
-        }
-    }
-
-    private boolean isPlayerAdjacent() {
-        final double proximityRange = 15;
-        Bounds player = EmojiApp.getPlayerBounds();
-        double nearestY = getTranslateY()
-                + PlayArea.getMarginY()
-                + textBubbleImageView.getFitHeight() / 2;
-        double nearestX = PlayArea.getMarginX() + Player.IMAGE_SIZE / 2;
-        if (side == Side.RIGHT) {
-            nearestX = EmojiApp.APP_WIDTH - nearestX;
-        }
-        return  Math.abs(player.getCenterX() - nearestX) < proximityRange
-                && Math.abs(player.getCenterY() - nearestY) < textBubbleImageView.getFitHeight() / 2;
-    }
-
-
-    public void mouseClickHandler(final MouseEvent event) {
-        if (poppable) {
-            pop();
-            System.out.println(phrase.getText().toString());
-        }
-    }
-
-    /**
-     * Pops the bubble and removes it (and its associated emoji and its letters) from game.
-     */
-    public void pop() {
-        // TODO: when bubble pops emoji flies out in a fun animation
-        isAlive = false;
-    }
-
-    /**
-     * Returns true if text bubble has not been popped.
-     *
-     * @return true if is alive
-     */
-    public boolean isAlive() {
-        return isAlive;
     }
 }
