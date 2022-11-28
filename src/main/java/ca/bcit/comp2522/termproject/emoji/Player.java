@@ -62,11 +62,15 @@ public class Player extends Entity {
     }
 
     public void move() {
+        if (moveDestination == null || getBoundsInParent().contains(moveDestination)) {
+            return;
+        }
         double xMove = getTranslateX() - moveVector.getX();
         double yMove = getTranslateY() - moveVector.getY();
-//        System.out.println(xMove);
-        if (isValidMove(xMove, yMove)) {
+        if (isValidMoveX(xMove)) {
             setTranslateX(xMove);
+        }
+        if (isValidMoveY(yMove)) {
             setTranslateY(yMove);
         }
         if (speed > INIT_SPEED) {
@@ -77,17 +81,21 @@ public class Player extends Entity {
     /*
      * Checks if movement destination is within bounds and does not overlap with cursor.
      */
-    private boolean isValidMove(final double xDestination, final double yDestination) {
-        if (moveDestination == null) {
-            return false;
-        }
+    private boolean isValidMoveX(final double xDestination) {
         Bounds playAreaBounds = PlayArea.getBounds();
-        return !getBoundsInParent().contains(moveDestination)
-                && xDestination > playAreaBounds.getMinX()
-                && xDestination < playAreaBounds.getMaxX() - Player.IMAGE_SIZE
-                && yDestination > playAreaBounds.getMinY()
+        return xDestination > playAreaBounds.getMinX()
+                && xDestination < playAreaBounds.getMaxX() - Player.IMAGE_SIZE;
+    }
+
+    /*
+     * Checks if movement destination is within bounds and does not overlap with cursor.
+     */
+    private boolean isValidMoveY(final double yDestination) {
+        Bounds playAreaBounds = PlayArea.getBounds();
+        return yDestination > playAreaBounds.getMinY()
                 && yDestination < playAreaBounds.getMaxY() - Player.IMAGE_SIZE;
     }
+
 
     public void moveToMouse(final MouseEvent event) {
         moveVector = new Point2D(
