@@ -49,6 +49,7 @@ public class TextBubble extends Group {
     private LetterGroup letterGroup;
     private Thread shotLettersThread;
     private boolean poppable;
+    private boolean isAlive;
 
     /**
      * Creates an instance of type TextBubble.
@@ -61,6 +62,7 @@ public class TextBubble extends Group {
         this.side = side;
         this.position = position;
         this.type = type;
+        this.isAlive = true;
         textBubbleImageView = createTextBubbleImage();
         phrase = createPhrase();
         emoji = createEmoji();
@@ -278,6 +280,7 @@ public class TextBubble extends Group {
     public void mouseClickHandler(final MouseEvent event) {
         if (poppable) {
             pop();
+            System.out.println(phrase.getText().toString());
         }
     }
 
@@ -286,5 +289,15 @@ public class TextBubble extends Group {
      */
     public void pop() {
         // TODO: when bubble pops emoji flies out in a fun animation
+        isAlive = false;
+    }
+
+    /**
+     * Returns true if text bubble has not been popped.
+     *
+     * @return true if is alive
+     */
+    public boolean isAlive() {
+        return isAlive;
     }
 }

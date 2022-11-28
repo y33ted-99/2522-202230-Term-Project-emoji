@@ -74,7 +74,7 @@ public class TextBubbleGroup extends Group {
         int position = (TextBubble.TEXT_BUBBLE_HEIGHT + gapBetweenTextBubbles) * index;
         TextBubble textBubble = new TextBubble(side, position, type);
         enemyCount++;
-        this.getChildren().add(textBubble);
+        getChildren().add(textBubble);
         textBubbles[index] = textBubble;
     }
 
@@ -95,11 +95,24 @@ public class TextBubbleGroup extends Group {
      */
     public void update() {
         for (TextBubble textBubble : textBubbles) {
-            if (textBubble != null) {
+            if (textBubble == null) {
+                continue;
+            } else if (!textBubble.isAlive()) {
+
+                getChildren().remove(textBubble);
+            } else
                 textBubble.update();
+        }
+    }
+
+    private void removeTextBubble(final TextBubble textBubble) {
+        for (int i = 0; i < textBubbles.length; i++) {
+            if (textBubbles[i] == textBubble) {
+                textBubbles[i] = null;
             }
         }
     }
+
     public void mouseClickHandler(final MouseEvent event) {
         for (TextBubble textBubble : textBubbles) {
             if (textBubble != null) {

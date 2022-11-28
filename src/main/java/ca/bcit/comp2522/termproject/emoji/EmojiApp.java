@@ -83,7 +83,7 @@ public class EmojiApp extends Application {
         // searchForLetters(leftTextBubbleGroup);
 
         if (!gameOver && now % 15000 < 10) {
-            if (RNG.nextInt(2) > 0) {
+            if (player.getCenterX() > APP_WIDTH / 2) {
                 leftTextBubbleGroup.spawnTextBubble();
             } else {
                 rightTextBubbleGroup.spawnTextBubble();
