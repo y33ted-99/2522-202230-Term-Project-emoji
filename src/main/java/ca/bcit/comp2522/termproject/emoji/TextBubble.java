@@ -1,10 +1,14 @@
 package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -40,9 +44,11 @@ public class TextBubble extends Group {
     private ImageView textBubbleImageView;
     private final Entity emoji;
     private Text phrase;
+    private Rectangle overlay;
     private int textBubbleWidth;
     private LetterGroup letterGroup;
     private Thread shotLettersThread;
+    private boolean poppable;
 
     /**
      * Creates an instance of type TextBubble.
@@ -58,7 +64,8 @@ public class TextBubble extends Group {
         textBubbleImageView = createTextBubbleImage();
         phrase = createPhrase();
         emoji = createEmoji();
-        getChildren().addAll(textBubbleImageView, emoji, phrase);
+        overlay = createOverlay();
+        getChildren().addAll(textBubbleImageView, emoji, phrase, overlay);
         positionTextBubble();
         shoot();
     }
@@ -94,7 +101,6 @@ public class TextBubble extends Group {
         switch (side) {
             case LEFT, RIGHT -> this.setTranslateY(position);
             default -> this.setTranslateX(position);
-
         }
     }
 
@@ -119,6 +125,24 @@ public class TextBubble extends Group {
         enemy.setTranslateX(textBubbleWidth - (margin * 2));
         enemy.setTranslateY(margin);
         return enemy;
+    }
+
+    /*
+     * Creates the overlay used to indicate a text bubble is poppable.
+     */
+    private Rectangle createOverlay() {
+        final double MARGIN = 20;
+        Bounds tbb = textBubbleImageView.getBoundsInParent();
+        Rectangle overlay = new Rectangle();
+        overlay.setWidth(tbb.getWidth() - 2 * MARGIN);
+        overlay.setHeight(tbb.getHeight() - 2 * MARGIN);
+        overlay.setX(tbb.getMinX() + MARGIN);
+        overlay.setY(tbb.getMinY() + MARGIN);
+        overlay.setArcWidth(MARGIN);
+        overlay.setArcHeight(MARGIN);
+        overlay.setFill(new Color(1, 0, 0, 0.2));
+        overlay.setOpacity(0);
+        return overlay;
     }
 
     /**
@@ -217,20 +241,50 @@ public class TextBubble extends Group {
     }
 
     /**
-     * Pops the bubble and removes it (and its associated emoji and its letters) from game.
-     */
-    public void pop() {
-        // TODO: when bubble pops emoji flies out in a fun animation
-    }
-
-    /**
      * Updates the group of letters.
      */
     public void update() {
-        // TODO: if player in vicinity, set poppable = true
+        poppable = isPlayerAdjacent();
+        showOverlay(poppable);
         letterGroup.update();
         if (!letterGroup.isAlive()) {
 //            shoot();
         }
+    }
+
+    private void showOverlay(final boolean show) {
+        if (show) {
+            overlay.setOpacity(1);
+        } else {
+            overlay.setOpacity(0);
+        }
+    }
+
+    private boolean isPlayerAdjacent() {
+        final double proximityRange = 15;
+        Bounds player = EmojiApp.getPlayerBounds();
+        double nearestY = getTranslateY()
+                + PlayArea.getMarginY()
+                + textBubbleImageView.getFitHeight() / 2;
+        double nearestX = PlayArea.getMarginX() + Player.IMAGE_SIZE / 2;
+        if (side == Side.RIGHT) {
+            nearestX = EmojiApp.APP_WIDTH - nearestX;
+        }
+        return  Math.abs(player.getCenterX() - nearestX) < proximityRange
+                && Math.abs(player.getCenterY() - nearestY) < textBubbleImageView.getFitHeight() / 2;
+    }
+
+
+    public void mouseClickHandler(final MouseEvent event) {
+        if (poppable) {
+            pop();
+        }
+    }
+
+    /**
+     * Pops the bubble and removes it (and its associated emoji and its letters) from game.
+     */
+    public void pop() {
+        // TODO: when bubble pops emoji flies out in a fun animation
     }
 }

@@ -1,6 +1,7 @@
 package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.scene.Group;
+import javafx.scene.input.MouseEvent;
 
 import java.util.Random;
 
@@ -96,6 +97,13 @@ public class TextBubbleGroup extends Group {
         for (TextBubble textBubble : textBubbles) {
             if (textBubble != null) {
                 textBubble.update();
+            }
+        }
+    }
+    public void mouseClickHandler(final MouseEvent event) {
+        for (TextBubble textBubble : textBubbles) {
+            if (textBubble != null) {
+                textBubble.mouseClickHandler(event);
             }
         }
     }

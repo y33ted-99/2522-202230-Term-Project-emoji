@@ -106,10 +106,13 @@ public class EmojiApp extends Application {
 
         Scene scene = new Scene(createContent());
 
-        scene.setOnMouseMoved((event) -> {
+        scene.setOnMouseMoved(event -> {
             player.moveToMouse(event);
         });
-//        scene.setOnMouseClicked(InputController::mouseClickHandler);
+        scene.setOnMouseClicked(event -> {
+            leftTextBubbleGroup.mouseClickHandler(event);
+            rightTextBubbleGroup.mouseClickHandler(event);
+        });
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("La Chat-room");
