@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class LetterBar extends Group {
     private static final int LETTER_MARGIN_Y = 35;
     private static final Group letterBar = new Group();
     private static final Rectangle container = new Rectangle();
-    private static List<Text> letters = new ArrayList<>();
+    private static List<Letter> lettersArrayList = new ArrayList<>();
     private static List<String> wordList = loadWordList();
 //    private static List<String> wordList = new ArrayList<>();
 //    static {
@@ -106,7 +107,7 @@ public class LetterBar extends Group {
      */
     public static Point2D getNextSlot() {
         return new Point2D(
-                letterBar.getTranslateX() + (letters.size() * FONT_SIZE) + LETTER_MARGIN_X,
+                letterBar.getTranslateX() + (lettersArrayList.size() * FONT_SIZE) + LETTER_MARGIN_X,
                 letterBar.getTranslateY() + LETTER_MARGIN_Y);
     }
 
@@ -115,36 +116,36 @@ public class LetterBar extends Group {
      *
      * @param letter the letter to add as Text
      */
-    public static void addLetter(final Text letter) {
-        letters.add(letter);
+    public static void addLetter(final Letter letter) {
+        lettersArrayList.add(letter);
         int totalPoints = 0;
-        int points = checkIfContainsWords();
+        int points = checkIfContainsWord();
         while (points > 0) {
             totalPoints += points;
             EmojiApp.addToScore(points);
-            points = checkIfContainsWords();
+            points = checkIfContainsWord();
         }
         if (totalPoints > 0) {
             repositionLetters();
         }
-        if (letters.size() == CAPACITY) {
+        if (lettersArrayList.size() == CAPACITY) {
             EmojiApp.setGameOver(true);
         }
     }
 
     /*
-     * Checks if letter bar contains a words and returns the number of letters removed form the letter bar.
+     * Checks if letter bar contains a word and returns the number of letters removed form the letter bar.
      */
-    private static int checkIfContainsWords() {
+    private static int checkIfContainsWord() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Text letter : letters) {
-            stringBuilder.append(letter.getText());
+        for (Letter letter : lettersArrayList) {
+            stringBuilder.append(letter.getText().getText());
         }
         String letterBarString = stringBuilder.toString();
         int index = -1;
         int wordLength = 0;
         for (String word : wordList) {
-            if (word.length() > letters.size()) {
+            if (word.length() > lettersArrayList.size()) {
                 break;
             }
             if (letterBarString.contains(word)) {
@@ -163,35 +164,49 @@ public class LetterBar extends Group {
      * Removes a word from the letter bar.
      */
     private static void removeWord(final int index, final int length) {
-        Text letter;
+        Letter letter;
         // remove letters from arraylist
         for (int i = 0; i < length; i++) {
-            letter = letters.remove(index);
+            letter = lettersArrayList.remove(index);
             EmojiApp.removeFromRootScene(letter);
         }
     }
 
-    // TODO: removeLetter() should remove letters belonging to a particular set i.e. a TextBubble
     /*
-     * Removes a specific letter from the letter bar.
+     * Removes letters of a given color from the letter bar.
      */
-    private static void removeLetter(final Text letterToRemove) {
-        for (int i = 0; i < letters.size(); i++) {
-            if (letters.get(i) == letterToRemove) {
-                letters.remove(letterToRemove);
-                EmojiApp.removeFromRootScene(letterToRemove);
+    public static void removeLettersByColor(final Color color) {
+        Iterator iterator = lettersArrayList.iterator();
+        while (iterator.hasNext()) {
+            Letter letter = (Letter) iterator.next();
+            if (letter.getColor().equals(color)) {
+                EmojiApp.removeFromRootScene(letter);
+                iterator.remove();
             }
         }
         repositionLetters();
     }
 
     /*
+     * Removes a specific letter from the letter bar.
+     */
+//    private static void removeLetter(final Text letterToRemove) {
+//        for (int i = 0; i < lettersArrayList.size(); i++) {
+//            if (lettersArrayList.get(i).equals(letterToRemove)) {
+//                lettersArrayList.remove(letterToRemove);
+//                EmojiApp.removeFromRootScene(letterToRemove);
+//            }
+//        }
+//        repositionLetters();
+//    }
+
+    /*
      * Repositions letters i.e. if some were removed.
      */
     private static void repositionLetters() {
-        for (int i = 0; i < letters.size(); i++) {
+        for (int i = 0; i < lettersArrayList.size(); i++) {
             double translate = letterBar.getTranslateX() + (i * FONT_SIZE) + LETTER_MARGIN_X;
-            letters.get(i).setX(translate);
+            lettersArrayList.get(i).setTranslateX(translate);
         }
     }
 }

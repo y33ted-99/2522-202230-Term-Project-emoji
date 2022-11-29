@@ -201,7 +201,7 @@ public class TextBubble extends Group {
     public void mouseClickHandler(final MouseEvent event) {
         if (isPoppable) {
             pop();
-            letterGroup.die();
+//            letterGroup.die();
             EmojiApp.incrementPlayerPoppedBubbles();
         }
     }
@@ -212,6 +212,7 @@ public class TextBubble extends Group {
     public void pop() {
         final Duration fadeOutDuration = Duration.millis(200);
         final Duration emojiDropDuration = Duration.millis(800);
+        // fade out the text bubble and phrase
         Timeline timeline = new Timeline();
         KeyValue keyValueTextBubbleImageViewOpacity = new KeyValue(textBubbleImageView.opacityProperty(), 0);
         KeyValue keyValuePhraseOpacity = new KeyValue(phrase.opacityProperty(), 0);
@@ -220,6 +221,8 @@ public class TextBubble extends Group {
                 keyValueTextBubbleImageViewOpacity,
                 keyValuePhraseOpacity);
         timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
+        // drop emoji down out of screen
         TranslateTransition emojiDrop = new TranslateTransition(emojiDropDuration, emoji);
         emojiDrop.setToY(EmojiApp.APP_HEIGHT);
         emojiDrop.setByX(-100);
@@ -227,7 +230,7 @@ public class TextBubble extends Group {
             isAlive = false;
         });
         emojiDrop.play();
-        timeline.play();
+
     }
 
     /**
