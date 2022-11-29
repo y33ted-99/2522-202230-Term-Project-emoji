@@ -1,5 +1,10 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -11,11 +16,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class TextBubble extends Group {
     private int textBubbleWidth;
     private LetterGroup letterGroup;
     private Thread shotLettersThread;
-    private boolean poppable;
+    private boolean isPoppable;
     private boolean isAlive;
 
     /**
@@ -151,7 +153,7 @@ public class TextBubble extends Group {
      * Shoots a group of letters at the Player.
      */
     public void shoot() {
-        int margin = 10;
+        final int margin = 10;
         // letter speed is random
         double speed = EmojiApp.RNG.nextDouble(SPEED_RANGE[0], SPEED_RANGE[1]);
         char[] charArray = type.getPhrase().toCharArray();
@@ -163,7 +165,7 @@ public class TextBubble extends Group {
             startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin - 5;
         }
         Line path = new Line(startX,
-                PlayArea.getMarginY() + position + (TEXT_BUBBLE_HEIGHT / 2) + margin,
+                PlayArea.getMarginY() + position + (double) (TEXT_BUBBLE_HEIGHT / 2) + margin,
                 EmojiApp.getPlayerBounds().getCenterX(),
                 EmojiApp.getPlayerBounds().getCenterY());
         letterGroup = new LetterGroup(charArray, path, speed);
@@ -186,19 +188,19 @@ public class TextBubble extends Group {
         double nearestY = getTranslateY()
                 + PlayArea.getMarginY()
                 + textBubbleImageView.getFitHeight() / 2;
-        double nearestX = PlayArea.getMarginX() + Player.IMAGE_SIZE / 2;
+        double nearestX = PlayArea.getMarginX() + (double) Player.IMAGE_SIZE / 2;
         if (side == Side.RIGHT) {
             nearestX = EmojiApp.APP_WIDTH - nearestX;
         }
-        return  Math.abs(player.getCenterX() - nearestX) < proximityRange
+        return Math.abs(player.getCenterX() - nearestX) < proximityRange
                 && Math.abs(player.getCenterY() - nearestY) < textBubbleImageView.getFitHeight() / 2;
     }
 
 
     public void mouseClickHandler(final MouseEvent event) {
-        if (poppable) {
+        if (isPoppable) {
             pop();
-            System.out.println(phrase.getText().toString());
+            letterGroup.die();
         }
     }
 
@@ -206,8 +208,24 @@ public class TextBubble extends Group {
      * Pops the bubble and removes it (and its associated emoji and its letters) from game.
      */
     public void pop() {
-        // TODO: when bubble pops emoji flies out in a fun animation
-        isAlive = false;
+        final Duration fadeOutDuration = Duration.millis(200);
+        final Duration emojiDropDuration = Duration.millis(800);
+        Timeline timeline = new Timeline();
+        KeyValue keyValueTextBubbleImageViewOpacity = new KeyValue(textBubbleImageView.opacityProperty(), 0);
+        KeyValue keyValuePhraseOpacity = new KeyValue(phrase.opacityProperty(), 0);
+        getChildren().remove(overlay);
+        KeyFrame keyFrame = new KeyFrame(fadeOutDuration,
+                keyValueTextBubbleImageViewOpacity,
+                keyValuePhraseOpacity);
+        timeline.getKeyFrames().add(keyFrame);
+        TranslateTransition emojiDrop = new TranslateTransition(emojiDropDuration, emoji);
+        emojiDrop.setToY(EmojiApp.APP_HEIGHT);
+        emojiDrop.setByX(-100);
+        emojiDrop.setOnFinished(finish -> {
+            isAlive = false;
+        });
+        emojiDrop.play();
+        timeline.play();
     }
 
     /**
@@ -223,11 +241,14 @@ public class TextBubble extends Group {
      * Updates the group of letters.
      */
     public void update() {
-        poppable = isPlayerAdjacent();
-        showOverlay(poppable);
+        isPoppable = isPlayerAdjacent();
+        showOverlay(isPoppable);
         letterGroup.update();
         if (!letterGroup.isAlive()) {
 //            shoot();
+        }
+        if (!isAlive) {
+            //
         }
     }
 
@@ -300,6 +321,15 @@ public class TextBubble extends Group {
         public void update() {
             for (Letter letter : letterList) {
                 letter.update();
+            }
+        }
+
+        /**
+         * Set each letter isAlive to false.
+         */
+        public void die() {
+            for (Letter letter : letterList) {
+                letter.setAlive(false);
             }
         }
     }

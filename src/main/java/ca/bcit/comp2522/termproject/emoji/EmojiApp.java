@@ -81,8 +81,7 @@ public class EmojiApp extends Application {
     private void onUpdate(final long now) {
 
         // searchForLetters(leftTextBubbleGroup);
-
-        if (!gameOver && now % 15000 < 10) {
+        if (!gameOver && now % 15000 < 5) {
             if (player.getCenterX() > APP_WIDTH / 2) {
                 leftTextBubbleGroup.spawnTextBubble();
             } else {
@@ -184,6 +183,7 @@ public class EmojiApp extends Application {
     public static void setGameOver(final boolean go) {
         gameOver = go;
         if (gameOver) {
+            // ensure player is on top layer
             root.getChildren().remove(player);
             root.getChildren().add(player);
             player.die();

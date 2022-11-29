@@ -98,21 +98,28 @@ public class TextBubbleGroup extends Group {
             if (textBubble == null) {
                 continue;
             } else if (!textBubble.isAlive()) {
-
-                getChildren().remove(textBubble);
+                removeTextBubble(textBubble);
             } else
                 textBubble.update();
         }
     }
 
+    /*
+     * Removes a text bubble from the game.
+     */
     private void removeTextBubble(final TextBubble textBubble) {
         for (int i = 0; i < textBubbles.length; i++) {
             if (textBubbles[i] == textBubble) {
                 textBubbles[i] = null;
+                enemyCount--;
             }
         }
+        getChildren().remove(textBubble);
     }
 
+    /*
+     * Passes a mouse click event to all text bubbles.
+     */
     public void mouseClickHandler(final MouseEvent event) {
         for (TextBubble textBubble : textBubbles) {
             if (textBubble != null) {

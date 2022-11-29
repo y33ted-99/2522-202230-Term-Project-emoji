@@ -31,6 +31,7 @@ public class Letter extends Group {
     private int bounceCount;
     private boolean hasEnteredPlayArea;
     private boolean isAlive;
+    private boolean isCollided;
 
     /**
      * Creates an instance of a type Letter.
@@ -58,12 +59,30 @@ public class Letter extends Group {
     }
 
     /**
-     * Returns true if letter is still in play.
+     * Returns true if letter is still alive.
      *
-     * @return true if letter is still in play
+     * @return true if letter is still alive
      */
     public boolean isAlive() {
         return isAlive;
+    }
+
+    /**
+     * Sets isAlive.
+     *
+     * @param alive as boolean
+     */
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    /**
+     * Returns true if letter has collided with player.
+     *
+     * @return true if letter has collided with player
+     */
+    public boolean isCollided() {
+        return isCollided;
     }
 
     /*
@@ -76,29 +95,6 @@ public class Letter extends Group {
         deltaX = speed * (xDiff / hyp);
         deltaY = speed * (yDiff / hyp);
     }
-
-//    /**
-//     * Runs the letter's animation (bouncing around the play area).
-//     */
-//    public void run() {
-//        while (isAlive) {
-//            try {
-//                Thread.sleep(20); // sleep for 20 milliseconds
-//            } catch (InterruptedException exception) {
-//                exception.printStackTrace();
-//            }
-//            Platform.runLater(() -> {
-//                // check if collides with player
-//                if (detectCollisionWithPlayer()) {
-//                    moveLetterToLetterBar();
-//                    return;
-//                }
-//                detectCollisionWIthBorder();
-//                letter.setX(letter.getX() + xVelocity); // determines new x-position
-//                letter.setY(letter.getY() + yVelocity); // determines new y-position
-//            });
-//        }
-//    }
 
     private void detectCollisionWIthBorder() {
         checkIfEnteredPlayArea();
@@ -136,11 +132,7 @@ public class Letter extends Group {
      * Returns true if the letter has collided with the player.
      */
     private boolean detectCollisionWithPlayer() {
-        if (letter.getBoundsInParent().intersects(EmojiApp.getPlayerBounds())) {
-//            isAlive = false;
-            return true;
-        }
-        return false;
+        return letter.getBoundsInParent().intersects(EmojiApp.getPlayerBounds());
     }
 
     /*
@@ -160,19 +152,26 @@ public class Letter extends Group {
     }
 
     public void update() {
-        final double fadeTime = 0.0018;
-        if (!isAlive) {
+        final double bubbleDeathFadeDecrement = 0.03;
+        final double gameOverFadeDecrement = 0.0018;
+        if (isCollided) {
             return;
         }
+        if (!isAlive) {
+            letter.setOpacity(letter.getOpacity() - bubbleDeathFadeDecrement);
+//            return;
+        }
         if (EmojiApp.isGameOver()) {
-            letter.setOpacity(letter.getOpacity() - fadeTime);
+            letter.setOpacity(letter.getOpacity() - gameOverFadeDecrement);
         } else if (detectCollisionWithPlayer()) {
-            isAlive = false;
+            isCollided = true;
+//            isAlive = false;
             moveLetterToLetterBar();
             return;
         }
         detectCollisionWIthBorder();
         letter.setX(letter.getX() + deltaX);
         letter.setY(letter.getY() + deltaY);
+
     }
 }
