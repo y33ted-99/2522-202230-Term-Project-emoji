@@ -84,7 +84,7 @@ public class EmojiApp extends Application {
     private void onUpdate(final long now) {
 
         // searchForLetters(leftTextBubbleGroup);
-        if (!gameOver && now % 15000 < 10) {
+        if (!gameOver && now % 15000 < 100) {
             if (player.getCenterX() > APP_WIDTH / 2) {
                 leftTextBubbleGroup.spawnTextBubble();
             } else {
@@ -93,11 +93,9 @@ public class EmojiApp extends Application {
         }
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
-        gameItems.forEach(gameItem -> {
-            if (!gameItem.isAlive()) {
-                gameItems.remove(gameItem);
-            }
-        });
+        gameItems.forEach(EmojiApp::checkGameItem);
+        gameItems.forEach(GameItem::update);
+
         if (!gameOver) {
             player.move();
         }
@@ -145,16 +143,6 @@ public class EmojiApp extends Application {
                 APP_HEIGHT / 2 - Entity.IMAGE_SIZE / 2);
         return player;
     }
-
-//    private void searchForLetters(final Group textBubbleGroup) {
-//        for (Node textBubble : textBubbleGroup.getChildren()) {
-//            for (Node textBubbleComponent : ((Group) textBubble).getChildren()) {
-//                if (textBubbleComponent.getClass() == Enemy.class) {
-//                    System.out.println(((Enemy) textBubbleComponent).getChildren());
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Returns the player's bounds.
@@ -222,8 +210,16 @@ public class EmojiApp extends Application {
 
     public static void spawnItem() {
         ItemType type = ItemType.values()[new Random().nextInt(ItemType.values().length)];
-        gameItems.add(GameItem.getInstance(type));
-        System.out.println("spawned item: " + type);
+        GameItem gameItem = GameItem.getInstance(type);
+        gameItems.add(gameItem);
+        addToRootScene(gameItem);
+    }
+
+    public static void checkGameItem(final GameItem gameItem) {
+        if (!gameItem.isAlive()) {
+            removeFromRootScene(gameItem);
+//            gameItems.remove(gameItem);
+        }
     }
 }
 
