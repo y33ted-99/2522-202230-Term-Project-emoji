@@ -18,18 +18,14 @@ import javafx.util.Duration;
  */
 public class Player extends Entity {
     /**
-     * The player's initial speed.
+     * The player's speed.
      */
-    public static final double INIT_SPEED = 4;
-    /**
-     * The player's speed when pouncing.
-     */
-    public static final int POUNCE_SPEED = 8;
+    public static final double SPEED = 4;
 
-    private double speed;
+    private static final int POINTS_PER_BUBBLE = 10;
     private Point2D moveVector;
     private Point2D moveDestination;
-    private int score;
+    private int points;
     private int poppedBubbles;
 
     /**
@@ -40,20 +36,7 @@ public class Player extends Entity {
      */
     public Player(final int xPosition, final int yPosition) {
         super(xPosition, yPosition, "player/" + PlayerState.SMILEY.getFilename());
-        speed = INIT_SPEED;
         moveVector = new Point2D(0, 0);
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(final double speed) {
-        this.speed = speed;
-    }
-
-    public void setMoveVector(Point2D moveVector) {
-        this.moveVector = moveVector;
     }
 
     public void move() {
@@ -67,9 +50,6 @@ public class Player extends Entity {
         }
         if (isValidMoveY(yMove)) {
             setTranslateY(yMove);
-        }
-        if (speed > INIT_SPEED) {
-            speed -= 0.02;
         }
     }
 
@@ -97,13 +77,19 @@ public class Player extends Entity {
                 getBoundsInParent().getCenterX() - event.getSceneX(),
                 getBoundsInParent().getCenterY() - event.getSceneY())
                 .normalize()
-                .multiply(speed);
+                .multiply(SPEED);
 
         moveDestination = new Point2D(event.getSceneX(), event.getSceneY());
     }
 
+    /**
+     * Animates the player death.
+     */
     public void die() {
+        // change the image to the scream face
         image = new Image(EmojiApp.class.getResource("player/" + PlayerState.SCREAM.getFilename()).toExternalForm());
+        imageView.setImage(image);
+        // animate Y value (falls to bottom) and rotation
         Timeline timeline = new Timeline();
         KeyValue keyValueY = new KeyValue(imageView.yProperty(), EmojiApp.APP_HEIGHT + imageView.getFitHeight());
         KeyValue keyValueR = new KeyValue(imageView.rotateProperty(), 180);
@@ -118,23 +104,23 @@ public class Player extends Entity {
      *
      * @return score as int
      */
-    public int getScore() {
-        return score;
+    public int getPoints() {
+        return points;
     }
 
     /**
      * Adds points to the player's score.
      *
-     * @param points an int
+     * @param pointsToAdd an int
      */
-    public void addToScore(final int points) {
-        score += points;
+    public void addToScore(final int pointsToAdd) {
+        this.points += pointsToAdd;
     }
 
     public void incrementPoppedBubbles() {
+        points += POINTS_PER_BUBBLE;
         poppedBubbles++;
         if (poppedBubbles % 2 == 0) {
-            // TODO: spawn powerup item that deletes letters of a color
             EmojiApp.spawnItem();
         }
     }
