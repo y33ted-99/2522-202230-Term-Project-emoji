@@ -10,17 +10,22 @@ import javafx.scene.paint.Color;
  * @version Fall 2022
  */
 public enum EnemyType implements EmojiType {
-    ANGRY("angry.png", "OMFG", Color.INDIANRED),
-    DROOL("drooling_face.png", "DURR", Color.LIGHTBLUE),
+    ANGRY("angry.png", "OMFG", Color.RED),
+    DROOL("drooling_face.png", "DURR", Color.BLUE),
     VOMIT("face_vomiting.png", "BARF", Color.GREEN),
-    SWEAR("face_with_symbols_on_mouth.png", "&$!#%", Color.ORANGE),
-    GRIMACE("grimacing.png", "OOF", Color.DARKRED),
-    HALO("innocent.png", "WWJD", Color.SKYBLUE),
-    SICK("nauseated_face.png", "YUCK", Color.DARKGREEN),
+    SWEAR("face_with_symbols_on_mouth.png", "FRAK", Color.ORANGE),
+    GRIMACE("grimacing.png", "OOF", Color.RED),
+    HALO("innocent.png", "WWJD", Color.BLUE),
+    SICK("nauseated_face.png", "YUCK", Color.GREEN),
     RAGE("rage.png", "GRRR", Color.RED),
-    ROFL("rofl.png", "ROFL", Color.ORANGE),
-    SOB("sob.png", "WAAH", Color.BLUE),
-    THINK("thinking_face.png", "HMMM", Color.GREY),;
+    ROFL("rofl.png", "LOL", Color.ORANGE),
+    SOB("sob.png", "WAA", Color.BLUE),
+    THINK("thinking_face.png", "HUH", Color.PURPLE),
+    WOW("start-struck.png", "WOW", Color.YELLOW),
+    DOH("confounded.png", "DOH", Color.PURPLE),
+    YUM("yum.png", "YUM", Color.YELLOW),
+    WAP("stuck_out_tongue_winking_eye.png", "YUM", Color.PINK),
+    KISS("kissing_heart.png", "KISS", Color.PINK),;
 
     private String filename;
     private String phrase;
