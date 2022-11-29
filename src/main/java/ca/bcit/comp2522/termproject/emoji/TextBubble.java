@@ -117,6 +117,7 @@ public class TextBubble extends Group {
         Font font = new Font("Arial Black", FONT_SIZE);
         phrase.setFill(type.getColor());
         phrase.setFont(font);
+        phrase.setStroke(type.getColor().darker());
         return phrase;
     }
 
@@ -162,7 +163,7 @@ public class TextBubble extends Group {
         if (side == Side.LEFT) {
             startX = PlayArea.getMarginX() + margin;
         } else {
-            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin - 5;
+            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin - 10;
         }
         Line path = new Line(startX,
                 PlayArea.getMarginY() + position + (double) (TEXT_BUBBLE_HEIGHT / 2) + margin,
@@ -248,9 +249,6 @@ public class TextBubble extends Group {
         if (!letterGroup.isAlive()) {
 //            shoot();
         }
-        if (!isAlive) {
-            //
-        }
     }
 
     /*
@@ -293,7 +291,7 @@ public class TextBubble extends Group {
                             path,
                             speed);
                     letterList.add(letter);
-                    getChildren().add(letter);
+                    EmojiApp.addToRootScene(letter);
                 });
             }
         }
@@ -304,33 +302,23 @@ public class TextBubble extends Group {
          * @return true if at least one shot letter is alive
          */
         public boolean isAlive() {
-            for (Letter letter : letterList) {
-                if (letter.isAlive()) {
-                    return true;
-                }
-            }
-            return false;
+            return letterList
+                    .stream()
+                    .anyMatch(Letter::isAlive);
         }
 
         /**
          * Updates each letter.
          */
         public void update() {
-            for (Letter letter : letterList) {
-                letter.update();
-//                if (letter.isCollided()) {
-//                    letterList.remove(letter);
-//                }
-            }
+            letterList.forEach(Letter::update);
         }
 
         /**
          * Set each letter isAlive to false.
          */
         public void die() {
-            for (Letter letter : letterList) {
-                letter.setAlive(false);
-            }
+            letterList.forEach(letter -> letter.setAlive(false));
         }
     }
 }
