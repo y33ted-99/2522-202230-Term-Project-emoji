@@ -21,7 +21,7 @@ public enum EnemyType implements EmojiType {
     ROFL("rofl.png", "LOL", Color.ORANGE),
     SOB("sob.png", "WAA", Color.BLUE),
     THINK("thinking_face.png", "HUH", Color.PURPLE),
-    WOW("start-struck.png", "WOW", Color.YELLOW),
+    WOW("star-struck.png", "WOW", Color.YELLOW),
     DOH("confounded.png", "DOH", Color.PURPLE),
     YUM("yum.png", "YUM", Color.YELLOW),
     WAP("stuck_out_tongue_winking_eye.png", "YUM", Color.PINK),

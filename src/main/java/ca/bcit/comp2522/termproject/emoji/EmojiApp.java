@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -42,6 +44,7 @@ public class EmojiApp extends Application {
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
     private static TextBubbleGroup rightTextBubbleGroup;
+    private static final List<GameItem> gameItems = new ArrayList<>();
     private static boolean gameOver = false;
     private static int score = 0;
 
@@ -81,7 +84,7 @@ public class EmojiApp extends Application {
     private void onUpdate(final long now) {
 
         // searchForLetters(leftTextBubbleGroup);
-        if (!gameOver && now % 15000 < 5) {
+        if (!gameOver && now % 15000 < 10) {
             if (player.getCenterX() > APP_WIDTH / 2) {
                 leftTextBubbleGroup.spawnTextBubble();
             } else {
@@ -90,6 +93,11 @@ public class EmojiApp extends Application {
         }
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
+        gameItems.forEach(gameItem -> {
+            if (!gameItem.isAlive()) {
+                gameItems.remove(gameItem);
+            }
+        });
         if (!gameOver) {
             player.move();
         }
@@ -206,6 +214,16 @@ public class EmojiApp extends Application {
      */
     public static void addToScore(final int points) {
         player.addToScore(points);
+    }
+
+    public static void incrementPlayerPoppedBubbles() {
+        player.incrementPoppedBubbles();
+    }
+
+    public static void spawnItem() {
+        ItemType type = ItemType.values()[new Random().nextInt(ItemType.values().length)];
+        gameItems.add(GameItem.getInstance(type));
+        System.out.println("spawned item: " + type);
     }
 }
 

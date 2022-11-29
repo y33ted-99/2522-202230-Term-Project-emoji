@@ -38,15 +38,15 @@ public class TextBubble extends Group {
      * Size of font used in text bubble phrase.
      */
     public static final int FONT_SIZE = 28;
-    private static final int SHOOT_RATE = 300;
-    private static final double[] SPEED_RANGE = {0.5, 2};
+    private static final int SHOOT_RATE = 400;
+    private static final double[] SPEED_RANGE = {0.5, 3};
     private final Side side;
     private final int position;
     private final EmojiType type;
     private ImageView textBubbleImageView;
     private final Entity emoji;
     private Text phrase;
-    private Rectangle overlay;
+    private final Rectangle overlay;
     private int textBubbleWidth;
     private LetterGroup letterGroup;
     private Thread shotLettersThread;
@@ -201,6 +201,7 @@ public class TextBubble extends Group {
         if (isPoppable) {
             pop();
             letterGroup.die();
+            EmojiApp.incrementPlayerPoppedBubbles();
         }
     }
 
@@ -241,7 +242,7 @@ public class TextBubble extends Group {
      * Updates the group of letters.
      */
     public void update() {
-        isPoppable = isPlayerAdjacent();
+        isPoppable = isPlayerAdjacent() && !EmojiApp.isGameOver();
         showOverlay(isPoppable);
         letterGroup.update();
         if (!letterGroup.isAlive()) {
@@ -281,7 +282,7 @@ public class TextBubble extends Group {
             }
             for (char chr : letters) {
                 try {
-                    Thread.sleep(SHOOT_RATE);
+                    Thread.sleep((long) (SHOOT_RATE / speed));
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                 }
@@ -293,9 +294,6 @@ public class TextBubble extends Group {
                             speed);
                     letterList.add(letter);
                     getChildren().add(letter);
-//                    Thread letterBouncer = new Thread(letter);
-//                    letterBouncer.setDaemon(true);
-//                    letterBouncer.start();
                 });
             }
         }
@@ -311,7 +309,6 @@ public class TextBubble extends Group {
                     return true;
                 }
             }
-//            shotLettersThread.stop(); // needed??
             return false;
         }
 
@@ -321,6 +318,9 @@ public class TextBubble extends Group {
         public void update() {
             for (Letter letter : letterList) {
                 letter.update();
+//                if (letter.isCollided()) {
+//                    letterList.remove(letter);
+//                }
             }
         }
 

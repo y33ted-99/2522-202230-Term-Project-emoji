@@ -2,18 +2,12 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
-import javafx.animation.ParallelTransition;
-import javafx.animation.PathTransition;
-import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
-
-import java.nio.file.Path;
 
 /**
  * Represents the player.
@@ -36,6 +30,7 @@ public class Player extends Entity {
     private Point2D moveVector;
     private Point2D moveDestination;
     private int score;
+    private int poppedBubbles;
 
     /**
      * Creates instance of type Player.
@@ -108,7 +103,6 @@ public class Player extends Entity {
     }
 
     public void die() {
-
         image = new Image(EmojiApp.class.getResource("player/" + PlayerState.SCREAM.getFilename()).toExternalForm());
         Timeline timeline = new Timeline();
         KeyValue keyValueY = new KeyValue(imageView.yProperty(), EmojiApp.APP_HEIGHT + imageView.getFitHeight());
@@ -135,5 +129,13 @@ public class Player extends Entity {
      */
     public void addToScore(final int points) {
         score += points;
+    }
+
+    public void incrementPoppedBubbles() {
+        poppedBubbles++;
+        if (poppedBubbles % 2 == 0) {
+            // TODO: spawn powerup item that deletes letters of a color
+            EmojiApp.spawnItem();
+        }
     }
 }
