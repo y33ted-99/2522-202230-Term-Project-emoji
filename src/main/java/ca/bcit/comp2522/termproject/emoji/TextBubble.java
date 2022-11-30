@@ -9,13 +9,13 @@ import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.scene.media.AudioClip;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +42,7 @@ public class TextBubble extends Group {
     private static final int SHOOT_RATE = 400;
     private static final double[] SPEED_RANGE = {0.5, 3};
     private static final int POINTS_PER_BUBBLE = 5;
+    private static AudioClip popSound;
     private final Side side;
     private final int position;
     private final EmojiType type;
@@ -67,6 +68,8 @@ public class TextBubble extends Group {
         this.position = position;
         this.type = type;
         this.isAlive = true;
+        URL soundFile = EmojiApp.class.getResource("soundfx/pop.aiff");
+        popSound = new AudioClip(Objects.requireNonNull(soundFile).toExternalForm());
         textBubbleImageView = createTextBubbleImage();
         phrase = createPhrase();
         emoji = createEmoji();
@@ -204,6 +207,7 @@ public class TextBubble extends Group {
      */
     public void mouseClickHandler() {
         if (isPoppable) {
+            popSound.play();
             pop();
             letterGroup.die();
             EmojiApp.incrementPlayerPoppedBubbles();

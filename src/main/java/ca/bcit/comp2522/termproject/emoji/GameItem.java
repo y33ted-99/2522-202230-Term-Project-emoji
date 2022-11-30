@@ -1,6 +1,10 @@
 package ca.bcit.comp2522.termproject.emoji;
 
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
+
+import java.net.URL;
+import java.util.Objects;
 
 /**
  * Represents a game item a.k.a. power-up
@@ -14,15 +18,17 @@ public class GameItem extends Entity {
      * The point value of a GameItem.
      */
     public static final int POINTS_PER_ITEM = 15;
+    private static AudioClip itemSound;
     private final EmojiType itemType;
     private boolean isAlive;
 
 
     protected GameItem(final int xPosition, final int yPosition, final String image, final EmojiType type) {
         super(xPosition, yPosition, image);
+        URL soundFile = EmojiApp.class.getResource("soundfx/item.aiff");
+        itemSound = new AudioClip(Objects.requireNonNull(soundFile).toExternalForm());
         itemType = type;
         isAlive = true;
-//        fall();
     }
 
     /**
@@ -63,6 +69,7 @@ public class GameItem extends Entity {
      */
     public void update() {
         if (getBoundsInParent().intersects(EmojiApp.getPlayerBounds())) {
+            itemSound.play();
             LetterBar.removeLettersByColor(itemType.getColor());
             isAlive = false;
         }

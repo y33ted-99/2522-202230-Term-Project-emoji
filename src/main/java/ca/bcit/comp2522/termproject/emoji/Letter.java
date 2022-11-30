@@ -5,6 +5,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
@@ -12,6 +13,9 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.util.Duration;
+
+import java.net.URL;
+import java.util.Objects;
 
 /**
  * Represents a letter that is shot out by an enemy at the player.
@@ -22,6 +26,7 @@ import javafx.util.Duration;
  */
 public class Letter extends Group {
     private static final int FONT_SIZE = 25;
+    private static AudioClip hitSound;
     private final Text letter = new Text();
     private final Color color;
     private double speed;
@@ -46,6 +51,8 @@ public class Letter extends Group {
                   final double speed) {
         this.color = color;
         this.speed = speed;
+        URL soundFile = EmojiApp.class.getResource("soundfx/hit.aiff");
+        hitSound = new AudioClip(Objects.requireNonNull(soundFile).toExternalForm());
         letter.setText(String.valueOf(character));
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(color);
@@ -186,7 +193,7 @@ public class Letter extends Group {
             setOpacity(getOpacity() - gameOverFadeDecrement);
         } else if (detectCollisionWithPlayer()) {
             isCollided = true;
-//            isAlive = false;
+            hitSound.play();
             moveLetterToLetterBar();
             return;
         }

@@ -10,6 +10,7 @@ module ca.bcit.comp2522.termproject.emoji {
     requires org.kordamp.bootstrapfx.core;
 //    requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires javafx.media;
 
     opens ca.bcit.comp2522.termproject.emoji to javafx.fxml;
     exports ca.bcit.comp2522.termproject.emoji;
