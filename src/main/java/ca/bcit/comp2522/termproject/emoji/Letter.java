@@ -15,6 +15,7 @@ import javafx.scene.text.TextBoundsType;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -26,16 +27,23 @@ import java.util.Objects;
  */
 public class Letter extends Group {
     private static final int FONT_SIZE = 25;
-    private static AudioClip hitSound;
+    private static final ArrayList<AudioClip> AUDIO_CLIPS = new ArrayList<>();
     private final Text letter = new Text();
     private final Color color;
-    private double speed;
+    private final double speed;
     private double deltaX;
     private double deltaY;
     private int bounceCount;
     private boolean hasEnteredPlayArea;
     private boolean isAlive;
     private boolean isCollided;
+
+    static {
+        for (int i = 1; i <= 3; i++) {
+            URL soundFile = EmojiApp.class.getResource("soundfx/hit" + i + ".aiff");
+            AUDIO_CLIPS.add(new AudioClip(Objects.requireNonNull(soundFile).toExternalForm()));
+        }
+    }
 
     /**
      * Creates an instance of a type Letter.
@@ -50,9 +58,7 @@ public class Letter extends Group {
                   final Line path,
                   final double speed) {
         this.color = color;
-        this.speed = speed + EmojiApp.getDifficulty();
-        URL soundFile = EmojiApp.class.getResource("soundfx/hit.aiff");
-        hitSound = new AudioClip(Objects.requireNonNull(soundFile).toExternalForm());
+        this.speed = speed;
         letter.setText(String.valueOf(character));
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(color);
@@ -193,7 +199,7 @@ public class Letter extends Group {
             setOpacity(getOpacity() - gameOverFadeDecrement);
         } else if (detectCollisionWithPlayer()) {
             isCollided = true;
-            hitSound.play();
+            playHitSound();
             moveLetterToLetterBar();
             return;
         }
@@ -201,5 +207,12 @@ public class Letter extends Group {
         setTranslateX(getTranslateX() + deltaX);
         setTranslateY(getTranslateY() + deltaY);
 
+    }
+
+    /*
+     * Play one of 3 hit sounds randomly.
+     */
+    private static void playHitSound() {
+        AUDIO_CLIPS.get(EmojiApp.RNG.nextInt(3)).play();
     }
 }
