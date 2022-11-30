@@ -1,10 +1,8 @@
 package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.scene.Group;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 
-import java.net.URL;
 import java.util.Objects;
 import java.util.Random;
 
@@ -16,7 +14,8 @@ import java.util.Random;
  * @version Fall 2022
  */
 public class TextBubbleGroup extends Group {
-    private static AudioClip spawnSound;
+    private static final AudioClip SPAWN_SOUND = new AudioClip(
+            Objects.requireNonNull(EmojiApp.class.getResource("soundfx/bubble.aiff")).toExternalForm());
     private final Side side;
     private TextBubble[] textBubbles;
     private int enemyCount;
@@ -28,8 +27,6 @@ public class TextBubbleGroup extends Group {
      */
     public TextBubbleGroup(final Side side) {
         this.side = side;
-        URL soundFile = EmojiApp.class.getResource("soundfx/bubble.aiff");
-        spawnSound = new AudioClip(Objects.requireNonNull(soundFile).toExternalForm());
         initTextBubbleArrays();
         positionGroup();
     }
@@ -85,7 +82,7 @@ public class TextBubbleGroup extends Group {
         getChildren().add(textBubble);
         textBubbles[index] = textBubble;
         enemyCount++;
-        spawnSound.play();
+        SPAWN_SOUND.play();
     }
 
     /*

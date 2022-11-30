@@ -7,6 +7,8 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.util.Objects;
@@ -24,19 +26,20 @@ public class Player extends Entity {
      */
     public static final double SPEED = 4;
     private static final int BUBBLES_TO_SPAWN_ITEM = 5;
+    private static final MediaPlayer GAME_OVER_SOUND = new MediaPlayer(new Media(
+            Objects.requireNonNull(EmojiApp.class.getResource("soundfx/gameover.mp3")).toExternalForm()));
     private Point2D moveVector;
     private Point2D moveDestination;
     private int score;
     private int poppedBubbles;
 
     /**
-     * Creates instance of type Player.
-     *
-     * @param xPosition an int
-     * @param yPosition an int
+     * Creates instance of type Player in center of play area.
      */
-    public Player(final int xPosition, final int yPosition) {
-        super(xPosition, yPosition, "player/" + PlayerState.SMILEY.getFilename());
+    public Player() {
+        super(EmojiApp.APP_WIDTH / 2 - IMAGE_SIZE / 2,
+                EmojiApp.APP_HEIGHT / 2 - IMAGE_SIZE / 2,
+                "player/" + PlayerState.SMILEY.getFilename());
         moveVector = new Point2D(0, 0);
     }
 
@@ -102,6 +105,7 @@ public class Player extends Entity {
         KeyFrame keyFrame = new KeyFrame(duration, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
+        GAME_OVER_SOUND.play();
     }
 
     /**

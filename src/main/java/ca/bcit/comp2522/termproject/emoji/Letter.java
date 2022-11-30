@@ -27,7 +27,7 @@ import java.util.Objects;
  */
 public class Letter extends Group {
     private static final int FONT_SIZE = 25;
-    private static final ArrayList<AudioClip> AUDIO_CLIPS = new ArrayList<>();
+    private static final ArrayList<AudioClip> HIT_SOUNDS = new ArrayList<>();
     private final Text letter = new Text();
     private final Color color;
     private final double speed;
@@ -41,7 +41,7 @@ public class Letter extends Group {
     static {
         for (int i = 1; i <= 3; i++) {
             URL soundFile = EmojiApp.class.getResource("soundfx/hit" + i + ".aiff");
-            AUDIO_CLIPS.add(new AudioClip(Objects.requireNonNull(soundFile).toExternalForm()));
+            HIT_SOUNDS.add(new AudioClip(Objects.requireNonNull(soundFile).toExternalForm()));
         }
     }
 
@@ -213,6 +213,6 @@ public class Letter extends Group {
      * Play one of 3 hit sounds randomly.
      */
     private static void playHitSound() {
-        AUDIO_CLIPS.get(EmojiApp.RNG.nextInt(3)).play();
+        HIT_SOUNDS.get(EmojiApp.RNG.nextInt(3)).play();
     }
 }
