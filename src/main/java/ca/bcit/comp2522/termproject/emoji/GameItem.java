@@ -1,11 +1,6 @@
 package ca.bcit.comp2522.termproject.emoji;
 
-import javafx.animation.Interpolator;
-import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
-
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 /**
  * Represents a game item a.k.a. power-up
@@ -15,8 +10,9 @@ import javafx.util.Duration;
  * @version Fall 2022
  */
 public class GameItem extends Entity {
-    private static final int FALL_TIME = 5000;
-    private EmojiType itemType;
+    private static final int FALL_TIME = 4000;
+    private static final int POINTS_PER_ITEM = 20;
+    private final EmojiType itemType;
     private boolean isAlive;
 
 
@@ -28,10 +24,10 @@ public class GameItem extends Entity {
     }
 
     /**
-     * Creates instance of type GameItem.
+     * Creates and returns an instance of type GameItem.
      *
      * @param type the game item type as
-     * @return
+     * @return an instance of type GameItem
      */
     public static GameItem getInstance(final EmojiType type) {
         String filename = "item/" + type.getFilename();
@@ -41,6 +37,11 @@ public class GameItem extends Entity {
         return new GameItem(posX, PlayArea.getMarginY(), filename, type);
     }
 
+    /**
+     * Returns the color associated with this game item.
+     *
+     * @return game item's color as Color
+     */
     public Color getColor() {
         return itemType.getColor();
     }
@@ -61,6 +62,7 @@ public class GameItem extends Entity {
     public void update() {
         if (getBoundsInParent().intersects(EmojiApp.getPlayerBounds())) {
             LetterBar.removeLettersByColor(itemType.getColor());
+            EmojiApp.addToScore(POINTS_PER_ITEM);
             isAlive = false;
         }
         if (getTranslateY() < PlayArea.getMarginY() + PlayArea.HEIGHT - Entity.IMAGE_SIZE) {
