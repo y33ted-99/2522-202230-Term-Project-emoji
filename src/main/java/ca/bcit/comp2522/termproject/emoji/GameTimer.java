@@ -16,9 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class GameTimer extends StackPane {
 
-    private Text timeDisplay;
-    private long currentTime;
-
+    private final Text timeDisplay;
     /**
      * Creates an instance of type GameTimer.
      */

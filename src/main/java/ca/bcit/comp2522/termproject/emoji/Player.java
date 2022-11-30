@@ -9,6 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
+import java.util.Objects;
+
 /**
  * Represents the player.
  *
@@ -24,7 +26,7 @@ public class Player extends Entity {
     private static final int BUBBLES_TO_SPAWN_ITEM = 5;
     private Point2D moveVector;
     private Point2D moveDestination;
-    private int points;
+    private int score;
     private int poppedBubbles;
 
     /**
@@ -38,6 +40,9 @@ public class Player extends Entity {
         moveVector = new Point2D(0, 0);
     }
 
+    /**
+     * Moves the player.
+     */
     public void move() {
         if (moveDestination == null || getBoundsInParent().contains(moveDestination)) {
             return;
@@ -86,7 +91,8 @@ public class Player extends Entity {
      */
     public void die() {
         // change the image to the scream face
-        image = new Image(EmojiApp.class.getResource("player/" + PlayerState.SCREAM.getFilename()).toExternalForm());
+        String filename = "player/" + PlayerState.SCREAM.getFilename();
+        image = new Image(Objects.requireNonNull(EmojiApp.class.getResource(filename)).toExternalForm());
         imageView.setImage(image);
         // animate Y value (falls to bottom) and rotation
         Timeline timeline = new Timeline();
@@ -103,8 +109,8 @@ public class Player extends Entity {
      *
      * @return score as int
      */
-    public int getPoints() {
-        return points;
+    public int getScore() {
+        return score;
     }
 
     /**
@@ -113,7 +119,7 @@ public class Player extends Entity {
      * @param pointsToAdd an int
      */
     public void addToScore(final int pointsToAdd) {
-        this.points += pointsToAdd;
+        this.score += pointsToAdd;
     }
 
     /**

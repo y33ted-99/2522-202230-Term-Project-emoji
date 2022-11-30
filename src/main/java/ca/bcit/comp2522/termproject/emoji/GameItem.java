@@ -10,6 +10,9 @@ import javafx.scene.paint.Color;
  * @version Fall 2022
  */
 public class GameItem extends Entity {
+    /**
+     * The point value of a GameItem.
+     */
     public static final int POINTS_PER_ITEM = 15;
     private final EmojiType itemType;
     private boolean isAlive;

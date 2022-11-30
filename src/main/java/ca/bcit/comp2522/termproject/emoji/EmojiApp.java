@@ -136,8 +136,8 @@ public class EmojiApp extends Application {
 
         scene.setOnMouseMoved(event -> player.moveToMouse(event));
         scene.setOnMouseClicked(event -> {
-            leftTextBubbleGroup.mouseClickHandler(event);
-            rightTextBubbleGroup.mouseClickHandler(event);
+            leftTextBubbleGroup.mouseClickHandler();
+            rightTextBubbleGroup.mouseClickHandler();
         });
 
         primaryStage.setResizable(false);

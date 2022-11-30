@@ -169,6 +169,9 @@ public class Letter extends Group {
         LetterBar.addLetter(this);
     }
 
+    /**
+     * Updates this Letter (moves or kills it).
+     */
     public void update() {
         final double bubbleDeathFadeDecrement = 0.03;
         final double gameOverFadeDecrement = 0.0018;

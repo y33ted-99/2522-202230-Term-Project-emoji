@@ -31,11 +31,11 @@ public class LetterBar extends Group {
     private static final int LETTER_MARGIN_X = 14;
     private static final int LETTER_MARGIN_Y = 35;
     private static final int POINTS_PER_WORD = 50;
-    private static final int POINTs_PER_LETTER_IN_SPELLED_WORD = 20;
-    private static final Group letterBar = new Group();
-    private static final Rectangle container = new Rectangle();
-    private static List<Letter> lettersArrayList = new ArrayList<>();
-    private static List<String> wordList = loadWordList();
+    private static final int POINTS_PER_LETTER_IN_SPELLED_WORD = 20;
+    private static final Group LETTER_BAR = new Group();
+    private static final Rectangle CONTAINER = new Rectangle();
+    private static final List<Letter> LETTERS = new ArrayList<>();
+    private static final List<String> WORD_LIST = loadWordList();
 
     /*
      * Reads words from 'wordlist.txt' and adds to wordList
@@ -44,12 +44,11 @@ public class LetterBar extends Group {
         URL url = EmojiApp.class.getResource("wordlist.txt");
         List<String> list = null;
         try {
+            assert url != null;
             Path filepath = Paths.get(url.toURI());
             list = Files.readAllLines(filepath, StandardCharsets.UTF_8);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
-        } catch (URISyntaxException urise) {
-            urise.printStackTrace();
         }
         return list;
     }
@@ -62,25 +61,25 @@ public class LetterBar extends Group {
     public static Group createLetterBar() {
         createContainer();
 //        drawCells();
-        letterBar.setTranslateX(PlayArea.getMarginX());
-        letterBar.setTranslateY(PlayArea.getMarginY()
+        LETTER_BAR.setTranslateX(PlayArea.getMarginX());
+        LETTER_BAR.setTranslateY(PlayArea.getMarginY()
                 + PlayArea.HEIGHT
                 + ((PlayArea.getMarginY()
-                - container.getHeight()) / 2));
-        return letterBar;
+                - CONTAINER.getHeight()) / 2));
+        return LETTER_BAR;
     }
 
     /*
      * Creates the container panel containing the row of letters.
      */
     private static void createContainer() {
-        container.setWidth(PlayArea.WIDTH);
-        container.setHeight(HEIGHT);
-        container.setStroke(Color.BLACK);
-        container.setFill(new Color(1, 1, 1, 0.9));
-        container.setArcHeight(10);
-        container.setArcWidth(10);
-        letterBar.getChildren().add(container);
+        CONTAINER.setWidth(PlayArea.WIDTH);
+        CONTAINER.setHeight(HEIGHT);
+        CONTAINER.setStroke(Color.BLACK);
+        CONTAINER.setFill(new Color(1, 1, 1, 0.9));
+        CONTAINER.setArcHeight(10);
+        CONTAINER.setArcWidth(10);
+        LETTER_BAR.getChildren().add(CONTAINER);
     }
 
     /*
@@ -93,7 +92,7 @@ public class LetterBar extends Group {
             cell.setStroke(Color.LIGHTGRAY);
             cell.setTranslateX((i * FONT_SIZE) + CELL_MARGIN);
             cell.setTranslateY(10);
-            letterBar.getChildren().add(cell);
+            LETTER_BAR.getChildren().add(cell);
         }
     }
 
@@ -104,8 +103,8 @@ public class LetterBar extends Group {
      */
     public static Point2D getNextSlot() {
         return new Point2D(
-                letterBar.getTranslateX() + (lettersArrayList.size() * FONT_SIZE) + LETTER_MARGIN_X,
-                letterBar.getTranslateY() + LETTER_MARGIN_Y);
+                LETTER_BAR.getTranslateX() + (LETTERS.size() * FONT_SIZE) + LETTER_MARGIN_X,
+                LETTER_BAR.getTranslateY() + LETTER_MARGIN_Y);
     }
 
     /**
@@ -114,7 +113,7 @@ public class LetterBar extends Group {
      * @param letter the letter to add as Text
      */
     public static void addLetter(final Letter letter) {
-        lettersArrayList.add(letter);
+        LETTERS.add(letter);
         int totalPoints = 0;
         int points = checkIfContainsWord();
         while (points > 0) {
@@ -124,9 +123,9 @@ public class LetterBar extends Group {
         }
         if (totalPoints > 0) {
             repositionLetters();
-            EmojiApp.addToScore(totalPoints * POINTs_PER_LETTER_IN_SPELLED_WORD);
+            EmojiApp.addToScore(totalPoints * POINTS_PER_LETTER_IN_SPELLED_WORD);
         }
-        if (lettersArrayList.size() == CAPACITY) {
+        if (LETTERS.size() == CAPACITY) {
             EmojiApp.setGameOver(true);
         }
     }
@@ -136,14 +135,14 @@ public class LetterBar extends Group {
      */
     private static int checkIfContainsWord() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Letter letter : lettersArrayList) {
+        for (Letter letter : LETTERS) {
             stringBuilder.append(letter.getText().getText());
         }
         String letterBarString = stringBuilder.toString();
         int index = -1;
         int wordLength = 0;
-        for (String word : wordList) {
-            if (word.length() > lettersArrayList.size()) {
+        for (String word : WORD_LIST) {
+            if (word.length() > LETTERS.size()) {
                 break;
             }
             if (letterBarString.contains(word)) {
@@ -165,7 +164,7 @@ public class LetterBar extends Group {
         Letter letter;
         // remove letters from arraylist
         for (int i = 0; i < length; i++) {
-            letter = lettersArrayList.remove(index);
+            letter = LETTERS.remove(index);
             EmojiApp.removeFromRootScene(letter);
         }
     }
@@ -174,9 +173,9 @@ public class LetterBar extends Group {
      * Removes letters of a given color from the letter bar.
      */
     public static void removeLettersByColor(final Color color) {
-        Iterator iterator = lettersArrayList.iterator();
+        Iterator<Letter> iterator = LETTERS.iterator();
         while (iterator.hasNext()) {
-            Letter letter = (Letter) iterator.next();
+            Letter letter = iterator.next();
             if (letter.getColor().equals(color)) {
                 EmojiApp.removeFromRootScene(letter);
                 iterator.remove();
@@ -189,9 +188,9 @@ public class LetterBar extends Group {
      * Repositions letters i.e. if some were removed.
      */
     private static void repositionLetters() {
-        for (int i = 0; i < lettersArrayList.size(); i++) {
-            double translate = letterBar.getTranslateX() + (i * FONT_SIZE) + LETTER_MARGIN_X;
-            lettersArrayList.get(i).setTranslateX(translate);
+        for (int i = 0; i < LETTERS.size(); i++) {
+            double translate = LETTER_BAR.getTranslateX() + (i * FONT_SIZE) + LETTER_MARGIN_X;
+            LETTERS.get(i).setTranslateX(translate);
         }
     }
 }

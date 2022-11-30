@@ -8,8 +8,7 @@ package ca.bcit.comp2522.termproject.emoji;
  * @version Fall 2022
  */
 public class Enemy extends Entity {
-    private EmojiType emoji;
-
+    private final EmojiType emoji;
     /**
      * Creates an instance of type Enemy.
      *

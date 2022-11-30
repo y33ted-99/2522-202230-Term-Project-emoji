@@ -16,7 +16,7 @@ public enum PlayerState {
     SMILEY("cat_smiley.png"),
     SMIRK("cat_smirk.png");
 
-    private String filename;
+    private final String filename;
 
     /**
      * Create instance of PlayerState enum.

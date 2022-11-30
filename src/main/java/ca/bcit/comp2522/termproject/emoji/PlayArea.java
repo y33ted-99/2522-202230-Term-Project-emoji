@@ -6,11 +6,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 /**
  * Represents components of the game play area.
  *
@@ -36,9 +31,12 @@ public class PlayArea {
 
     /**
      * Loads the background image.
+     *
+     * @return background image as ImageView
      */
     public static ImageView createBackground() {
-        ImageView backgroundImageView = new ImageView(new Image(EmojiApp.class.getResource("bg/blue-pink-background.jpg").toExternalForm()));
+        Image backgroundImage = new Image(EmojiApp.class.getResource("bg/blue-pink-background.jpg").toExternalForm());
+        ImageView backgroundImageView = new ImageView(backgroundImage);
         backgroundImageView.setFitHeight(EmojiApp.APP_HEIGHT);
         backgroundImageView.setPreserveRatio(true);
         backgroundImageView.setCache(true);
@@ -47,6 +45,8 @@ public class PlayArea {
 
     /**
      * Creates the main play area where the action takes place.
+     *
+     * @return the play area as Rectangle
      */
     public static Rectangle createPlayArea() {
         PLAY_AREA.setX(getMarginX());
@@ -60,14 +60,29 @@ public class PlayArea {
         return PLAY_AREA;
     }
 
+    /**
+     * Returns the bounds of the play area.
+     *
+     * @return bounds of play area as Bounds
+     */
     public static Bounds getBounds() {
         return PLAY_AREA.getBoundsInParent();
     }
 
+    /**
+     * Returns horizontal margin between play area and game window.
+     *
+     * @return horizontal margin as int
+     */
     public static int getMarginX() {
         return (EmojiApp.APP_WIDTH - WIDTH) / 2;
     }
 
+    /**
+     * Returns vertical margin between play area and game window.
+     *
+     * @return vertical margin as int
+     */
     public static int getMarginY() {
         return (EmojiApp.APP_HEIGHT - HEIGHT) / 2;
     }

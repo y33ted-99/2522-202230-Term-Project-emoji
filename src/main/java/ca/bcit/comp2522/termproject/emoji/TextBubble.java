@@ -17,8 +17,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a TextBubble that contains an emoji and it's associated phrase.
@@ -87,8 +89,8 @@ public class TextBubble extends Group {
      * Creates the TextBubble image.
      */
     private ImageView createTextBubbleImage() {
-        String textBubbleFilename = "text-bubble/" + side.getFilename();
-        Image textBubbleImage = new Image(EmojiApp.class.getResource(textBubbleFilename).toExternalForm());
+        URL textBubbleFilename = EmojiApp.class.getResource("text-bubble/" + side.getFilename());
+        Image textBubbleImage = new Image(Objects.requireNonNull(textBubbleFilename).toExternalForm());
         textBubbleWidth = (int) (textBubbleImage.getWidth() * (TEXT_BUBBLE_HEIGHT / textBubbleImage.getHeight()));
         textBubbleImageView = new ImageView(textBubbleImage);
         textBubbleImageView.setFitHeight(TEXT_BUBBLE_HEIGHT);
@@ -136,18 +138,18 @@ public class TextBubble extends Group {
      * Creates the overlay used to indicate a text bubble is poppable.
      */
     private Rectangle createOverlay() {
-        final double MARGIN = 20;
+        final double margin = 20;
         Bounds tbb = textBubbleImageView.getBoundsInParent();
-        Rectangle overlay = new Rectangle();
-        overlay.setWidth(tbb.getWidth() - 2 * MARGIN);
-        overlay.setHeight(tbb.getHeight() - 2 * MARGIN);
-        overlay.setX(tbb.getMinX() + MARGIN);
-        overlay.setY(tbb.getMinY() + MARGIN);
-        overlay.setArcWidth(MARGIN);
-        overlay.setArcHeight(MARGIN);
-        overlay.setFill(new Color(1, 0, 0, 0.2));
-        overlay.setOpacity(0);
-        return overlay;
+        Rectangle newOverlay = new Rectangle();
+        newOverlay.setWidth(tbb.getWidth() - 2 * margin);
+        newOverlay.setHeight(tbb.getHeight() - 2 * margin);
+        newOverlay.setX(tbb.getMinX() + margin);
+        newOverlay.setY(tbb.getMinY() + margin);
+        newOverlay.setArcWidth(margin);
+        newOverlay.setArcHeight(margin);
+        newOverlay.setFill(new Color(1, 0, 0, 0.2));
+        newOverlay.setOpacity(0);
+        return newOverlay;
     }
 
     /**
@@ -197,8 +199,10 @@ public class TextBubble extends Group {
                 && Math.abs(player.getCenterY() - nearestY) < textBubbleImageView.getFitHeight() / 2;
     }
 
-
-    public void mouseClickHandler(final MouseEvent event) {
+    /**
+     * Handles a mouse click event (pops a text bubble if it can be popped).
+     */
+    public void mouseClickHandler() {
         if (isPoppable) {
             pop();
             letterGroup.die();
@@ -227,9 +231,7 @@ public class TextBubble extends Group {
         TranslateTransition emojiDrop = new TranslateTransition(emojiDropDuration, emoji);
         emojiDrop.setToY(EmojiApp.APP_HEIGHT);
         emojiDrop.setByX(EmojiApp.RNG.nextInt(400) - 200);
-        emojiDrop.setOnFinished(finish -> {
-            isAlive = false;
-        });
+        emojiDrop.setOnFinished(finish -> isAlive = false);
         emojiDrop.play();
 
     }

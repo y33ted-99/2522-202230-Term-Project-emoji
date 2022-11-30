@@ -2,7 +2,6 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.scene.Group;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;

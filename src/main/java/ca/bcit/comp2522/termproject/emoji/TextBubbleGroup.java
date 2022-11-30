@@ -22,7 +22,7 @@ public class TextBubbleGroup extends Group {
      *
      * @param side play area side as Side enum
      */
-    public TextBubbleGroup(Side side) {
+    public TextBubbleGroup(final Side side) {
         this.side = side;
         initTextBubbleArrays();
         positionGroup();
@@ -101,10 +101,10 @@ public class TextBubbleGroup extends Group {
             if (textBubble == null) {
                 continue;
             } else if (!textBubble.isAlive()) {
-
                 removeTextBubble(textBubble);
-            } else
+            } else {
                 textBubble.update();
+            }
         }
     }
 
@@ -121,13 +121,13 @@ public class TextBubbleGroup extends Group {
         getChildren().remove(textBubble);
     }
 
-    /*
+    /**
      * Passes a mouse click event to all text bubbles.
      */
-    public void mouseClickHandler(final MouseEvent event) {
+    public void mouseClickHandler() {
         for (TextBubble textBubble : textBubbles) {
             if (textBubble != null) {
-                textBubble.mouseClickHandler(event);
+                textBubble.mouseClickHandler();
             }
         }
     }

@@ -4,11 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * An abstract game entity.
@@ -20,7 +16,7 @@ import java.nio.file.Paths;
 public abstract class Entity extends Group {
 
     /**
-     * The default image size for an Entity's ImageView
+     * The default image size for an Entity's ImageView.
      */
     public static final int IMAGE_SIZE = 40;
     protected Image image;
@@ -31,23 +27,26 @@ public abstract class Entity extends Group {
     public Entity() {
         this("enemy/no_mouth.png");
     }
+
     public Entity(final String image) {
         this(0, 0, image);
     }
+
     public Entity(final int xPosition, final int yPosition, final String image) {
         this(xPosition, yPosition, IMAGE_SIZE, image);
     }
+
     /**
      * Create an instance of type Entity.
      *
-     * @param xPosition as int
-     * @param yPosition as int
-     * @param size as int
+     * @param xPosition     as int
+     * @param yPosition     as int
+     * @param size          as int
      * @param imageFilename a String representing the filename of the image loaded into the ImageView
      */
     public Entity(final int xPosition, final int yPosition, final int size, final String imageFilename) {
         this.size = size;
-        image = new Image(EmojiApp.class.getResource(imageFilename).toExternalForm());
+        image = new Image(Objects.requireNonNull(EmojiApp.class.getResource(imageFilename)).toExternalForm());
         imageView = new ImageView(image);
         imageView.setFitWidth(this.size);
         imageView.setPreserveRatio(true);
@@ -60,19 +59,20 @@ public abstract class Entity extends Group {
     }
 
     /**
-     * Returns the x coordinate of the center
+     * Returns the x coordinate of the center.
      *
      * @return the x coordinate of the center as int
      */
     public int getCenterX() {
-        return (int)(this.getTranslateX() + (size / 2));
+        return (int) (this.getTranslateX() + (size / 2));
     }
+
     /**
-     * Returns the y coordinate of the center
+     * Returns the y coordinate of the center.
      *
      * @return the y coordinate of the center as int
      */
     public int getCenterY() {
-        return (int)(this.getTranslateY() + (size / 2));
+        return (int) (this.getTranslateY() + (size / 2));
     }
 }
