@@ -36,6 +36,9 @@ public class TextBubbleGroup extends Group {
         textBubbles = new TextBubble[textBubblesPerSide];
     }
 
+    /*
+     * Positions the text bubble group according to side of play area.
+     */
     private void positionGroup() {
         switch (side) {
             case LEFT -> this.setTranslateY(PlayArea.getMarginY());
@@ -52,7 +55,7 @@ public class TextBubbleGroup extends Group {
     }
 
     /**
-     * Spawns a TextBubble containing an enemy.
+     * Spawns a TextBubble.
      */
     public void spawnTextBubble() {
         if (enemyCount >= textBubbles.length) {
@@ -65,7 +68,7 @@ public class TextBubbleGroup extends Group {
         }
         while (textBubbles[index] != null);
         // get a random enemy type to spawn in text bubble
-        EnemyType type;
+        EmojiType type;
         do {
             type = EnemyType.values()[new Random().nextInt(EnemyType.values().length)];
         } while (checkIfEmojiExists(type));
@@ -73,9 +76,9 @@ public class TextBubbleGroup extends Group {
         int gapBetweenTextBubbles = (PlayArea.HEIGHT - (textBubbles.length * TextBubble.TEXT_BUBBLE_HEIGHT)) / textBubbles.length;
         int position = (TextBubble.TEXT_BUBBLE_HEIGHT + gapBetweenTextBubbles) * index;
         TextBubble textBubble = new TextBubble(side, position, type);
-        enemyCount++;
         getChildren().add(textBubble);
         textBubbles[index] = textBubble;
+        enemyCount++;
     }
 
     /*
@@ -98,6 +101,7 @@ public class TextBubbleGroup extends Group {
             if (textBubble == null) {
                 continue;
             } else if (!textBubble.isAlive()) {
+
                 removeTextBubble(textBubble);
             } else
                 textBubble.update();

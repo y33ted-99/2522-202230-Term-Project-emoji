@@ -20,6 +20,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -53,6 +56,7 @@ public class EmojiApp extends Application {
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
     private static TextBubbleGroup rightTextBubbleGroup;
+    private static final List<GameItem> gameItems = new ArrayList<>();
     private static boolean gameOver = false;
     private static int score = 0;
 
@@ -121,7 +125,7 @@ public class EmojiApp extends Application {
     private void onUpdate(final long now) {
 
         // searchForLetters(leftTextBubbleGroup);
-        if (!gameOver && now % 15000 < 5) {
+        if (!gameOver && now % 15000 < 100) {
             if (player.getCenterX() > APP_WIDTH / 2) {
                 leftTextBubbleGroup.spawnTextBubble();
             } else {
@@ -130,6 +134,9 @@ public class EmojiApp extends Application {
         }
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
+        checkGameItems();
+        gameItems.forEach(GameItem::update);
+
         if (!gameOver) {
             player.move();
         }
@@ -177,16 +184,6 @@ public class EmojiApp extends Application {
                 APP_HEIGHT / 2 - Entity.IMAGE_SIZE / 2);
         return player;
     }
-
-//    private void searchForLetters(final Group textBubbleGroup) {
-//        for (Node textBubble : textBubbleGroup.getChildren()) {
-//            for (Node textBubbleComponent : ((Group) textBubble).getChildren()) {
-//                if (textBubbleComponent.getClass() == Enemy.class) {
-//                    System.out.println(((Enemy) textBubbleComponent).getChildren());
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Returns the player's bounds.
@@ -246,6 +243,29 @@ public class EmojiApp extends Application {
      */
     public static void addToScore(final int points) {
         player.addToScore(points);
+    }
+
+    public static void incrementPlayerPoppedBubbles() {
+        player.incrementPoppedBubbles();
+    }
+
+    public static void spawnItem() {
+        ItemType type = ItemType.values()[new Random().nextInt(ItemType.values().length)];
+        GameItem gameItem = GameItem.getInstance(type);
+        gameItems.add(gameItem);
+        addToRootScene(gameItem);
+    }
+
+    public static void checkGameItems() {
+        Iterator iterator = gameItems.iterator();
+        while (iterator.hasNext()) {
+            GameItem gameItem = (GameItem) iterator.next();
+            if (!gameItem.isAlive()) {
+                removeFromRootScene(gameItem);
+                EmojiApp.addToScore(GameItem.POINTS_PER_ITEM);
+                iterator.remove();
+            }
+        }
     }
 
     private static class MenuItem extends StackPane {

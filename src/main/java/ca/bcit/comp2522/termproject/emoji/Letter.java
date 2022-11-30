@@ -22,9 +22,8 @@ import javafx.util.Duration;
  */
 public class Letter extends Group {
     private static final int FONT_SIZE = 25;
-
     private final Text letter = new Text();
-
+    private final Color color;
     private double speed;
     private double deltaX;
     private double deltaY;
@@ -45,17 +44,36 @@ public class Letter extends Group {
                   final Color color,
                   final Line path,
                   final double speed) {
+        this.color = color;
         this.speed = speed;
         letter.setText(String.valueOf(character));
         letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
         letter.setFill(color);
         letter.setStroke(color.darker());
         letter.setBoundsType(TextBoundsType.VISUAL);
-        letter.setX(path.getStartX());
-        letter.setY(path.getStartY());
+        getChildren().add(letter);
+        this.setTranslateX(path.getStartX());
+        this.setTranslateY(path.getStartY());
         setDirection(path.getStartX(), path.getStartY(), path.getEndX(), path.getEndY());
-        EmojiApp.addToRootScene(letter);
         isAlive = true;
+    }
+
+    /**
+     * Returns the letter's Text.
+     *
+     * @return letter as Text
+     */
+    public Text getText() {
+        return letter;
+    }
+
+    /**
+     * Returns the letters color.
+     *
+     * @return color as Color
+     */
+    public Color getColor() {
+        return color;
     }
 
     /**
@@ -100,7 +118,7 @@ public class Letter extends Group {
         checkIfEnteredPlayArea();
         boolean hasBounced = false;
         if (hasEnteredPlayArea) {
-            Bounds letterBounds = letter.getBoundsInParent();
+            Bounds letterBounds = getBoundsInParent();
             // if bounce off left or right of Panel
             if (letterBounds.getMinX() <= PlayArea.getMarginX()
                     || letterBounds.getMaxX() >= PlayArea.getMarginX() + PlayArea.WIDTH) {
@@ -123,7 +141,7 @@ public class Letter extends Group {
      * Checks if letter has fully entered play area after being shot out.
      */
     private void checkIfEnteredPlayArea() {
-        if (PlayArea.getBounds().contains(letter.getBoundsInParent())) {
+        if (PlayArea.getBounds().contains(getBoundsInParent())) {
             hasEnteredPlayArea = true;
         }
     }
@@ -132,7 +150,7 @@ public class Letter extends Group {
      * Returns true if the letter has collided with the player.
      */
     private boolean detectCollisionWithPlayer() {
-        return letter.getBoundsInParent().intersects(EmojiApp.getPlayerBounds());
+        return getBoundsInParent().intersects(EmojiApp.getPlayerBounds());
     }
 
     /*
@@ -142,13 +160,13 @@ public class Letter extends Group {
         final double letterRotation = 720;
         final Duration duration = Duration.millis(300);
         Timeline timeline = new Timeline();
-        KeyValue keyValueX = new KeyValue(letter.xProperty(), LetterBar.getNextSlot().getX());
-        KeyValue keyValueY = new KeyValue(letter.yProperty(), LetterBar.getNextSlot().getY());
+        KeyValue keyValueX = new KeyValue(translateXProperty(), LetterBar.getNextSlot().getX());
+        KeyValue keyValueY = new KeyValue(translateYProperty(), LetterBar.getNextSlot().getY());
         KeyValue keyValueR = new KeyValue(letter.rotateProperty(), letterRotation);
         KeyFrame keyFrame = new KeyFrame(duration, keyValueX, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
-        LetterBar.addLetter(letter);
+        LetterBar.addLetter(this);
     }
 
     public void update() {
@@ -158,11 +176,11 @@ public class Letter extends Group {
             return;
         }
         if (!isAlive) {
-            letter.setOpacity(letter.getOpacity() - bubbleDeathFadeDecrement);
+            setOpacity(getOpacity() - bubbleDeathFadeDecrement);
 //            return;
         }
         if (EmojiApp.isGameOver()) {
-            letter.setOpacity(letter.getOpacity() - gameOverFadeDecrement);
+            setOpacity(getOpacity() - gameOverFadeDecrement);
         } else if (detectCollisionWithPlayer()) {
             isCollided = true;
 //            isAlive = false;
@@ -170,8 +188,8 @@ public class Letter extends Group {
             return;
         }
         detectCollisionWIthBorder();
-        letter.setX(letter.getX() + deltaX);
-        letter.setY(letter.getY() + deltaY);
+        setTranslateX(getTranslateX() + deltaX);
+        setTranslateY(getTranslateY() + deltaY);
 
     }
 }

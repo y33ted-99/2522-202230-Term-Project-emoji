@@ -10,7 +10,15 @@ import javafx.scene.paint.Color;
  * @version Fall 2022
  */
 public enum ItemType implements EmojiType {
-    PIZZA("pizza.png", "ZAAA", Color.RED);
+    CACTUS("cactus.png", "", Color.GREEN),
+    EGGPLANT("eggplant.png", "", Color.PURPLE),
+    GEM("gem.png", "", Color.BLUE),
+    APPLE("green_apple.png", "", Color.GREEN),
+    BERRY("strawberry.png", "", Color.RED),
+    ORANGE("tangerine.png", "", Color.ORANGE),
+    WHALE("whale.png", "", Color.BLUE),
+    BANANA("banana.png", "", Color.YELLOW),
+    LIPS("lips.png", "", Color.PINK),;
 
     private String filename;
     private String phrase;

@@ -1,6 +1,5 @@
 package ca.bcit.comp2522.termproject.emoji;
 
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -38,15 +37,16 @@ public class TextBubble extends Group {
      * Size of font used in text bubble phrase.
      */
     public static final int FONT_SIZE = 28;
-    private static final int SHOOT_RATE = 300;
-    private static final double[] SPEED_RANGE = {0.5, 2};
+    private static final int SHOOT_RATE = 400;
+    private static final double[] SPEED_RANGE = {0.5, 3};
+    private static final int POINTS_PER_BUBBLE = 5;
     private final Side side;
     private final int position;
     private final EmojiType type;
     private ImageView textBubbleImageView;
     private final Entity emoji;
     private Text phrase;
-    private Rectangle overlay;
+    private final Rectangle overlay;
     private int textBubbleWidth;
     private LetterGroup letterGroup;
     private Thread shotLettersThread;
@@ -117,6 +117,7 @@ public class TextBubble extends Group {
         Font font = new Font("Arial Black", FONT_SIZE);
         phrase.setFill(type.getColor());
         phrase.setFont(font);
+        phrase.setStroke(type.getColor().darker());
         return phrase;
     }
 
@@ -162,7 +163,7 @@ public class TextBubble extends Group {
         if (side == Side.LEFT) {
             startX = PlayArea.getMarginX() + margin;
         } else {
-            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin - 5;
+            startX = PlayArea.getMarginX() + PlayArea.WIDTH - 2 * margin - 10;
         }
         Line path = new Line(startX,
                 PlayArea.getMarginY() + position + (double) (TEXT_BUBBLE_HEIGHT / 2) + margin,
@@ -201,6 +202,8 @@ public class TextBubble extends Group {
         if (isPoppable) {
             pop();
             letterGroup.die();
+            EmojiApp.incrementPlayerPoppedBubbles();
+            EmojiApp.addToScore(POINTS_PER_BUBBLE);
         }
     }
 
@@ -210,6 +213,7 @@ public class TextBubble extends Group {
     public void pop() {
         final Duration fadeOutDuration = Duration.millis(200);
         final Duration emojiDropDuration = Duration.millis(800);
+        // fade out the text bubble and phrase
         Timeline timeline = new Timeline();
         KeyValue keyValueTextBubbleImageViewOpacity = new KeyValue(textBubbleImageView.opacityProperty(), 0);
         KeyValue keyValuePhraseOpacity = new KeyValue(phrase.opacityProperty(), 0);
@@ -218,14 +222,16 @@ public class TextBubble extends Group {
                 keyValueTextBubbleImageViewOpacity,
                 keyValuePhraseOpacity);
         timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
+        // drop emoji down out of screen
         TranslateTransition emojiDrop = new TranslateTransition(emojiDropDuration, emoji);
         emojiDrop.setToY(EmojiApp.APP_HEIGHT);
-        emojiDrop.setByX(-100);
+        emojiDrop.setByX(EmojiApp.RNG.nextInt(400) - 200);
         emojiDrop.setOnFinished(finish -> {
             isAlive = false;
         });
         emojiDrop.play();
-        timeline.play();
+
     }
 
     /**
@@ -241,15 +247,9 @@ public class TextBubble extends Group {
      * Updates the group of letters.
      */
     public void update() {
-        isPoppable = isPlayerAdjacent();
+        isPoppable = isPlayerAdjacent() && !EmojiApp.isGameOver();
         showOverlay(isPoppable);
         letterGroup.update();
-        if (!letterGroup.isAlive()) {
-//            shoot();
-        }
-        if (!isAlive) {
-            //
-        }
     }
 
     /*
@@ -261,7 +261,6 @@ public class TextBubble extends Group {
         Line path;
         double speed;
         List<Letter> letterList;
-        boolean isAlive;
 
         LetterGroup(final char[] letters, final Line path, final double speed) {
             this.letters = letters;
@@ -281,46 +280,27 @@ public class TextBubble extends Group {
             }
             for (char chr : letters) {
                 try {
-                    Thread.sleep(SHOOT_RATE);
+                    // create a delay between letters being shot out
+                    Thread.sleep((long) (SHOOT_RATE / speed));
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                 }
                 Platform.runLater(() -> {
-                    Letter letter = new Letter(
-                            chr,
-                            type.getColor(),
-                            path,
-                            speed);
+                    Letter letter = new Letter(chr, type.getColor(), path, speed);
                     letterList.add(letter);
-                    getChildren().add(letter);
-//                    Thread letterBouncer = new Thread(letter);
-//                    letterBouncer.setDaemon(true);
-//                    letterBouncer.start();
+                    EmojiApp.addToRootScene(letter);
                 });
             }
-        }
-
-        /**
-         * Returns true if at least one shot letter is alive.
-         *
-         * @return true if at least one shot letter is alive
-         */
-        public boolean isAlive() {
-            for (Letter letter : letterList) {
-                if (letter.isAlive()) {
-                    return true;
-                }
-            }
-//            shotLettersThread.stop(); // needed??
-            return false;
         }
 
         /**
          * Updates each letter.
          */
         public void update() {
-            for (Letter letter : letterList) {
-                letter.update();
+            letterList.forEach(Letter::update);
+            if (isAlive && letterList.size() > 0 && letterList.stream().allMatch(Letter::isCollided)) {
+                //TODO: resolve bug when shooting after bubble popped
+//                shoot();
             }
         }
 
@@ -328,9 +308,7 @@ public class TextBubble extends Group {
          * Set each letter isAlive to false.
          */
         public void die() {
-            for (Letter letter : letterList) {
-                letter.setAlive(false);
-            }
+            letterList.forEach(letter -> letter.setAlive(false));
         }
     }
 }
