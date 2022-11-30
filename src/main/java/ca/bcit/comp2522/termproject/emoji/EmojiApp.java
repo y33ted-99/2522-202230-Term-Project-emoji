@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -93,7 +94,7 @@ public class EmojiApp extends Application {
         }
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
-        gameItems.forEach(EmojiApp::checkGameItem);
+        checkGameItems();
         gameItems.forEach(GameItem::update);
 
         if (!gameOver) {
@@ -215,10 +216,15 @@ public class EmojiApp extends Application {
         addToRootScene(gameItem);
     }
 
-    public static void checkGameItem(final GameItem gameItem) {
-        if (!gameItem.isAlive()) {
-            removeFromRootScene(gameItem);
-//            gameItems.remove(gameItem);
+    public static void checkGameItems() {
+        Iterator iterator = gameItems.iterator();
+        while (iterator.hasNext()) {
+            GameItem gameItem = (GameItem) iterator.next();
+            if (!gameItem.isAlive()) {
+                removeFromRootScene(gameItem);
+                EmojiApp.addToScore(GameItem.POINTS_PER_ITEM);
+                iterator.remove();
+            }
         }
     }
 }

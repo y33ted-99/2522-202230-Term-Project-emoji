@@ -30,6 +30,7 @@ public class LetterBar extends Group {
     private static final int CELL_MARGIN = 9;
     private static final int LETTER_MARGIN_X = 14;
     private static final int LETTER_MARGIN_Y = 35;
+    private static final int POINTS_PER_WORD = 50;
     private static final int POINTs_PER_LETTER_IN_SPELLED_WORD = 20;
     private static final Group letterBar = new Group();
     private static final Rectangle container = new Rectangle();
@@ -118,7 +119,7 @@ public class LetterBar extends Group {
         int points = checkIfContainsWord();
         while (points > 0) {
             totalPoints += points;
-            EmojiApp.addToScore(points);
+            EmojiApp.addToScore(POINTS_PER_WORD);
             points = checkIfContainsWord();
         }
         if (totalPoints > 0) {

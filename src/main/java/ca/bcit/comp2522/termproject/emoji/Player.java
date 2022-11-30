@@ -21,8 +21,6 @@ public class Player extends Entity {
      * The player's speed.
      */
     public static final double SPEED = 4;
-
-    private static final int POINTS_PER_BUBBLE = 5;
     private static final int BUBBLES_TO_SPAWN_ITEM = 5;
     private Point2D moveVector;
     private Point2D moveDestination;
@@ -116,14 +114,12 @@ public class Player extends Entity {
      */
     public void addToScore(final int pointsToAdd) {
         this.points += pointsToAdd;
-        System.out.println("points: " + points);
     }
 
     /**
      * Increments the number of bubbles player has popped.
      */
     public void incrementPoppedBubbles() {
-        points += POINTS_PER_BUBBLE;
         poppedBubbles++;
         if (poppedBubbles % BUBBLES_TO_SPAWN_ITEM == 0) {
             EmojiApp.spawnItem();
