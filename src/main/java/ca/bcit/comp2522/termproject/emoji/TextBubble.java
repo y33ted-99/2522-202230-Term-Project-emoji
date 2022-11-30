@@ -40,7 +40,7 @@ public class TextBubble extends Group {
      */
     public static final int FONT_SIZE = 28;
     private static final int SHOOT_RATE = 400;
-    private static final double[] SPEED_RANGE = {0.5, 3};
+    private static final double[] SPEED_RANGE = {0.5, 2};
     private static final int POINTS_PER_BUBBLE = 5;
     private static AudioClip popSound;
     private final Side side;

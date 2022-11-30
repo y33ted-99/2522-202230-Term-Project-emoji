@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class GameTimer extends StackPane {
 
     private final Text timeDisplay;
+
     /**
      * Creates an instance of type GameTimer.
      */
@@ -39,5 +40,8 @@ public class GameTimer extends StackPane {
                 now - EmojiApp.getStartTime(),
                 TimeUnit.NANOSECONDS);
         timeDisplay.setText("TIME: " + elapsedTime);
+        if (elapsedTime % 120 == 0) {
+            EmojiApp.increaseDifficulty();
+        }
     }
 }

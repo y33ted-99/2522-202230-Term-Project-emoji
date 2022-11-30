@@ -51,6 +51,7 @@ public class EmojiApp extends Application {
     private static MainMenu mainMenu;
     private static GameTimer gameTimer;
     private static long startTime;
+    private static double difficulty = 1;
 
 
     /*
@@ -264,6 +265,23 @@ public class EmojiApp extends Application {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * Increases the difficulty level.
+     */
+    public static void increaseDifficulty() {
+        final double difficultyIncreaseAmount = 0.8;
+        difficulty += difficultyIncreaseAmount;
+    }
+
+    /**
+     * Returns the difficulty level.
+     *
+     * @return difficulty as int
+     */
+    public static double getDifficulty() {
+        return difficulty;
     }
 }
 

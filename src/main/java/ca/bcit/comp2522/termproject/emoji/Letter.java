@@ -50,7 +50,7 @@ public class Letter extends Group {
                   final Line path,
                   final double speed) {
         this.color = color;
-        this.speed = speed;
+        this.speed = speed + EmojiApp.getDifficulty();
         URL soundFile = EmojiApp.class.getResource("soundfx/hit.aiff");
         hitSound = new AudioClip(Objects.requireNonNull(soundFile).toExternalForm());
         letter.setText(String.valueOf(character));
