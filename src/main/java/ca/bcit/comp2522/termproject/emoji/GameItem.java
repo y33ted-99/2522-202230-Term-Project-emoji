@@ -10,8 +10,7 @@ import javafx.scene.paint.Color;
  * @version Fall 2022
  */
 public class GameItem extends Entity {
-    private static final int FALL_TIME = 4000;
-    private static final int POINTS_PER_ITEM = 20;
+    private static final int POINTS_PER_ITEM = 15;
     private final EmojiType itemType;
     private boolean isAlive;
 

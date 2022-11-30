@@ -4,7 +4,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -31,14 +30,11 @@ public class LetterBar extends Group {
     private static final int CELL_MARGIN = 9;
     private static final int LETTER_MARGIN_X = 14;
     private static final int LETTER_MARGIN_Y = 35;
+    private static final int POINTs_PER_LETTER_IN_SPELLED_WORD = 20;
     private static final Group letterBar = new Group();
     private static final Rectangle container = new Rectangle();
     private static List<Letter> lettersArrayList = new ArrayList<>();
     private static List<String> wordList = loadWordList();
-//    private static List<String> wordList = new ArrayList<>();
-//    static {
-//        EnumSet.allOf(EnemyType.class).forEach(emoji -> wordList.add(emoji.getPhrase()));
-//    }
 
     /*
      * Reads words from 'wordlist.txt' and adds to wordList
@@ -127,6 +123,7 @@ public class LetterBar extends Group {
         }
         if (totalPoints > 0) {
             repositionLetters();
+            EmojiApp.addToScore(totalPoints * POINTs_PER_LETTER_IN_SPELLED_WORD);
         }
         if (lettersArrayList.size() == CAPACITY) {
             EmojiApp.setGameOver(true);
@@ -186,19 +183,6 @@ public class LetterBar extends Group {
         }
         repositionLetters();
     }
-
-    /*
-     * Removes a specific letter from the letter bar.
-     */
-//    private static void removeLetter(final Text letterToRemove) {
-//        for (int i = 0; i < lettersArrayList.size(); i++) {
-//            if (lettersArrayList.get(i).equals(letterToRemove)) {
-//                lettersArrayList.remove(letterToRemove);
-//                EmojiApp.removeFromRootScene(letterToRemove);
-//            }
-//        }
-//        repositionLetters();
-//    }
 
     /*
      * Repositions letters i.e. if some were removed.

@@ -1,6 +1,5 @@
 package ca.bcit.comp2522.termproject.emoji;
 
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -201,7 +200,7 @@ public class TextBubble extends Group {
     public void mouseClickHandler(final MouseEvent event) {
         if (isPoppable) {
             pop();
-//            letterGroup.die();
+            letterGroup.die();
             EmojiApp.incrementPlayerPoppedBubbles();
         }
     }

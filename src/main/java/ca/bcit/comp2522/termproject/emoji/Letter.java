@@ -22,7 +22,6 @@ import javafx.util.Duration;
  */
 public class Letter extends Group {
     private static final int FONT_SIZE = 25;
-
     private final Text letter = new Text();
     private final Color color;
     private double speed;
@@ -191,8 +190,6 @@ public class Letter extends Group {
         detectCollisionWIthBorder();
         setTranslateX(getTranslateX() + deltaX);
         setTranslateY(getTranslateY() + deltaY);
-//        letter.setX(letter.getX() + deltaX);
-//        letter.setY(letter.getY() + deltaY);
 
     }
 }
