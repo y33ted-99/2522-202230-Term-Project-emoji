@@ -226,7 +226,7 @@ public class TextBubble extends Group {
         // drop emoji down out of screen
         TranslateTransition emojiDrop = new TranslateTransition(emojiDropDuration, emoji);
         emojiDrop.setToY(EmojiApp.APP_HEIGHT);
-        emojiDrop.setByX(-100);
+        emojiDrop.setByX(EmojiApp.RNG.nextInt(400) - 200);
         emojiDrop.setOnFinished(finish -> {
             isAlive = false;
         });
@@ -250,9 +250,6 @@ public class TextBubble extends Group {
         isPoppable = isPlayerAdjacent() && !EmojiApp.isGameOver();
         showOverlay(isPoppable);
         letterGroup.update();
-        if (!letterGroup.isAlive()) {
-//            shoot();
-        }
     }
 
     /*
@@ -264,7 +261,6 @@ public class TextBubble extends Group {
         Line path;
         double speed;
         List<Letter> letterList;
-        boolean isAlive;
 
         LetterGroup(final char[] letters, final Line path, final double speed) {
             this.letters = letters;
@@ -284,16 +280,13 @@ public class TextBubble extends Group {
             }
             for (char chr : letters) {
                 try {
+                    // create a delay between letters being shot out
                     Thread.sleep((long) (SHOOT_RATE / speed));
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                 }
                 Platform.runLater(() -> {
-                    Letter letter = new Letter(
-                            chr,
-                            type.getColor(),
-                            path,
-                            speed);
+                    Letter letter = new Letter(chr, type.getColor(), path, speed);
                     letterList.add(letter);
                     EmojiApp.addToRootScene(letter);
                 });
@@ -301,21 +294,14 @@ public class TextBubble extends Group {
         }
 
         /**
-         * Returns true if at least one shot letter is alive.
-         *
-         * @return true if at least one shot letter is alive
-         */
-        public boolean isAlive() {
-            return letterList
-                    .stream()
-                    .anyMatch(Letter::isAlive);
-        }
-
-        /**
          * Updates each letter.
          */
         public void update() {
             letterList.forEach(Letter::update);
+            if (isAlive && letterList.size() > 0 && letterList.stream().allMatch(Letter::isCollided)) {
+                //TODO: resolve bug when shooting after bubble popped
+//                shoot();
+            }
         }
 
         /**

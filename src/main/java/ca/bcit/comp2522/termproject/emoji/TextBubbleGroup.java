@@ -101,6 +101,7 @@ public class TextBubbleGroup extends Group {
             if (textBubble == null) {
                 continue;
             } else if (!textBubble.isAlive()) {
+
                 removeTextBubble(textBubble);
             } else
                 textBubble.update();
