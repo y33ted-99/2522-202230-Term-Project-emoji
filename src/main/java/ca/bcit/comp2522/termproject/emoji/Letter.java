@@ -204,6 +204,7 @@ public class Letter extends Group {
             isCollided = true;
             playHitSound();
             moveLetterToLetterBar();
+            EmojiApp.addToScore(bounceCount);
             return;
         }
         detectCollisionWIthBorder();

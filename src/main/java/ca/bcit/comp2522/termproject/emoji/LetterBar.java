@@ -30,7 +30,7 @@ public class LetterBar extends Group {
     private static final int CELL_MARGIN = 9;
     private static final int LETTER_MARGIN_X = 14;
     private static final int LETTER_MARGIN_Y = 35;
-    private static final int POINTS_PER_WORD = 50;
+    private static final int POINTS_PER_WORD = 100;
     private static final int POINTS_PER_LETTER_IN_SPELLED_WORD = 20;
     private static final Group LETTER_BAR = new Group();
     private static final Rectangle CONTAINER = new Rectangle();
