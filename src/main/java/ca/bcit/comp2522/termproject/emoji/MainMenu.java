@@ -2,6 +2,7 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -30,11 +31,21 @@ public class MainMenu extends VBox {
         setTranslateY(380);
         getChildren().addAll(
                 new MenuItem("START", EmojiApp::startGame),
-                new MenuItem("HIGHSCORE", () -> {
-                }),
+                new ScoreBoard(),
                 new MenuItem("QUIT", Platform::exit));
     }
 
+    /*
+     * The score board.
+     */
+    private static class ScoreBoard extends Pane {
+        ScoreBoard() {
+            Rectangle frame = new Rectangle(250, 100);
+            frame.setFill(new Color(0.9, 0.9, 0.9, 0.1));
+            Text title = new Text("HIGH SCORE");
+            getChildren().addAll(frame, title);
+        };
+    }
     /*
      * A menu item.
      */
@@ -45,14 +56,11 @@ public class MainMenu extends VBox {
                     new Stop(0.8, Color.web("Pink", 0.5)),
                     new Stop(1, Color.web("white", 0.5)));
             Rectangle background = new Rectangle(250, 30, gradient);
-
-
             Text text = new Text(name);
             text.setFont(Font.font(25));
             text.fillProperty().bind(
                     Bindings.when(hoverProperty()).then(Color.WHITE).otherwise(Color.BLACK)
             );
-
             setOnMouseClicked(e -> action.run());
             getChildren().addAll(background, text);
         }
