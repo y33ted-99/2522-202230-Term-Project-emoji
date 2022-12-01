@@ -2,6 +2,7 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -37,50 +38,79 @@ public class EmojiApp extends Application {
      */
     public static final Random RNG = new Random();
 
-    /*
-     * The main game pane to which all entities drawn.
-     */
+    private static Scene scene;
     private static Pane root;
-
+    private static MainMenu mainMenu;
+    private static GameTimer gameTimer;
+    private static Pane gameRound;
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
     private static TextBubbleGroup rightTextBubbleGroup;
     private static List<GameItem> gameItems;
-    private static boolean gameOver = false;
     private static AnimationTimer timer;
-    private static MainMenu mainMenu;
-    private static GameTimer gameTimer;
+    private static boolean gameOver = false;
     private static long startTime;
-    private static double difficulty = 1;
+    private static int difficulty = 0;
 
+    /**
+     * Entry point to program.
+     *
+     * @param args not used
+     */
+    public static void main(final String[] args) {
+        launch();
+    }
+
+    /**
+     * Starts the application.
+     *
+     * @param primaryStage a Stage
+     */
+    @Override
+    public void start(final Stage primaryStage) {
+        // create the core UI elements
+        scene = new Scene(createPersistentGameElements());
+        primaryStage.setResizable(false);
+        primaryStage.setTitle("La Chat-room");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
     /*
-     * Creates all the content to be drawn to screen.
+     * Creates the main game screen elements (persistent through life of app).
      */
-    private Parent createContent() {
+    private Parent createPersistentGameElements() {
         root = new Pane();
         root.setPrefSize(APP_WIDTH, APP_HEIGHT);
-
         Node background = PlayArea.createBackground();
         Node playArea = PlayArea.createPlayArea();
         Node letterBar = LetterBar.createLetterBar();
         mainMenu = new MainMenu();
         gameTimer = new GameTimer();
-
-        player = createPlayer();
-        leftTextBubbleGroup = new TextBubbleGroup(Side.LEFT);
-        rightTextBubbleGroup = new TextBubbleGroup(Side.RIGHT);
-        gameItems = new ArrayList<>();
         root.getChildren().addAll(
                 background,
                 playArea,
                 letterBar,
+                mainMenu,
+                gameTimer);
+        return root;
+    }
+
+    /*
+     * Creates content for a single round of play.
+     */
+    private static Pane createGameRound() {
+        gameRound = new Pane();
+        player = new Player();
+        leftTextBubbleGroup = new TextBubbleGroup(Side.LEFT);
+        rightTextBubbleGroup = new TextBubbleGroup(Side.RIGHT);
+        gameItems = new ArrayList<>();
+        gameRound.getChildren().addAll(
                 player,
                 leftTextBubbleGroup,
                 rightTextBubbleGroup,
                 mainMenu,
                 gameTimer);
-
         // Main game loop
         timer = new AnimationTimer() {
             @Override
@@ -88,16 +118,39 @@ public class EmojiApp extends Application {
                 onUpdate(now);
             }
         };
-
-        return root;
+        // assign handlers for mouse events
+        scene.setOnMouseMoved(event -> player.moveToMouse(event));
+        scene.setOnMouseClicked(event -> {
+            leftTextBubbleGroup.mouseClickHandler();
+            rightTextBubbleGroup.mouseClickHandler();
+        });
+        return gameRound;
     }
 
+    /**
+     * Starts the game.
+     */
     public static void startGame() {
-        removeFromRootScene(mainMenu);
+        root.getChildren().remove(mainMenu);
+        System.out.println(root.getChildren());
+        root.getChildren().add(createGameRound());
         startTime = System.nanoTime();
         timer.start();
     }
 
+    /**
+     * Returns game to main menu.
+     */
+    public static void returnToMainMenu(final ActionEvent action) {
+        timer.stop();
+        root.getChildren().remove(gameRound);
+        root.getChildren().add(mainMenu);
+    }
+
+    /**
+     * Returns the system time when main game timer started.
+     * @return
+     */
     public static long getStartTime() {
         return startTime;
     }
@@ -105,7 +158,7 @@ public class EmojiApp extends Application {
     /*
      * Update entities during the main game loop.
      */
-    private void onUpdate(final long now) {
+    private static void onUpdate(final long now) {
 
         // searchForLetters(leftTextBubbleGroup);
         if (!gameOver && now % 15000 < 100) {
@@ -126,47 +179,6 @@ public class EmojiApp extends Application {
     }
 
     /**
-     * Starts the game.
-     *
-     * @param primaryStage a Stage
-     */
-    @Override
-    public void start(final Stage primaryStage) {
-
-        Scene scene = new Scene(createContent());
-
-        scene.setOnMouseMoved(event -> player.moveToMouse(event));
-        scene.setOnMouseClicked(event -> {
-            leftTextBubbleGroup.mouseClickHandler();
-            rightTextBubbleGroup.mouseClickHandler();
-        });
-
-        primaryStage.setResizable(false);
-        primaryStage.setTitle("La Chat-room");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    /**
-     * Entry point to program.
-     *
-     * @param args not used
-     */
-    public static void main(final String[] args) {
-        launch();
-    }
-
-    /*
-     * Create the player.
-     */
-    private Player createPlayer() {
-        player = new Player(
-                APP_WIDTH / 2 - Entity.IMAGE_SIZE / 2,
-                APP_HEIGHT / 2 - Entity.IMAGE_SIZE / 2);
-        return player;
-    }
-
-    /**
      * Returns the player's bounds.
      *
      * @return player bounds as Bounds
@@ -176,21 +188,21 @@ public class EmojiApp extends Application {
     }
 
     /**
-     * Adds a node to the root scene.
+     * Adds a node to the game round pane.
      *
-     * @param node a node to be added to the root scene
+     * @param node a node to be added to the game round pane
      */
-    public static void addToRootScene(final Node node) {
-        root.getChildren().add(node);
+    public static void addToGameRound(final Node... node) {
+        root.getChildren().addAll(node);
     }
 
     /**
-     * Removes a node from the root scene.
+     * Removes a node from the game round pane.
      *
-     * @param node a node to be added to the root scene
+     * @param node a node to be added to the game round pane
      */
-    public static void removeFromRootScene(final Node node) {
-        root.getChildren().remove(node);
+    public static void removeFromGameRound(final Node... node) {
+        root.getChildren().removeAll(node);
     }
 
     /**
@@ -249,7 +261,7 @@ public class EmojiApp extends Application {
         ItemType type = ItemType.values()[new Random().nextInt(ItemType.values().length)];
         GameItem gameItem = GameItem.getInstance(type);
         gameItems.add(gameItem);
-        addToRootScene(gameItem);
+        addToGameRound(gameItem);
     }
 
     /**
@@ -260,7 +272,7 @@ public class EmojiApp extends Application {
         while (iterator.hasNext()) {
             GameItem gameItem = iterator.next();
             if (!gameItem.isAlive()) {
-                removeFromRootScene(gameItem);
+                removeFromGameRound(gameItem);
                 EmojiApp.addToScore(GameItem.POINTS_PER_ITEM);
                 iterator.remove();
             }
@@ -270,9 +282,8 @@ public class EmojiApp extends Application {
     /**
      * Increases the difficulty level.
      */
-    public static void increaseDifficulty() {
-        final double difficultyIncreaseAmount = 0.8;
-        difficulty += difficultyIncreaseAmount;
+    public static void setDifficultyLevel(final int level) {
+        difficulty = level;
     }
 
     /**
