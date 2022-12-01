@@ -108,9 +108,7 @@ public class EmojiApp extends Application {
         gameRound.getChildren().addAll(
                 player,
                 leftTextBubbleGroup,
-                rightTextBubbleGroup,
-                mainMenu,
-                gameTimer);
+                rightTextBubbleGroup);
         // Main game loop
         timer = new AnimationTimer() {
             @Override
@@ -131,8 +129,7 @@ public class EmojiApp extends Application {
      * Starts the game.
      */
     public static void startGame() {
-        root.getChildren().remove(mainMenu);
-        System.out.println(root.getChildren());
+        mainMenu.setVisible(false);
         root.getChildren().add(createGameRound());
         startTime = System.nanoTime();
         timer.start();
@@ -143,12 +140,15 @@ public class EmojiApp extends Application {
      */
     public static void returnToMainMenu(final ActionEvent action) {
         timer.stop();
+        LetterBar.clear();
         root.getChildren().remove(gameRound);
-        root.getChildren().add(mainMenu);
+        mainMenu.setVisible(true);
+        System.out.println(root.getChildren());
     }
 
     /**
      * Returns the system time when main game timer started.
+     *
      * @return
      */
     public static long getStartTime() {
@@ -160,22 +160,23 @@ public class EmojiApp extends Application {
      */
     private static void onUpdate(final long now) {
 
+        leftTextBubbleGroup.update();
+        rightTextBubbleGroup.update();
+        if (gameOver) {
+            return;
+        }
         // searchForLetters(leftTextBubbleGroup);
-        if (!gameOver && now % 15000 < 100) {
+        if (now % 15000 < 100) {
             if (player.getCenterX() > APP_WIDTH / 2) {
                 leftTextBubbleGroup.spawnTextBubble();
             } else {
                 rightTextBubbleGroup.spawnTextBubble();
             }
         }
-        leftTextBubbleGroup.update();
-        rightTextBubbleGroup.update();
         checkGameItems();
         gameItems.forEach(GameItem::update);
         gameTimer.update(now);
-        if (!gameOver) {
-            player.move();
-        }
+        player.move();
     }
 
     /**

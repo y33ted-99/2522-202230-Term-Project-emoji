@@ -165,7 +165,7 @@ public class LetterBar extends Group {
         // remove letters from arraylist
         for (int i = 0; i < length; i++) {
             letter = LETTERS.remove(index);
-            EmojiApp.removeFromRootScene(letter);
+            EmojiApp.removeFromGameRound(letter);
         }
     }
 
@@ -177,11 +177,20 @@ public class LetterBar extends Group {
         while (iterator.hasNext()) {
             Letter letter = iterator.next();
             if (letter.getColor().equals(color)) {
-                EmojiApp.removeFromRootScene(letter);
+                EmojiApp.removeFromGameRound(letter);
                 iterator.remove();
             }
         }
         repositionLetters();
+    }
+
+    public static void clear() {
+        Iterator<Letter> iterator = LETTERS.iterator();
+        while (iterator.hasNext()) {
+            Letter letter = iterator.next();
+            EmojiApp.removeFromGameRound(letter);
+            iterator.remove();
+        }
     }
 
     /*

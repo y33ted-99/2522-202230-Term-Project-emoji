@@ -42,7 +42,9 @@ public class TextBubble extends Group {
     private static final int SHOOT_RATE = 400;
     private static final double[] SPEED_RANGE = {0.5, 2};
     private static final int POINTS_PER_BUBBLE = 5;
-    private static AudioClip popSound;
+    private static final double DIFFICULTY_SPEED_MULTIPLIER = 1;
+    private static final AudioClip POP_SOUND = new AudioClip(
+            Objects.requireNonNull(EmojiApp.class.getResource("soundfx/pop.aiff")).toExternalForm());
     private final Side side;
     private final int position;
     private final EmojiType type;
@@ -68,8 +70,6 @@ public class TextBubble extends Group {
         this.position = position;
         this.type = type;
         this.isAlive = true;
-        URL soundFile = EmojiApp.class.getResource("soundfx/pop.aiff");
-        popSound = new AudioClip(Objects.requireNonNull(soundFile).toExternalForm());
         textBubbleImageView = createTextBubbleImage();
         phrase = createPhrase();
         emoji = createEmoji();
@@ -161,7 +161,8 @@ public class TextBubble extends Group {
     public void shoot() {
         final int margin = 10;
         // letter speed is random
-        double speed = EmojiApp.RNG.nextDouble(SPEED_RANGE[0], SPEED_RANGE[1]);
+        double speed = EmojiApp.RNG.nextDouble(SPEED_RANGE[0], SPEED_RANGE[1])
+                + EmojiApp.getDifficulty() * DIFFICULTY_SPEED_MULTIPLIER;
         char[] charArray = type.getPhrase().toCharArray();
 
         int startX;
@@ -207,7 +208,7 @@ public class TextBubble extends Group {
      */
     public void mouseClickHandler() {
         if (isPoppable) {
-            popSound.play();
+            POP_SOUND.play();
             pop();
             letterGroup.die();
             EmojiApp.incrementPlayerPoppedBubbles();
@@ -294,7 +295,7 @@ public class TextBubble extends Group {
                 Platform.runLater(() -> {
                     Letter letter = new Letter(chr, type.getColor(), path, speed);
                     letterList.add(letter);
-                    EmojiApp.addToRootScene(letter);
+                    EmojiApp.addToGameRound(letter);
                 });
             }
         }

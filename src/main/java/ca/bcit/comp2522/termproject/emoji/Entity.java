@@ -53,7 +53,6 @@ public abstract class Entity extends Group {
         imageView.setSmooth(true);
         imageView.setCache(true);
         this.getChildren().add(imageView);
-
         this.setTranslateX(xPosition);
         this.setTranslateY(yPosition);
     }

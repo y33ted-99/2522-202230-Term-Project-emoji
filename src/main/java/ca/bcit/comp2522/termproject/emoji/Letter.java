@@ -191,6 +191,9 @@ public class Letter extends Group {
         if (isCollided) {
             return;
         }
+        if (getOpacity() <= 0) {
+            EmojiApp.removeFromGameRound(this);
+        }
         if (!isAlive) {
             setOpacity(getOpacity() - bubbleDeathFadeDecrement);
 //            return;
