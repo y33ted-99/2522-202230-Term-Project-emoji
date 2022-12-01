@@ -18,6 +18,7 @@ public class GameTimer extends StackPane {
 
     private final int secondsPerDifficultyLevel = 10;
     private final Text timeDisplay;
+    private long elapsedTime;
 
     /**
      * Creates an instance of type GameTimer.
@@ -29,6 +30,15 @@ public class GameTimer extends StackPane {
         getChildren().add(timeDisplay);
         setLayoutX(600);
         setLayoutY(70);
+    }
+
+    /**
+     * Returns the elapsed time since timer started.
+     *
+     * @return elapsed time as long
+     */
+    public long getElapsedTime() {
+        return elapsedTime;
     }
 
     /**
