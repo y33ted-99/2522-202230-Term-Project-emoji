@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class GameTimer extends StackPane {
 
+    private final int secondsPerDifficultyLevel = 10;
     private final Text timeDisplay;
 
     /**
@@ -40,8 +41,6 @@ public class GameTimer extends StackPane {
                 now - EmojiApp.getStartTime(),
                 TimeUnit.NANOSECONDS);
         timeDisplay.setText("TIME: " + elapsedTime);
-        if (elapsedTime % 120 == 0) {
-            EmojiApp.increaseDifficulty();
-        }
+        EmojiApp.setDifficultyLevel((int) (elapsedTime / secondsPerDifficultyLevel));
     }
 }
