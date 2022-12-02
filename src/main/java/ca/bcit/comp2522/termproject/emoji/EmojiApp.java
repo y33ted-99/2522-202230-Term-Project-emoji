@@ -133,6 +133,7 @@ public class EmojiApp extends Application {
      */
     public static void startGame() {
         gameOver = false;
+        difficulty = 0;
         mainMenu.setVisible(false);
         root.getChildren().add(createGameRound());
         startTime = System.nanoTime();
@@ -184,7 +185,6 @@ public class EmojiApp extends Application {
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
         if (gameOver) {
-            timer.stop();
             return;
         }
         // searchForLetters(leftTextBubbleGroup);
