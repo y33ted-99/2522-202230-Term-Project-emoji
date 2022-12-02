@@ -11,6 +11,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +49,7 @@ public class EmojiApp extends Application {
     private static MainMenu mainMenu;
     private static StatusDisplay statusDisplay;
     private static Pane enterName;
+    private static HighScores highScores;
     private static Pane gameRound;
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
@@ -90,6 +96,7 @@ public class EmojiApp extends Application {
         mainMenu = new MainMenu();
         statusDisplay = new StatusDisplay();
         enterName = new EnterName();
+        highScores = loadHighScores();
         root.getChildren().addAll(
                 background,
                 playArea,
@@ -149,13 +156,44 @@ public class EmojiApp extends Application {
         gameRound.getChildren().removeAll();
     }
 
+    /**
+     * Records the player's score and saves to file.
+     *
+     * @param name player's name as String
+     */
     public static void recordScore(final String name) {
-        HighScores.addScore(name, getPlayerScore(), (int) statusDisplay.getElapsedTime());
+        highScores.addScore(name, getPlayerScore(), (int) statusDisplay.getElapsedTime());
+        try (var fos = new FileOutputStream("high-scores.data");
+             var oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(highScores);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         System.out.println("high score for "
                 + name + ": "
                 + getPlayerScore() + " points, in "
                 + statusDisplay.getElapsedTime() + " seconds");
         returnToMainMenu();
+    }
+
+    /*
+     * Loads high scores from file.
+     */
+    private static HighScores loadHighScores() {
+        HighScores highScoresTemp = new HighScores();
+        try {
+            FileInputStream fileIn = new FileInputStream("high-scores.data");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            highScoresTemp = (HighScores) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("HighScores class not found");
+            c.printStackTrace();
+        }
+        return highScoresTemp;
     }
 
     /**
@@ -167,7 +205,7 @@ public class EmojiApp extends Application {
         LetterBar.clear();
         root.getChildren().remove(gameRound);
         mainMenu.setVisible(true);
-        System.out.println(HighScores.getScores());
+        System.out.println(highScores.getScores());
     }
 
     /**

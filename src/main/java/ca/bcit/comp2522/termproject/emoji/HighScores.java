@@ -1,7 +1,6 @@
 package ca.bcit.comp2522.termproject.emoji;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -11,10 +10,14 @@ import java.util.ArrayList;
  * @author Brian Mak
  * @version Fall 2022
  */
-public final class HighScores implements Serializable {
-    private static final ArrayList<Score> HIGH_SCORES = new ArrayList<>();
+public class HighScores implements Serializable {
+    private final ArrayList<Score> highScores;
 
-    private HighScores() {
+    /**
+     * Creates instance of type HighScores.
+     */
+    public HighScores() {
+        highScores = new ArrayList<>();
     }
 
     /**
@@ -24,8 +27,8 @@ public final class HighScores implements Serializable {
      * @param score player score as int
      * @param time  player time as int
      */
-    public static void addScore(final String name, final int score, final int time) {
-        HIGH_SCORES.add(new Score(name, score, time));
+    public void addScore(final String name, final int score, final int time) {
+        highScores.add(new Score(name, score, time));
     }
 
     /**
@@ -33,10 +36,18 @@ public final class HighScores implements Serializable {
      *
      * @return high scores as ArrayList of String
      */
-    public static ArrayList<Score> getScores() {
-        return HIGH_SCORES;
+    public ArrayList<Score> getScores() {
+        return highScores;
     }
-}
 
-record Score(String name, int score, int time) {
+    /**
+     * Prints all scores.
+     */
+    public void printScores() {
+        for (Score score : highScores) {
+            System.out.println("Score for " + score.name() + ": "
+                    + score.score() + " points in  "
+                    + score.time() + "seconds");
+        }
+    }
 }
