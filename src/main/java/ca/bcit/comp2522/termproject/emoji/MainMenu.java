@@ -2,6 +2,7 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -44,8 +45,9 @@ public class MainMenu extends VBox {
             frame.setFill(new Color(0.9, 0.9, 0.9, 0.1));
             Text title = new Text("HIGH SCORE");
             getChildren().addAll(frame, title);
-        };
+        }
     }
+
     /*
      * A menu item.
      */
@@ -65,5 +67,21 @@ public class MainMenu extends VBox {
             getChildren().addAll(background, text);
         }
 
+    }
+}
+
+class EnterName extends Pane {
+    private final TextField textField;
+
+    EnterName() {
+        Text prompt = new Text("Enter your name:");
+        textField = new TextField();
+        textField.setTranslateY(30);
+        textField.setOnAction(actionEvent -> {
+            EmojiApp.recordScore(textField.getText());
+        });
+        getChildren().addAll(prompt, textField);
+        setTranslateX(450);
+        setTranslateY(350);
     }
 }
