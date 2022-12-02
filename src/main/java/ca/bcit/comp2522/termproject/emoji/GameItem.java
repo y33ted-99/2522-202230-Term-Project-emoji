@@ -54,7 +54,6 @@ public class GameItem extends Entity {
         return itemType.getColor();
     }
 
-
     /**
      * Returns true if alive.
      *

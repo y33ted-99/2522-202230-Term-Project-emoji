@@ -146,6 +146,7 @@ public class EmojiApp extends Application {
     public static void showEnterName() {
         enterName = new EnterName();
         root.getChildren().add(enterName);
+        gameRound.getChildren().removeAll();
     }
 
     public static void recordScore(final String name) {
@@ -161,6 +162,7 @@ public class EmojiApp extends Application {
      * Returns game to main menu.
      */
     public static void returnToMainMenu() {
+        timer.stop();
         root.getChildren().remove(enterName);
         LetterBar.clear();
         root.getChildren().remove(gameRound);
@@ -181,7 +183,7 @@ public class EmojiApp extends Application {
      * Update entities during the main game loop.
      */
     private static void onUpdate(final long now) {
-
+        checkGameItems();
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
         if (gameOver) {
@@ -195,8 +197,6 @@ public class EmojiApp extends Application {
                 rightTextBubbleGroup.spawnTextBubble();
             }
         }
-        checkGameItems();
-        gameItems.forEach(GameItem::update);
         statusDisplay.update(now);
         player.move();
     }
@@ -291,10 +291,11 @@ public class EmojiApp extends Application {
      * Checks games and if acquired by player removes from game and adds points to player.
      */
     public static void checkGameItems() {
+        gameItems.forEach(GameItem::update);
         Iterator<GameItem> iterator = gameItems.iterator();
         while (iterator.hasNext()) {
             GameItem gameItem = iterator.next();
-            if (!gameItem.isAlive()) {
+            if (!gameItem.isAlive() || gameOver) {
                 removeFromGameRound(gameItem);
                 EmojiApp.addToScore(GameItem.POINTS_PER_ITEM);
                 iterator.remove();
