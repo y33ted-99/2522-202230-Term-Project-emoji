@@ -2,12 +2,13 @@ package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class EmojiApp extends Application {
     private static Pane root;
     private static MainMenu mainMenu;
     private static StatusDisplay statusDisplay;
+    private static Pane enterName;
     private static Pane gameRound;
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
@@ -87,6 +89,7 @@ public class EmojiApp extends Application {
         Node letterBar = LetterBar.createLetterBar();
         mainMenu = new MainMenu();
         statusDisplay = new StatusDisplay();
+        enterName = new EnterName();
         root.getChildren().addAll(
                 background,
                 playArea,
@@ -137,19 +140,37 @@ public class EmojiApp extends Application {
     }
 
     /**
+     * Shows the "enter name" screen.
+     */
+    public static void showEnterName() {
+        enterName = new EnterName();
+        root.getChildren().add(enterName);
+    }
+
+    public static void recordScore(final String name) {
+        HighScores.addScore(name, getPlayerScore(), (int) statusDisplay.getElapsedTime());
+        System.out.println("high score for "
+                + name + ": "
+                + getPlayerScore() + " points, in "
+                + statusDisplay.getElapsedTime() + " seconds");
+        returnToMainMenu();
+    }
+
+    /**
      * Returns game to main menu.
      */
-    public static void returnToMainMenu(final ActionEvent action) {
-        timer.stop();
+    public static void returnToMainMenu() {
+        root.getChildren().remove(enterName);
         LetterBar.clear();
         root.getChildren().remove(gameRound);
         mainMenu.setVisible(true);
+        System.out.println(HighScores.getScores());
     }
 
     /**
      * Returns the system time when main game timer started.
      *
-     * @return
+     * @return game start time in nanoseconds as long
      */
     public static long getStartTime() {
         return startTime;
@@ -163,6 +184,7 @@ public class EmojiApp extends Application {
         leftTextBubbleGroup.update();
         rightTextBubbleGroup.update();
         if (gameOver) {
+            timer.stop();
             return;
         }
         // searchForLetters(leftTextBubbleGroup);
@@ -282,6 +304,8 @@ public class EmojiApp extends Application {
 
     /**
      * Increases the difficulty level.
+     *
+     * @param level the difficulty leve to set to as int
      */
     public static void setDifficultyLevel(final int level) {
         difficulty = level;

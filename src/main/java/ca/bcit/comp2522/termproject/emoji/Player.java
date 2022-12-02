@@ -93,7 +93,7 @@ public class Player extends Entity {
      * Animates the player death.
      */
     public void die() {
-        final Duration deathTime = Duration.millis(7000);
+        final Duration deathTime = Duration.millis(5000);
         // change the image to the scream face
         String filename = "player/" + PlayerState.SCREAM.getFilename();
         image = new Image(Objects.requireNonNull(EmojiApp.class.getResource(filename)).toExternalForm());
@@ -104,7 +104,7 @@ public class Player extends Entity {
         KeyValue keyValueR = new KeyValue(imageView.rotateProperty(), 180);
         KeyFrame keyFrame = new KeyFrame(deathTime, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
-        timeline.setOnFinished(EmojiApp::returnToMainMenu);
+        timeline.setOnFinished((e) -> EmojiApp.showEnterName());
         timeline.play();
         GAME_OVER_SOUND.play();
     }
