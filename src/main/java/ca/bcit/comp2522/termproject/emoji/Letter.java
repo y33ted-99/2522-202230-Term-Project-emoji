@@ -26,7 +26,7 @@ import java.util.Objects;
  * @version Fall 2022
  */
 public class Letter extends Group {
-    private static final int FONT_SIZE = 25;
+    private static final Font FONT = Font.font("Arial Black", FontWeight.BOLD, 25);
     private static final ArrayList<AudioClip> HIT_SOUNDS = new ArrayList<>();
     private final Text letter = new Text();
     private final Color color;
@@ -60,7 +60,7 @@ public class Letter extends Group {
         this.color = color;
         this.speed = speed;
         letter.setText(String.valueOf(character));
-        letter.setFont(Font.font("Arial Black", FontWeight.BOLD, FONT_SIZE));
+        letter.setFont(FONT);
         letter.setFill(color);
         letter.setStroke(color.darker());
         letter.setBoundsType(TextBoundsType.VISUAL);

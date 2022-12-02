@@ -41,7 +41,7 @@ public class EmojiApp extends Application {
     private static Scene scene;
     private static Pane root;
     private static MainMenu mainMenu;
-    private static GameTimer gameTimer;
+    private static StatusDisplay statusDisplay;
     private static Pane gameRound;
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
@@ -86,13 +86,13 @@ public class EmojiApp extends Application {
         Node playArea = PlayArea.createPlayArea();
         Node letterBar = LetterBar.createLetterBar();
         mainMenu = new MainMenu();
-        gameTimer = new GameTimer();
+        statusDisplay = new StatusDisplay();
         root.getChildren().addAll(
                 background,
                 playArea,
                 letterBar,
                 mainMenu,
-                gameTimer);
+                statusDisplay);
         return root;
     }
 
@@ -129,6 +129,7 @@ public class EmojiApp extends Application {
      * Starts the game.
      */
     public static void startGame() {
+        gameOver = false;
         mainMenu.setVisible(false);
         root.getChildren().add(createGameRound());
         startTime = System.nanoTime();
@@ -143,7 +144,6 @@ public class EmojiApp extends Application {
         LetterBar.clear();
         root.getChildren().remove(gameRound);
         mainMenu.setVisible(true);
-        System.out.println(root.getChildren());
     }
 
     /**
@@ -175,7 +175,7 @@ public class EmojiApp extends Application {
         }
         checkGameItems();
         gameItems.forEach(GameItem::update);
-        gameTimer.update(now);
+        statusDisplay.update(now);
         player.move();
     }
 

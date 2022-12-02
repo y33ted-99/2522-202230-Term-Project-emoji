@@ -40,9 +40,9 @@ public class TextBubble extends Group {
      */
     public static final int FONT_SIZE = 28;
     private static final int SHOOT_RATE = 400;
-    private static final double[] SPEED_RANGE = {0.5, 2};
+    private static final double[] SPEED_RANGE = {0.8, 2.2};
     private static final int POINTS_PER_BUBBLE = 5;
-    private static final double DIFFICULTY_SPEED_MULTIPLIER = 1;
+    private static final double DIFFICULTY_SPEED_MULTIPLIER = 1.15;
     private static final AudioClip POP_SOUND = new AudioClip(
             Objects.requireNonNull(EmojiApp.class.getResource("soundfx/pop.aiff")).toExternalForm());
     private final Side side;
@@ -162,7 +162,7 @@ public class TextBubble extends Group {
         final int margin = 10;
         // letter speed is random
         double speed = EmojiApp.RNG.nextDouble(SPEED_RANGE[0], SPEED_RANGE[1])
-                + EmojiApp.getDifficulty() * DIFFICULTY_SPEED_MULTIPLIER;
+                * Math.pow(DIFFICULTY_SPEED_MULTIPLIER, EmojiApp.getDifficulty());
         char[] charArray = type.getPhrase().toCharArray();
 
         int startX;
