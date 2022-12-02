@@ -13,7 +13,7 @@ import javafx.scene.shape.Rectangle;
  * @author Brian Mak
  * @version Fall 2022
  */
-public class PlayArea {
+public final class PlayArea {
 
     /**
      * Width of the play area.
@@ -23,6 +23,9 @@ public class PlayArea {
      * Height of the play area.
      */
     public static final int HEIGHT = 600;
+
+    private PlayArea() {
+    }
 
     /**
      * The play area in which the player and letters exist.
