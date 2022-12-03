@@ -6,9 +6,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -48,8 +46,6 @@ public class EmojiApp extends Application {
     private static Pane root;
     private static MainMenu mainMenu;
     private static StatusDisplay statusDisplay;
-    private static Pane enterName;
-    private static HighScores highScores;
     private static Pane gameRound;
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
@@ -93,10 +89,9 @@ public class EmojiApp extends Application {
         Node background = PlayArea.createBackground();
         Node playArea = PlayArea.createPlayArea();
         Node letterBar = LetterBar.createLetterBar();
+        // main menu has start button that starts a game round
         mainMenu = new MainMenu();
         statusDisplay = new StatusDisplay();
-        enterName = new EnterName();
-        highScores = loadHighScores();
         root.getChildren().addAll(
                 background,
                 playArea,
@@ -136,9 +131,9 @@ public class EmojiApp extends Application {
     }
 
     /**
-     * Starts the game.
+     * Starts a round of the game.
      */
-    public static void startGame() {
+    public static void startGameRound() {
         gameOver = false;
         difficulty = 0;
         mainMenu.setVisible(false);
@@ -148,12 +143,12 @@ public class EmojiApp extends Application {
     }
 
     /**
-     * Shows the "enter name" screen.
+     * Prompts player to enter their name.
      */
-    public static void showEnterName() {
-        enterName = new EnterName();
-        root.getChildren().add(enterName);
-        gameRound.getChildren().removeAll();
+    public static void promptPlayerToEnterName() {
+//        enterName = new EnterName();
+        root.getChildren().add(new EnterName());
+        gameRound.getChildren().clear();
     }
 
     /**
@@ -161,39 +156,8 @@ public class EmojiApp extends Application {
      *
      * @param name player's name as String
      */
-    public static void recordScore(final String name) {
-        highScores.addScore(name, getPlayerScore(), (int) statusDisplay.getElapsedTime());
-        try (var fos = new FileOutputStream("high-scores.data");
-             var oos = new ObjectOutputStream(fos)) {
-            oos.writeObject(highScores);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        System.out.println("high score for "
-                + name + ": "
-                + getPlayerScore() + " points, in "
-                + statusDisplay.getElapsedTime() + " seconds");
-        returnToMainMenu();
-    }
-
-    /*
-     * Loads high scores from file.
-     */
-    private static HighScores loadHighScores() {
-        HighScores highScoresTemp = new HighScores();
-        try {
-            FileInputStream fileIn = new FileInputStream("high-scores.data");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            highScoresTemp = (HighScores) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("HighScores class not found");
-            c.printStackTrace();
-        }
-        return highScoresTemp;
+    public static void recordPlayerScore(final String name) {
+        mainMenu.recordScore(name);
     }
 
     /**
@@ -201,11 +165,10 @@ public class EmojiApp extends Application {
      */
     public static void returnToMainMenu() {
         timer.stop();
-        root.getChildren().remove(enterName);
+        root.getChildren().remove(root.lookup("#enterName"));
         LetterBar.clear();
         root.getChildren().remove(gameRound);
         mainMenu.setVisible(true);
-        System.out.println(highScores.getScores());
     }
 
     /**
@@ -215,6 +178,15 @@ public class EmojiApp extends Application {
      */
     public static long getStartTime() {
         return startTime;
+    }
+
+    /**
+     * Returns the elapsed time of the most current game round.
+     *
+     * @return elapsed time in game round as long
+     */
+    public static long getElapsedTime() {
+        return statusDisplay.getElapsedTime();
     }
 
     /*

@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * @version Fall 2022
  */
 public class StatusDisplay extends Pane {
-    private static final Font FONT = Font.font("Arial Black", FontWeight.BOLD, 35);
+    private static final Font FONT = Font.font("Arial Black", FontWeight.BOLD, 32);
     private static final int SECONDS_PER_DIFFICULTY_LEVEL = 15;
     private final Text pointDisplay;
     private final Text timeDisplay;
@@ -29,13 +29,16 @@ public class StatusDisplay extends Pane {
         pointDisplay = new Text("POINTS: 0");
         pointDisplay.setFont(FONT);
         pointDisplay.setFill(Color.WHITE);
-        pointDisplay.setStroke(Color.BLACK);
+        pointDisplay.setStroke(new Color(0,0,0,0.75));
+        pointDisplay.setStrokeWidth(1.5);
         timeDisplay = new Text("TIME: 0");
         timeDisplay.setFont(FONT);
         timeDisplay.setFill(Color.WHITE);
         timeDisplay.setStroke(Color.BLACK);
+        timeDisplay.setStrokeWidth(1.5);
+        timeDisplay.setStroke(new Color(0,0,0,0.75));
         timeDisplay.setTranslateX(PlayArea.getMarginX() * 1.55);
-        setLayoutX(PlayArea.getMarginX() * 1.25);
+        setLayoutX(PlayArea.getMarginX() * 1.3);
         setLayoutY(70);
         getChildren().addAll(pointDisplay, timeDisplay);
     }

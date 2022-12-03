@@ -104,7 +104,7 @@ public class Player extends Entity {
         KeyValue keyValueR = new KeyValue(imageView.rotateProperty(), 180);
         KeyFrame keyFrame = new KeyFrame(deathTime, keyValueY, keyValueR);
         timeline.getKeyFrames().add(keyFrame);
-        timeline.setOnFinished((e) -> EmojiApp.showEnterName());
+        timeline.setOnFinished((e) -> EmojiApp.promptPlayerToEnterName());
         timeline.play();
         GAME_OVER_SOUND.play();
     }
