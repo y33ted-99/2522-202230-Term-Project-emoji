@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Represents the player.
@@ -34,7 +35,9 @@ import java.util.ArrayList;
  * @version Fall 2022
  */
 public class MainMenu extends VBox {
-    private static final Font FONT = Font.font("Arial", FontWeight.BOLD, 25);
+    private static final Font BUTTON_FONT = Font.font("Arial", FontWeight.BOLD, 25);
+    private static final Font TITLE_FONT = Font.loadFont(
+            Objects.requireNonNull(EmojiApp.class.getResource("Babelgamee.ttf")).toExternalForm(), 46);
     private final Pane scoreBoard;
     private final HighScores highScores;
 
@@ -42,10 +45,10 @@ public class MainMenu extends VBox {
      * Creates instance of type MainMenu.
      */
     public MainMenu() {
-        Text gameTitle = new Text("Welcome to\nLa Chat-room!");
-        gameTitle.setFont(Font.font("Arial Black", FontWeight.BOLD, 35));
+        Text gameTitle = new Text("Welcome to\nLa Chatroom!");
+        gameTitle.setFont(TITLE_FONT);
         gameTitle.setFill(Color.MEDIUMPURPLE);
-        gameTitle.setStroke(Color.PINK);
+//        gameTitle.setStroke(Color.PINK);
         gameTitle.setTextAlignment(TextAlignment.CENTER);
 //        gameTitle.setStrokeWidth(2);
         setSpacing(20);
@@ -156,7 +159,7 @@ public class MainMenu extends VBox {
             background.setArcHeight(20);
             background.setArcWidth(20);
             Text text = new Text(name);
-            text.setFont(FONT);
+            text.setFont(BUTTON_FONT);
             text.fillProperty().bind(
                     Bindings.when(hoverProperty()).then(Color.WHITE).otherwise(Color.BLACK)
             );

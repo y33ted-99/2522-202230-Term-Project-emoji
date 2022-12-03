@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -98,7 +99,7 @@ public class EmojiApp extends Application {
         // create the core UI elements
         scene = new Scene(createPersistentGameElements());
         primaryStage.setResizable(false);
-        primaryStage.setTitle("La Chat-room");
+        primaryStage.setTitle("La Chatroom");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
