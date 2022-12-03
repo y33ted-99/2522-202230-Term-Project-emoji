@@ -107,6 +107,7 @@ public class Player extends Entity {
         timeline.setOnFinished((e) -> EmojiApp.promptPlayerToEnterName());
         timeline.play();
         GAME_OVER_SOUND.play();
+        EmojiApp.fadeMusic(EmojiApp.GAME_MUSIC, 0.5, 0);
     }
 
     /**

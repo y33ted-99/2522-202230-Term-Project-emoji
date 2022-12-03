@@ -1,13 +1,19 @@
 package ca.bcit.comp2522.termproject.emoji;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -41,7 +48,16 @@ public class EmojiApp extends Application {
      * Random number generator.
      */
     public static final Random RNG = new Random();
-
+    /**
+     * Intro Music.
+     */
+    public static final MediaPlayer INTRO_MUSIC = new MediaPlayer(new Media(
+            Objects.requireNonNull(EmojiApp.class.getResource("soundfx/intro-music.wav")).toExternalForm()));
+    /**
+     * Game round music.
+     */
+    public static final MediaPlayer GAME_MUSIC = new MediaPlayer(new Media(
+            Objects.requireNonNull(EmojiApp.class.getResource("soundfx/game-music.wav")).toExternalForm()));
     private static Scene scene;
     private static Pane root;
     private static MainMenu mainMenu;
@@ -55,6 +71,13 @@ public class EmojiApp extends Application {
     private static boolean gameOver = false;
     private static long startTime;
     private static int difficulty = 0;
+
+    static {
+        INTRO_MUSIC.setCycleCount(MediaPlayer.INDEFINITE);
+        INTRO_MUSIC.setVolume(0);
+        GAME_MUSIC.setCycleCount(MediaPlayer.INDEFINITE);
+        GAME_MUSIC.setVolume(0);
+    }
 
     /**
      * Entry point to program.
@@ -84,6 +107,7 @@ public class EmojiApp extends Application {
      * Creates the main game screen elements (persistent through life of app).
      */
     private Parent createPersistentGameElements() {
+        fadeMusic(INTRO_MUSIC, 10, 0.5);
         root = new Pane();
         root.setPrefSize(APP_WIDTH, APP_HEIGHT);
         Node background = PlayArea.createBackground();
@@ -96,8 +120,7 @@ public class EmojiApp extends Application {
                 background,
                 playArea,
                 letterBar,
-                mainMenu,
-                statusDisplay);
+                mainMenu);
         return root;
     }
 
@@ -113,7 +136,8 @@ public class EmojiApp extends Application {
         gameRound.getChildren().addAll(
                 player,
                 leftTextBubbleGroup,
-                rightTextBubbleGroup);
+                rightTextBubbleGroup,
+                statusDisplay);
         // Main game loop
         timer = new AnimationTimer() {
             @Override
@@ -137,6 +161,8 @@ public class EmojiApp extends Application {
         gameOver = false;
         difficulty = 0;
         mainMenu.setVisible(false);
+        fadeMusic(INTRO_MUSIC, 0.5, 0);
+        fadeMusic(GAME_MUSIC, 5, 0.5);
         root.getChildren().add(createGameRound());
         startTime = System.nanoTime();
         timer.start();
@@ -146,7 +172,6 @@ public class EmojiApp extends Application {
      * Prompts player to enter their name.
      */
     public static void promptPlayerToEnterName() {
-//        enterName = new EnterName();
         root.getChildren().add(new EnterName());
         gameRound.getChildren().clear();
     }
@@ -169,6 +194,7 @@ public class EmojiApp extends Application {
         LetterBar.clear();
         root.getChildren().remove(gameRound);
         mainMenu.setVisible(true);
+        fadeMusic(INTRO_MUSIC, 8, 0.5);
     }
 
     /**
@@ -329,6 +355,28 @@ public class EmojiApp extends Application {
      */
     public static double getDifficulty() {
         return difficulty;
+    }
+
+    /**
+     * Fade in/out music.
+     *
+     * @param music as MediaPLayer
+     * @param time seconds as double
+     * @param endValue the volume to fade to as double
+     */
+    public static void fadeMusic(final MediaPlayer music, final double time, final double endValue) {
+        if (endValue > 0) {
+            music.play();
+        }
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(time),
+                        new KeyValue(music.volumeProperty(), endValue)));
+        timeline.setOnFinished(event -> {
+            if (endValue <= 0) {
+                music.stop();
+            }
+        });
+        timeline.play();
     }
 }
 

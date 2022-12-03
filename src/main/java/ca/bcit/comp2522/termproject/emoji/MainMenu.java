@@ -5,7 +5,6 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -17,6 +16,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -42,15 +42,22 @@ public class MainMenu extends VBox {
      * Creates instance of type MainMenu.
      */
     public MainMenu() {
+        Text gameTitle = new Text("Welcome to\nLa Chat-room!");
+        gameTitle.setFont(Font.font("Arial Black", FontWeight.BOLD, 35));
+        gameTitle.setFill(Color.MEDIUMPURPLE);
+        gameTitle.setStroke(Color.PINK);
+        gameTitle.setTextAlignment(TextAlignment.CENTER);
+//        gameTitle.setStrokeWidth(2);
         setSpacing(20);
-        setTranslateY(PlayArea.getMarginY() * 2.5);
+        setTranslateY(PlayArea.getMarginY() * 1.75);
         scoreBoard = new ScoreBoard();
         highScores = loadHighScores();
         updateScoreBoard();
-        getChildren().addAll(
+        getChildren().addAll(gameTitle,
                 new MenuButton("START", EmojiApp::startGameRound),
                 scoreBoard,
                 new MenuButton("QUIT", Platform::exit));
+        setAlignment(Pos.CENTER);
     }
 
     /*
@@ -99,7 +106,7 @@ public class MainMenu extends VBox {
         final int scoresToDisplay = 5;
         scoreBoard.getChildren().clear();
         Text title = new Text("HIGH SCORES");
-        title.setFont(FONT);
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.setUnderline(true);
         setMargin(title, new Insets(10));
         scoreBoard.getChildren().add(title);
@@ -111,11 +118,11 @@ public class MainMenu extends VBox {
         }
         for (int i = 0; i < Math.min(scores.size(), scoresToDisplay); i++) {
             Score score = scores.get(i);
-            Text scoreText = new Text(score.name() + ": "
-                    + score.score() + "pts in "
+            Text scoreText = new Text(score.name() + " ➔ "
+                    + score.score() + " points in "
                     + score.time() + "s");
-            scoreText.setFont(FONT);
-            scoreText.setFill(new Color(0.25, 0.25, 0.25, 0.95));
+            scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+            scoreText.setFill(new Color(0.25, 0.25, 0.25, 0.9));
             setMargin(scoreText, new Insets(10));
             scoreBoard.getChildren().add(scoreText);
         }
