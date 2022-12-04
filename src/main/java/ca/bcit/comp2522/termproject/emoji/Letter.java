@@ -103,7 +103,7 @@ public class Letter extends Group {
      *
      * @param alive as boolean
      */
-    public void setAlive(boolean alive) {
+    public void setAlive(final boolean alive) {
         isAlive = alive;
     }
 
@@ -117,7 +117,7 @@ public class Letter extends Group {
     }
 
     /*
-     * Sets the letter's initial movement direction toward the player.
+     * Sets the letter's initial movement direction.
      */
     private void setDirection(final double startX, final double startY, final double endX, final double endY) {
         double xDiff = endX - startX;
@@ -128,34 +128,22 @@ public class Letter extends Group {
     }
 
     private void detectCollisionWIthBorder() {
-        checkIfEnteredPlayArea();
         boolean hasBounced = false;
-        if (hasEnteredPlayArea) {
-            Bounds letterBounds = getBoundsInParent();
-            // if bounce off left or right of Panel
-            if (letterBounds.getMinX() <= PlayArea.getMarginX()
-                    || letterBounds.getMaxX() >= PlayArea.getMarginX() + PlayArea.WIDTH) {
-                deltaX *= -1; // reverses velocity in x direction
-                hasBounced = true;
-            }
-            // if bounce off top or bottom of Panel
-            if (letterBounds.getMinY() <= PlayArea.getMarginY()
-                    || letterBounds.getMaxY() >= PlayArea.getMarginY() + PlayArea.HEIGHT) {
-                deltaY *= -1; // reverses velocity in y direction
-                hasBounced = true;
-            }
-            if (hasBounced) {
-                bounceCount++;
-            }
+        Bounds letterBounds = getBoundsInParent();
+        // if bounce off left or right of Panel
+        if (letterBounds.getMinX() <= PlayArea.getMarginX()
+                || letterBounds.getMaxX() >= PlayArea.getMarginX() + PlayArea.WIDTH) {
+            deltaX *= -1; // reverses velocity in x direction
+            hasBounced = true;
         }
-    }
-
-    /*
-     * Checks if letter has fully entered play area after being shot out.
-     */
-    private void checkIfEnteredPlayArea() {
-        if (PlayArea.getBounds().contains(getBoundsInParent())) {
-            hasEnteredPlayArea = true;
+        // if bounce off top or bottom of Panel
+        if (letterBounds.getMinY() <= PlayArea.getMarginY()
+                || letterBounds.getMaxY() >= PlayArea.getMarginY() + PlayArea.HEIGHT) {
+            deltaY *= -1; // reverses velocity in y direction
+            hasBounced = true;
+        }
+        if (hasBounced) {
+            bounceCount++;
         }
     }
 
