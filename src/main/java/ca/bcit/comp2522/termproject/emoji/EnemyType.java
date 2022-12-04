@@ -19,17 +19,24 @@ public enum EnemyType implements EmojiType {
     SICK("nauseated_face.png", "EWW", Color.GREEN),
     RAGE("rage.png", "GRRR", Color.RED),
     ROFL("rofl.png", "LOL", Color.ORANGE),
-    SOB("sob.png", "WAAH", Color.BLUE),
+    SOB("sob.png", "WAA", Color.BLUE),
     THINK("thinking_face.png", "HUH", Color.PURPLE),
     WOW("star-struck.png", "WOW", Color.YELLOW),
     DOH("confounded.png", "DOH", Color.PURPLE),
     YUM("yum.png", "YUM", Color.YELLOW),
     WAP("stuck_out_tongue_winking_eye.png", "YUM", Color.PINK),
     KISS("kissing_heart.png", "MWAH", Color.PINK),
-    UFO("alien.png", "UFO", Color.GREY),
     OHNO("dizzy_face.png", "OHNO", Color.RED),
     OOPS("face_with_hand_over_mouth.png", "OOPS", Color.ORANGE),
-    SHHH("kissing_heart.png", "LUVU", Color.PINK),;
+    LUVU("kissing_heart.png", "LUVU", Color.PINK),
+    NERD("nerd_face.png", "LEET", Color.GREEN),
+    AMA("hugging_face.png", "AMA", Color.PINK),
+    FYI("smirk.png", "FYI", Color.PURPLE),
+    WORRIED("worried.png", "DAE", Color.ORANGE),
+    ZANY("zany_face.png", "YOLO", Color.YELLOW),
+    MONACLE("face_with_monocle.png", "IMO", Color.PURPLE),
+    FEARFUL("fearful.png", "EEK", Color.BLUE),
+    ;
 
     private String filename;
     private String phrase;
@@ -39,8 +46,8 @@ public enum EnemyType implements EmojiType {
      * Create instance of enum EnemyType.
      *
      * @param filename a String
-     * @param phrase a String
-     * @param color a Color
+     * @param phrase   a String
+     * @param color    a Color
      */
     EnemyType(final String filename, final String phrase, final Color color) {
         this.filename = filename;
