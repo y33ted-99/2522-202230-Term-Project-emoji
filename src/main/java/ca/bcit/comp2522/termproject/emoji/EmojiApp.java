@@ -12,15 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -59,20 +53,30 @@ public class EmojiApp extends Application {
      */
     public static final MediaPlayer GAME_MUSIC = new MediaPlayer(new Media(
             Objects.requireNonNull(EmojiApp.class.getResource("soundfx/game-music.wav")).toExternalForm()));
+    /*
+     * Elements of game that persist across game rounds.
+     */
     private static Scene scene;
     private static Pane root;
     private static MainMenu mainMenu;
     private static StatusDisplay statusDisplay;
+    /*
+     * Elements of game that are created new on start of every game round.
+     */
     private static Pane gameRound;
     private static Player player;
     private static TextBubbleGroup leftTextBubbleGroup;
     private static TextBubbleGroup rightTextBubbleGroup;
     private static List<GameItem> gameItems;
+    /*
+     * These values are reset on start of every game round.
+     */
     private static AnimationTimer timer;
     private static boolean gameOver = false;
     private static long startTime;
     private static int difficulty = 0;
 
+    // initialize music settings
     static {
         INTRO_MUSIC.setCycleCount(MediaPlayer.INDEFINITE);
         INTRO_MUSIC.setVolume(0);
@@ -108,7 +112,7 @@ public class EmojiApp extends Application {
      * Creates the main game screen elements (persistent through life of app).
      */
     private Parent createPersistentGameElements() {
-        fadeMusic(INTRO_MUSIC, 10, 0.5);
+        fadeMusic(INTRO_MUSIC, 6, 0.5);
         root = new Pane();
         root.setPrefSize(APP_WIDTH, APP_HEIGHT);
         Node background = PlayArea.createBackground();
@@ -195,7 +199,7 @@ public class EmojiApp extends Application {
         LetterBar.clear();
         root.getChildren().remove(gameRound);
         mainMenu.setVisible(true);
-        fadeMusic(INTRO_MUSIC, 8, 0.5);
+        fadeMusic(INTRO_MUSIC, 6, 0.5);
     }
 
     /**
@@ -253,7 +257,7 @@ public class EmojiApp extends Application {
      * @param node a node to be added to the game round pane
      */
     public static void addToGameRound(final Node... node) {
-        root.getChildren().addAll(node);
+        gameRound.getChildren().addAll(node);
     }
 
     /**
@@ -262,7 +266,7 @@ public class EmojiApp extends Application {
      * @param node a node to be added to the game round pane
      */
     public static void removeFromGameRound(final Node... node) {
-        root.getChildren().removeAll(node);
+        gameRound.getChildren().removeAll(node);
     }
 
     /**
@@ -325,7 +329,7 @@ public class EmojiApp extends Application {
     }
 
     /**
-     * Checks games and if acquired by player removes from game and adds points to player.
+     * Checks gameItems and if acquired by player removes from game and adds points to player.
      */
     public static void checkGameItems() {
         gameItems.forEach(GameItem::update);
@@ -359,19 +363,21 @@ public class EmojiApp extends Application {
     }
 
     /**
-     * Fade in/out music.
+     * Fade music in/out.
      *
-     * @param music as MediaPLayer
-     * @param time seconds as double
+     * @param music    as MediaPLayer
+     * @param time     seconds as double
      * @param endValue the volume to fade to as double
      */
     public static void fadeMusic(final MediaPlayer music, final double time, final double endValue) {
+        // if fading in start playing immediately
         if (endValue > 0) {
             music.play();
         }
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(time),
                         new KeyValue(music.volumeProperty(), endValue)));
+        // if fading out stop playing at end of fade
         timeline.setOnFinished(event -> {
             if (endValue <= 0) {
                 music.stop();

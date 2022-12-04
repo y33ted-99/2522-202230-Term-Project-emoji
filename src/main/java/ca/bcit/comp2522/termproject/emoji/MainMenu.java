@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -35,28 +36,29 @@ import java.util.Objects;
  * @version Fall 2022
  */
 public class MainMenu extends VBox {
+    private static final Text GAME_TITLE  = new Text("Welcome to\nLa Chatroom!");
     private static final Font BUTTON_FONT = Font.font("Arial", FontWeight.BOLD, 25);
     private static final Font TITLE_FONT = Font.loadFont(
-            Objects.requireNonNull(EmojiApp.class.getResource("Babelgamee.ttf")).toExternalForm(), 46);
+            Objects.requireNonNull(EmojiApp.class.getResource("Babelgamee.ttf")).toExternalForm(), 55);
+    private static final int SCORES_TO_DISPLAY = 5;
     private final Pane scoreBoard;
     private final HighScores highScores;
 
+    static {
+        GAME_TITLE.setFont(TITLE_FONT);
+        GAME_TITLE.setFill(Color.MEDIUMPURPLE);
+        GAME_TITLE.setTextAlignment(TextAlignment.CENTER);
+    }
     /**
      * Creates instance of type MainMenu.
      */
     public MainMenu() {
-        Text gameTitle = new Text("Welcome to\nLa Chatroom!");
-        gameTitle.setFont(TITLE_FONT);
-        gameTitle.setFill(Color.MEDIUMPURPLE);
-//        gameTitle.setStroke(Color.PINK);
-        gameTitle.setTextAlignment(TextAlignment.CENTER);
-//        gameTitle.setStrokeWidth(2);
         setSpacing(20);
         setTranslateY(PlayArea.getMarginY() * 1.75);
         scoreBoard = new ScoreBoard();
         highScores = loadHighScores();
         updateScoreBoard();
-        getChildren().addAll(gameTitle,
+        getChildren().addAll(GAME_TITLE,
                 new MenuButton("START", EmojiApp::startGameRound),
                 scoreBoard,
                 new MenuButton("QUIT", Platform::exit));
@@ -75,7 +77,7 @@ public class MainMenu extends VBox {
             in.close();
             fileIn.close();
         } catch (IOException i) {
-            System.out.println("No past high scores to load - creating new list.");
+            System.out.println("No past high scores to load - new file will be created.");
         } catch (ClassNotFoundException c) {
             System.out.println("HighScores class not found");
             c.printStackTrace();
@@ -97,7 +99,6 @@ public class MainMenu extends VBox {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        System.out.println(score);
         updateScoreBoard();
         EmojiApp.returnToMainMenu();
     }
@@ -106,7 +107,6 @@ public class MainMenu extends VBox {
      * Updates the scoreboard with the most recent 5 scores
      */
     private void updateScoreBoard() {
-        final int scoresToDisplay = 5;
         scoreBoard.getChildren().clear();
         Text title = new Text("HIGH SCORES");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
@@ -114,24 +114,25 @@ public class MainMenu extends VBox {
         setMargin(title, new Insets(10));
         scoreBoard.getChildren().add(title);
         ArrayList<Score> scores = highScores.getScores();
+        Collections.sort(scores);
         if (scores.size() == 0) {
-            Text scoreText = new Text("(No scores yet!)");
-            scoreBoard.getChildren().add(scoreText);
-            return;
+            Text noScoresText = new Text("(No scores yet!)");
+            scoreBoard.getChildren().add(noScoresText);
+        } else {
+            for (int i = 0; i < Math.min(scores.size(), SCORES_TO_DISPLAY); i++) {
+                Score score = scores.get(i);
+                Text scoreText = new Text(score.name() + " ➔ "
+                        + score.score() + " points in "
+                        + score.time() + "s");
+                scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+                scoreText.setFill(new Color(0.25, 0.25, 0.25, 0.9));
+                setMargin(scoreText, new Insets(10));
+                scoreBoard.getChildren().add(scoreText);
+            }
         }
-        for (int i = 0; i < Math.min(scores.size(), scoresToDisplay); i++) {
-            Score score = scores.get(i);
-            Text scoreText = new Text(score.name() + " ➔ "
-                    + score.score() + " points in "
-                    + score.time() + "s");
-            scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-            scoreText.setFill(new Color(0.25, 0.25, 0.25, 0.9));
-            setMargin(scoreText, new Insets(10));
-            scoreBoard.getChildren().add(scoreText);
-        }
-        // center the menu
         setTranslateX((EmojiApp.APP_WIDTH
-                - scoreBoard.getBoundsInParent().getWidth()) / 2);
+                - Math.max(GAME_TITLE.getBoundsInParent().getWidth(), scoreBoard.getBoundsInParent().getWidth()))
+                / 2);
     }
 
     /*
@@ -139,7 +140,6 @@ public class MainMenu extends VBox {
      */
     private static class ScoreBoard extends VBox {
         ScoreBoard() {
-//            setBorder(Border.stroke(Color.DARKGRAY));
             setAlignment(Pos.CENTER);
             Text title = new Text("HIGH SCORE");
             getChildren().addAll(title);
