@@ -37,28 +37,34 @@ import java.util.Objects;
  */
 public class MainMenu extends VBox {
     private static final Text GAME_TITLE  = new Text("Welcome to\nLa Chatroom!");
+    private static final Text GAME_INSTRUCTIONS  = new Text(
+            "How long can you survive in this social media heckscape?\n"
+            + "Pop bubbles to get items that remove letters,\n"
+            + "Spell words to remove letters and get massive points!"
+    );
     private static final Font BUTTON_FONT = Font.font("Arial", FontWeight.BOLD, 25);
-    private static final Font TITLE_FONT = Font.loadFont(
-            Objects.requireNonNull(EmojiApp.class.getResource("Babelgamee.ttf")).toExternalForm(), 55);
     private static final int SCORES_TO_DISPLAY = 5;
     private final Pane scoreBoard;
     private final HighScores highScores;
 
     static {
-        GAME_TITLE.setFont(TITLE_FONT);
+        GAME_TITLE.setFont(Font.loadFont(
+                Objects.requireNonNull(EmojiApp.class.getResource("Babelgamee.ttf")).toExternalForm(), 60));
         GAME_TITLE.setFill(Color.MEDIUMPURPLE);
         GAME_TITLE.setTextAlignment(TextAlignment.CENTER);
+        GAME_INSTRUCTIONS.setFont(Font.font("Arial", 13));
+        GAME_INSTRUCTIONS.setTextAlignment(TextAlignment.CENTER);
     }
     /**
      * Creates instance of type MainMenu.
      */
     public MainMenu() {
         setSpacing(20);
-        setTranslateY(PlayArea.getMarginY() * 1.75);
+        setTranslateY(PlayArea.getMarginY() * 1.25);
         scoreBoard = new ScoreBoard();
         highScores = loadHighScores();
         updateScoreBoard();
-        getChildren().addAll(GAME_TITLE,
+        getChildren().addAll(GAME_TITLE, GAME_INSTRUCTIONS,
                 new MenuButton("START", EmojiApp::startGameRound),
                 scoreBoard,
                 new MenuButton("QUIT", Platform::exit));
@@ -126,7 +132,7 @@ public class MainMenu extends VBox {
                         + score.time() + "s");
                 scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
                 scoreText.setFill(new Color(0.25, 0.25, 0.25, 0.9));
-                setMargin(scoreText, new Insets(10));
+                setMargin(scoreText, new Insets(5));
                 scoreBoard.getChildren().add(scoreText);
             }
         }

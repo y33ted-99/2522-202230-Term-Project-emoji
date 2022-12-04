@@ -66,6 +66,7 @@ public class GameItem extends Entity {
     public void update() {
         if (getBoundsInParent().intersects(EmojiApp.getPlayerBounds())) {
             ITEM_SOUND.play();
+            EmojiApp.addToScore(GameItem.POINTS_PER_ITEM);
             LetterBar.removeLettersByColor(itemType.getColor());
             isAlive = false;
         }

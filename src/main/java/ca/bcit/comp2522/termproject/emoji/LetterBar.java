@@ -30,8 +30,8 @@ public class LetterBar extends Group {
     private static final int CELL_MARGIN = 9;
     private static final int LETTER_MARGIN_X = 14;
     private static final int LETTER_MARGIN_Y = 35;
-    private static final int POINTS_PER_WORD = 500;
-    private static final int POINTS_PER_LETTER_IN_SPELLED_WORD = 25;
+    private static final int POINTS_PER_WORD = 1000;
+    private static final int POINTS_PER_LETTER_IN_SPELLED_WORD = 50;
     private static final Group LETTER_BAR = new Group();
     private static final Rectangle CONTAINER = new Rectangle();
     private static final List<Letter> LETTERS = new ArrayList<>();
@@ -169,8 +169,10 @@ public class LetterBar extends Group {
         }
     }
 
-    /*
-     * Removes letters of a given color from the letter bar.
+    /**
+     * Removes letters of a given color from the letter bar and game.
+     *
+     * @param color the color of letters to remove as Color
      */
     public static void removeLettersByColor(final Color color) {
         Iterator<Letter> iterator = LETTERS.iterator();
@@ -184,6 +186,9 @@ public class LetterBar extends Group {
         repositionLetters();
     }
 
+    /**
+     * Removes all letters from letter bar and game.
+     */
     public static void clear() {
         Iterator<Letter> iterator = LETTERS.iterator();
         while (iterator.hasNext()) {

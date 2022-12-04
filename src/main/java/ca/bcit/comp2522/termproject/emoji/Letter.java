@@ -184,7 +184,6 @@ public class Letter extends Group {
         }
         if (!isAlive) {
             setOpacity(getOpacity() - bubbleDeathFadeDecrement);
-//            return;
         }
         if (EmojiApp.isGameOver()) {
             setOpacity(getOpacity() - gameOverFadeDecrement);

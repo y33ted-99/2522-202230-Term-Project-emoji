@@ -338,7 +338,6 @@ public class EmojiApp extends Application {
             GameItem gameItem = iterator.next();
             if (!gameItem.isAlive() || gameOver) {
                 removeFromGameRound(gameItem);
-                EmojiApp.addToScore(GameItem.POINTS_PER_ITEM);
                 iterator.remove();
             }
         }
